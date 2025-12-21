@@ -2,17 +2,7 @@
 title: "Figure Reproduction for Scientific Reports Paper srep24829"  
 author: "Joel R Pradines"
 date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    toc: true
-    toc_depth: 4
-    number_sections: true
-bibliography: references.bib
-link-citations: yes
-vignette: >
-  %\VignetteIndexEntry{EdgeCount Package Tutorial}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: html_document
 ---
 
 ```{r, include = FALSE}
@@ -69,5 +59,26 @@ section:target > h3 {
 ```
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-library(ggplot2))
+library(ggplot2)
+```
+## Figure 2: Feasibility Profile
+The feasibility profile shows the consistency of the experimental data with different chain lengths $n$. 
+
+```{r fig2, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Loading data from your Java terminal run
+df <- read.table("output/Feasibility.res", header = TRUE)
+
+ggplot(df, aes(x = n, y = infeasibility)) +
+  geom_line(color = "steelblue", linewidth = 1) +
+  geom_point(color = "darkblue", size = 2) +
+  scale_y_log10() + 
+  theme_minimal() +
+  labs(
+    title = "Figure 2: Feasibility Profile",
+    subtitle = "Infeasibility drops significantly at n=13",
+    x = "Chain Length (n)",
+    y = "Infeasibility (Log Scale)"
+  )
+
 ```
