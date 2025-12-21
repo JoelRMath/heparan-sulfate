@@ -1,0 +1,73 @@
+---
+title: "Figure Reproduction for Scientific Reports Paper srep24829"  
+author: "Joel R Pradines"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 4
+    number_sections: true
+bibliography: references.bib
+link-citations: yes
+vignette: >
+  %\VignetteIndexEntry{EdgeCount Package Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{css, echo=FALSE}
+/* 1. Prepare the container to handle absolute positioning */
+div.csl-entry {
+  position: relative;
+  z-index: 1; /* Ensures the text stays on top of the highlight */
+}
+
+/* 2. Create the Highlight using a Pseudo-Element */
+/* instead of modifying the element itself */
+div.csl-entry:target::before {
+  content: "";
+  position: absolute;
+  
+  /* Sizing the box */
+  top: -3px;
+  bottom: -3px;
+  right: -5px;
+  /* This extends the yellow box to the left to cover the hanging indent */
+  /* -2em is usually safe for standard bibliographies (which use 1.5em indent) */
+  left: -2em; 
+  
+  /* Styling */
+  background-color: #ffeb3b;
+  border-radius: 4px;
+  outline: 1px solid #fbc02d;
+  
+  /* Layering: Put it BEHIND the text */
+  z-index: -1; 
+}
+div:target > h1,
+div:target > h2,
+div:target > h3,
+div:target > h4,
+div:target > h5,
+div:target > h6,
+section:target > h1,
+section:target > h2,
+section:target > h3 {
+  background-color: #ffeb3b;
+  transition: background-color 0.8s ease;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+```
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2))
+```
