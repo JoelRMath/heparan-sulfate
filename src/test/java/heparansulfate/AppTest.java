@@ -1,4 +1,4 @@
-package com.heparan;
+package heparansulfate;
 
 import static org.junit.Assert.assertTrue;
 
