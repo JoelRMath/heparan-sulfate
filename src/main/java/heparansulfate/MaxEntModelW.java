@@ -131,8 +131,6 @@ public class MaxEntModelW {
         for (int i = 0; i < w.length; i++) v.add((lmin + i) + "\t" + w[i]);
         Utils.saveFile(v, pref + ".rhol.res");
 
-        // Transition probabilities NRE
-        BBSet bbs = new BBSet(inDir + "US.ab.txt");
         double[][][] ptnre = new double[lmax][m][m];
         for (int s = 0; s < N; s++) {
             for (int pos = 1; pos < seq[s].length; pos++) {

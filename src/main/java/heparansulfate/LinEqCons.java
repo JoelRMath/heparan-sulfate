@@ -1,6 +1,5 @@
 package heparansulfate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -173,5 +172,9 @@ public class LinEqCons {
             }
         }
         return new LinEqCons(A, b, lab);
+    }
+
+    public static void main(String[] args){
+        
     }
 }

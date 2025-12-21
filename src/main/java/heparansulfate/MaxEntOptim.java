@@ -1,7 +1,6 @@
 package heparansulfate;
 
 import java.util.Random;
-import java.util.Vector;
 
 /**
  * Geometric programming for solving a MaxEnt problem subject to

@@ -2,11 +2,12 @@ package heparansulfate;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 /**
  * Represents a MaxEnt model of BKHS (profiles of composition and correlation)
@@ -43,11 +44,11 @@ public class MaxEntModel {
         }
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outPref + ".pind.res"))) {
             for (int i = 0; i < species.N; i++) {
-                String s = String.valueOf(opt.p[i]);
+                StringBuilder sb = new StringBuilder(String.valueOf(opt.p[i]));
                 for (int j = 0; j < species.seq[i].length; j++) {
-                    s += "\t" + species.seq[i][j];
+                    sb.append("\t").append(species.seq[i][j]);
                 }
-                bw.write(s);
+                bw.write(sb.toString());
                 bw.newLine();
             }
         } catch (Exception ex) {
@@ -69,7 +70,7 @@ public class MaxEntModel {
                 P[i][j] /= (double) (n - 1);
             }
         }
-        Vector<String> v = new Vector<>();
+        List<String> v = new ArrayList<>();
         v.add("prev\tnext\tp");
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < m; j++) {
@@ -101,7 +102,7 @@ public class MaxEntModel {
                 for (int j = 0; j < m; j++) if (sum > 0) pt[pos][i][j] /= sum;
             }
         }
-        Vector<String> v = new Vector<>();
+        List<String> v = new ArrayList<>();
         StringBuilder header = new StringBuilder("pos");
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < m; j++) header.append("\tp").append(bbs.name[i]).append(bbs.name[j]);
@@ -122,7 +123,7 @@ public class MaxEntModel {
         for (int s = 0; s < opt.n; s++) {
             for (int i = 0; i < n; i++) gamma[i][species.seq[s][i]] += opt.p[s];
         }
-        Vector<String> v = new Vector<>();
+        List<String> v = new ArrayList<>();
         StringBuilder header = new StringBuilder("pos");
         for (int i = 0; i < m; i++) header.append("\t").append(bbs.name[i]);
         v.add(header.toString());
@@ -135,7 +136,7 @@ public class MaxEntModel {
     }
 
     void saveSpeciesAbundance(String file) {
-        Vector<String> v = new Vector<>();
+        List<String> v = new ArrayList<>();
         v.add("species\tp");
         for (int i = 0; i < species.seq.length; i++) {
             StringBuilder s = new StringBuilder();
@@ -148,7 +149,7 @@ public class MaxEntModel {
     public static LinEqCons getDefaultLEC(String inDir) {
         Species sp = new Species(2, 16);
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
-        Vector<LinEqCons> v = new Vector<>();
+        List<LinEqCons> v = new ArrayList<>();
         v.add(LinEqCons.removeLastRow(sp.getCompLEC(bbs.rho)));
         v.add(LinEqCons.removeLastRow(sp.getFragLEC(Species.loadFragAbund(inDir + "hepI.f.txt"),
                 new CSpec(inDir + "US.hepI.txt", bbs), bbs)));
@@ -168,10 +169,10 @@ public class MaxEntModel {
     }
 
     public static void length15Abundances(String inDir, String outDir) {
-        Vector<String> v = Utils.loadFileNoheader(outDir + "MEMspec.species.res");
-        Hashtable<String, Double> s2p = new Hashtable<>();
+        List<String> v = Utils.loadFileNoheader(outDir + "MEMspec.species.res");
+        Map<String, Double> s2p = new HashMap<>();
         for (int i = 0; i < v.size(); i++) {
-            StringTokenizer st = new StringTokenizer(v.elementAt(i), "\t");
+            StringTokenizer st = new StringTokenizer(v.get(i), "\t");
             String s = st.nextToken().trim();
             s = s.substring(1);
             double D = Double.parseDouble(st.nextToken());
@@ -179,31 +180,24 @@ public class MaxEntModel {
             s2p.put(s, (p == null ? 0.0 : p) + D);
         }
         SandVal[] sv = new SandVal[s2p.size()];
-        Enumeration<String> en = s2p.keys();
         int c = 0;
-        while (en.hasMoreElements()) {
-            String s = en.nextElement();
+        for (String s : s2p.keySet()) {
             sv[c++] = new SandVal(s, s2p.get(s), "d");
         }
         Arrays.sort(sv, sv[0]);
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
-        Vector<String> outV = new Vector<>();
+        List<String> outV = new ArrayList<>();
         outV.add("species\tp\tp2");
         for (SandVal sval : sv) {
             String seq = sval.s;
             double p2 = getP2(seq, bbs);
             StringBuilder seq2 = new StringBuilder("x");
             for (int j = 0; j < seq.length(); j++) {
-                seq2.append(seq.charAt(j) == 's' ? "{\\bf S}" : "U");
+                seq2.append(seq.charAt(j) == 's' ? "S" : "U");
             }
             outV.add(seq2.toString() + "\t" + sval.val + "\t" + p2);
         }
         Utils.saveFile(outV, outDir + "MEMspec.species.L15.res");
     }
 
-    public static void main(String[] args) {
-        String inDir = "input/";
-        String outDir = "output/";
-        // Execution methods here
-    }
 }
