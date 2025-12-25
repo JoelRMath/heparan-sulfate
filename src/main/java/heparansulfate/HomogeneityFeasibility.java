@@ -46,7 +46,7 @@ public class HomogeneityFeasibility {
      * @param m number of disaccharides
      * @param n BKHD chain length
      * @param lab disaccharide labels
-     * @param inDir input directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
      */
     public HomogeneityFeasibility(int m, int n, String[] lab, String inDir) {
         this.lab = lab;
@@ -78,8 +78,8 @@ public class HomogeneityFeasibility {
     /**
      * computes feasibility of combining homogeneity and heparinase digest constraints
      * for BKHS chain lengths between 5 and 20
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void makeProfile(String inDir, String outDir) {
         String[] lab = new String[2];
@@ -99,8 +99,8 @@ public class HomogeneityFeasibility {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
-        String outDir = "output\\";
+        String inDir = "input/";
+        String outDir = "output/";
         makeProfile(inDir, outDir);
     }
 }

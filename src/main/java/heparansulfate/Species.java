@@ -384,7 +384,7 @@ public class Species {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
+        String inDir = "input/";
         testing(inDir);
     }
 }

@@ -101,7 +101,7 @@ public class MaxEntModelW {
      * disaccharide composition as a function of chain length (pref.rhol.res)
      * profile of transition probabilities when aligning by NRE (pref.ptnre.res)
      * profile of transition probabilities when aligning by RE (pref.ptre.res)
-     * @param inDir input directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
      * @param pref prefix for output files
      */
     public static void makeProf(String inDir, String pref) {
@@ -341,8 +341,8 @@ public class MaxEntModelW {
 
     /**
      * makes and saves individual species abundances for sigma = 3.5
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void makeSig35(String inDir, String outDir) {
         new MaxEntModelW(outDir + "MEMW", 10, 20, 3.5, 16., inDir);
@@ -350,8 +350,8 @@ public class MaxEntModelW {
 
     /**
      * makes and saves individual species abundances for sigma = 1.5
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void makeSig15(String inDir, String outDir) {
         new MaxEntModelW(outDir + "MEMWSig1.5", 10, 20, 1.5, 16., inDir);
@@ -371,8 +371,8 @@ public class MaxEntModelW {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
-        String outDir = "output\\";
+        String inDir = "input/";
+        String outDir = "output/";
         makeSig35(inDir, outDir);
         makeSig15(inDir, outDir);
         glAndRholAndProfExamples(inDir, outDir);

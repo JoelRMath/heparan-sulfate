@@ -235,8 +235,8 @@ public class MaxEntModel {
 
     /**
      * MaxEnt models for chain length = 13, 14, 15, 16, 17 or 18
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void defaultModelAndN(String inDir, String outDir) {
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
@@ -256,8 +256,8 @@ public class MaxEntModel {
 
     /**
      * saves maxent S/U composition at each position when all chains have same length n = 16
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void defaultModel(String inDir, String outDir) {
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
@@ -268,8 +268,8 @@ public class MaxEntModel {
 
     /**
      * saves individual species abundances when all chains have same length n = 16
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void defaultModelSpecies(String inDir, String outDir) {
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
@@ -281,8 +281,8 @@ public class MaxEntModel {
 
     /**
      * saves species abundances after removing the non-reducing end
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void length15Abundances(String inDir, String outDir) {
         List<String> v = Utils.loadFileNoheader(outDir + "MEMspec.species.res");
@@ -351,8 +351,8 @@ public class MaxEntModel {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
-        String outDir = "output\\";
+        String inDir = "input/";
+        String outDir = "output/";
         defaultModel(inDir, outDir);
         defaultModelAndN(inDir, outDir);
         defaultModelSpecies(inDir, outDir);

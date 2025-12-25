@@ -211,7 +211,7 @@ public class NIModelLIC {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
+        String inDir = "input/";
         String file = inDir + "US.ab.txt";
         BBSet bbs = new BBSet(file);
         int n = 16;

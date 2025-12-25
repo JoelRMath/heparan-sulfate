@@ -75,7 +75,7 @@ public class BBSet {
      * @param args
      */
     public static void main(String[] args) {
-        String file = "input\\US.ab.txt";
+        String file = "input/US.ab.txt";
         BBSet bs = new BBSet(file);
         for (int i = 0; i < bs.m; i++) {
             System.out.println(bs.name[i] + "\t" + bs.rho[i]);

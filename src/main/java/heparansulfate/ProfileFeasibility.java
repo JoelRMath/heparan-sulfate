@@ -44,8 +44,8 @@ public class ProfileFeasibility {
      * @param m number of disaccharides
      * @param n BKHS chain length
      * @param lab disaccharide labels
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public ProfileFeasibility(int m, int n, String[] lab, String inDir, String outDir) {
         this.lab = lab;
@@ -67,8 +67,8 @@ public class ProfileFeasibility {
 
     /**
      * makes profile of infeasibility for BKHS chain length from 5 to 20
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void makeProfile(String inDir, String outDir) {
         String[] lab = new String[2];
@@ -88,8 +88,8 @@ public class ProfileFeasibility {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
-        String outDir = "output\\";
+        String inDir = "input/";
+        String outDir = "output/";
         makeProfile(inDir, outDir);
     }
 }

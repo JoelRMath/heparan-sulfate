@@ -229,8 +229,8 @@ public class HIModel {
     /**
      * saves fragment length distribution expected under H&I for hepI
      * and performs numerical check
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void hepI(String inDir, String outDir) {
         Random rand = new Random();
@@ -247,8 +247,8 @@ public class HIModel {
     /**
      * saves fragment length distribution expected under H&I for hepIII
      * and performs numerical check
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void hepIII(String inDir, String outDir) {
         Random rand = new Random();
@@ -267,8 +267,8 @@ public class HIModel {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
-        String outDir = "output\\";
+        String inDir = "input/";
+        String outDir = "output/";
         hepI(inDir, outDir);
         hepIII(inDir, outDir);
     }

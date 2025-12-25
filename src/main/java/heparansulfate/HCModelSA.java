@@ -335,8 +335,8 @@ public class HCModelSA {
 
     /**
      * For supplementary material
-     * @param inDir input directory (ends with"\\")
-     * @param outDir output directory (ends with"\\")
+     * @param inDir input directory (ends with"/")
+     * @param outDir output directory (ends with"/")
      */
     public static void varyingN(String inDir, String outDir) {
         Random rand = new Random(1);
@@ -378,8 +378,8 @@ public class HCModelSA {
 
     /**
      * generates data used for figure of H&C fit
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void defaultN(String inDir, String outDir) {
         Random rand = new Random(1);
@@ -406,8 +406,8 @@ public class HCModelSA {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
-        String outDir = "output\\HC\\";
+        String inDir = "input/";
+        String outDir = "output/HC/";
         defaultN(inDir, outDir);
         varyingN(inDir, outDir);
     }

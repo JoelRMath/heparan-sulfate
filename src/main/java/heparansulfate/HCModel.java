@@ -289,7 +289,7 @@ public class HCModel {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
+        String inDir = "input/";
         String file = inDir + "US.ab.txt";
         BBSet bbs = new BBSet(file);
         file = inDir + "US.hepI.txt";

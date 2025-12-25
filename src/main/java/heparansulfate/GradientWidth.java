@@ -51,7 +51,7 @@ public class GradientWidth {
      * @param lmx largest chain length
      * @param sig spread of chain length distribution
      * @param mu average chain length
-     * @param inDir input directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
      */
     public GradientWidth(String[] lb, int lmi, int lmx, double sig, double mu, String inDir) {
         this.lab = lb;
@@ -364,8 +364,8 @@ public class GradientWidth {
     /**
      * makes and saves S/U bounds at each position
      * when all BKHS chains have same length
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void bounds(String inDir, String outDir) {
         String[] lab = new String[2];
@@ -377,8 +377,8 @@ public class GradientWidth {
 
     /**
      * for supplementary material; bounds for different values of chain length n
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void boundsAndN(String inDir, String outDir) {
         String[] lab = new String[2];
@@ -407,8 +407,8 @@ public class GradientWidth {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
-        String outDir = "output\\";
+        String inDir = "input/";
+        String outDir = "output/";
         bounds(inDir, outDir);
         boundsAndN(inDir, outDir);
         defaultMixSpec(inDir, outDir);

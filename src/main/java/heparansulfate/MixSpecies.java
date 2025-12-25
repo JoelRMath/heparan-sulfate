@@ -319,7 +319,7 @@ public class MixSpecies {
      * testing that homogeneity of composition across chain lengths is
      * feasible after incorporating digest constraints;
      * Note: requires large memory (-Xmx8000M)
-     * @param inDir input directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
      */
     public static void testRhoLHomFeas(String inDir) {
         int lmin = 10;
@@ -423,7 +423,7 @@ public class MixSpecies {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
+        String inDir = "input/";
         testRhoLHomFeas(inDir);
     }
 }

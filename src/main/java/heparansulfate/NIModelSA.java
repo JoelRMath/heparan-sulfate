@@ -438,8 +438,8 @@ public class NIModelSA {
     /**
      * fits N&I model without added constraint at the reducing end;
      * for supplementary material
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void withoutREC(String inDir, String outDir) {
         Random rand = new Random(1);
@@ -464,8 +464,8 @@ public class NIModelSA {
     /**
      * fits N&I model without added constraint at the reducing end
      * and for different values of BKHS chain length n; for supplementary material
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void withoutRECandN(String inDir, String outDir) {
         Random rand = new Random(1);
@@ -491,8 +491,8 @@ public class NIModelSA {
     /**
      * fits N&I model with added constraint at the reducing end
      * and for different values of BKHS chain length n; for supplementary material
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void withREC(String inDir, String outDir) {
         Random rand = new Random(1);
@@ -525,8 +525,8 @@ public class NIModelSA {
      * @param args
      */
     public static void main(String[] args) {
-        String inDir = "input\\";
-        String outDir = "output\\";
+        String inDir = "input/";
+        String outDir = "output/";
         withoutREC(inDir, outDir);
         withoutRECandN(inDir, outDir);
         withREC(inDir, outDir);
