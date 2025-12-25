@@ -1,5 +1,3 @@
-package heparansulfate;
-
 import java.util.Random;
 
 /**
