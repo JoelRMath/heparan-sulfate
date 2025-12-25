@@ -10,16 +10,16 @@ public class MatrixOp {
      * @param mat matrix
      */
     public static void printMat(double[][] mat) {
+        String s = null;
         System.out.println("*************");
         for (int i = 0; i < mat.length; i++) {
-            StringBuilder s = new StringBuilder();
+            s = "";
             for (int j = 0; j < mat[0].length; j++) {
-                s.append(mat[i][j]);
-                if (j != mat[0].length - 1) {
-                    s.append("\t");
-                }
+                s += String.valueOf(mat[i][j]);
+                if (j != mat[0].length - 1)
+                    s += "\t";
             }
-            System.out.println(s.toString());
+            System.out.println(s);
         }
         System.out.println("*************");
     }
@@ -30,20 +30,20 @@ public class MatrixOp {
      * @param eps definition of 0
      */
     public static void printMatS(double[][] mat, double eps) {
+        String s = null;
         System.out.println("*************");
         for (int i = 0; i < mat.length; i++) {
-            StringBuilder s = new StringBuilder();
+            s = "";
             for (int j = 0; j < mat[0].length; j++) {
                 String e = "x";
                 if (Math.abs(mat[i][j]) <= eps) {
                     e = ".";
                 }
-                s.append(e);
-                if (j != mat[0].length - 1) {
-                    s.append("\t");
-                }
+                s += e;
+                if (j != mat[0].length - 1)
+                    s += "\t";
             }
-            System.out.println(s.toString());
+            System.out.println(s);
         }
         System.out.println("*************");
     }
@@ -51,35 +51,34 @@ public class MatrixOp {
     /**
      * Returns a String representation of a matrix
      * @param mat matrix
-     * @return a String representation of matrix 'mat'
+     * @return a String representation of matrix ’mat’
      */
     public static String getMatStringRep(double[][] mat) {
-        StringBuilder res = new StringBuilder("*************\n");
+        String res = "*************\n";
         for (int i = 0; i < mat.length; i++) {
             for (int j = 0; j < mat[0].length; j++) {
-                res.append(mat[i][j]);
-                if (j != mat[0].length - 1) {
-                    res.append("\t");
-                }
+                res += String.valueOf(mat[i][j]);
+                if (j != mat[0].length - 1)
+                    res += "\t";
             }
-            res.append("\n");
+            res += "\n";
         }
-        res.append("*************\n");
-        return res.toString();
+        res += "*************\n";
+        return res;
     }
 
     /**
      * Returns a String representation of a vector
      * @param x vector
-     * @return String representation of vector 'x'
+     * @return String representation of vector ’x’
      */
     public static String getVecStringRep(double[] x) {
-        StringBuilder res = new StringBuilder("*************\n");
+        String res = "*************\n";
         for (int i = 0; i < x.length; i++) {
-            res.append(x[i]).append("\n");
+            res += String.valueOf(x[i]) + "\n";
         }
-        res.append("*************\n");
-        return res.toString();
+        res += "*************\n";
+        return res;
     }
 
     /**
@@ -150,9 +149,8 @@ public class MatrixOp {
         for (int i = 0; i < c.length; i++) {
             for (int j = 0; j < c[0].length; j++) {
                 c[i][j] = 0.;
-                for (int k = 0; k < a[0].length; k++) {
+                for (int k = 0; k < a[0].length; k++)
                     c[i][j] += (a[i][k] * b[k][j]);
-                }
             }
         }
         return c;
@@ -160,9 +158,10 @@ public class MatrixOp {
 
     /**
      * Performs the Cholesky factorization of a symmetric and positive
-     * definite matrix A: A = LL^T
-     * @param A input matrix
-     * @return Cholesky factor L
+     * definite matrix A: A = LL^T, where L is lower triangular with positive
+     * diagonal elements. This method returns L
+     * @param A input matrix (symmetric and positive definite)
+     * @return Cholesky factor L of A = LL^T
      */
     public static double[][] cholesky(double[][] A) {
         int m = A.length;
@@ -186,6 +185,9 @@ public class MatrixOp {
 
     /**
      * Solves the linear system ax = b, where a is lower triangular
+     * @param a matrix
+     * @param b vector
+     * @return solution x to ax = b
      */
     public static double[] forwardElimination(double[][] a, double[] b) {
         int m = b.length;
@@ -202,6 +204,9 @@ public class MatrixOp {
 
     /**
      * Solves the system ax = b, where a is upper triangular
+     * @param a matrix
+     * @param b vector
+     * @return solution x to ax = b
      */
     public static double[] backwardSubstitution(double[][] a, double[] b) {
         int m = b.length;
@@ -217,7 +222,11 @@ public class MatrixOp {
     }
 
     /**
-     * Solves ax = b for symmetric and positive definite matrix a
+     * Solves the linear system ax = b, where matrix a is symmetric and
+     * positive definite
+     * @param a matrix
+     * @param b vector
+     * @return solution x to ax = b
      */
     public static double[] choleskySolve(double[][] a, double[] b) {
         double[][] l = cholesky(a);
@@ -229,6 +238,9 @@ public class MatrixOp {
 
     /**
      * Computes the inner product between two vectors
+     * @param x vector of dim n
+     * @param y vector of dim n
+     * @return sum_{i=1}^n x_iy_i
      */
     public static double geInnerProd(double[] x, double[] y) {
         double res = 0.;

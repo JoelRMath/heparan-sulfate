@@ -78,48 +78,37 @@ public class HIModel {
      * @param file output file
      */
     void checkGL(Random rand, String file) {
-        int nsim = 1000000;
+        int nsim = 10000000;
         int totfrag = 0;
-        double[] g_sim = new double[n];
+        double[] g = new double[n];
         for (int sim = 0; sim < nsim; sim++) {
             CleavedSequence cseq = getCleavedSequence(rand);
             int[][] frag = cseq.getFragments();
             totfrag += frag.length;
             for (int i = 0; i < frag.length; i++) {
-                g_sim[frag[i].length - 1] += 1.;
+                g[frag[i].length - 1] += 1.;
             }
         }
-        for (int i = 0; i < g_sim.length; i++) {
-            g_sim[i] /= (double) totfrag;
+        for (int i = 0; i < g.length; i++) {
+            g[i] /= (double) totfrag;
         }
-        double[] h_sim = new double[n];
+        double[] h = new double[n];
         for (int i = 0; i < lm; i++) {
-            h_sim[i] = g_sim[i];
+            h[i] = g[i];
         }
         for (int i = lm; i < n; i++) {
-            h_sim[lm - 1] += g_sim[i];
+            h[lm - 1] += g[i];
         }
-
-        // Modernized: Replaced Vector with ArrayList
         List<String> v = new ArrayList<>();
         v.add("l\tgl\tsimgl\thl\tsimhl");
         for (int i = 0; i < n; i++) {
-            Integer L = Integer.valueOf(i + 1);
-            StringBuilder outS = new StringBuilder(L.toString());
-            
-            Double D_g = Double.valueOf(this.g[i]);
-            outS.append("\t").append(D_g.toString());
-            
-            Double D_gsim = Double.valueOf(g_sim[i]);
-            outS.append("\t").append(D_gsim.toString());
-            
-            Double D_h = Double.valueOf(this.h[i]);
-            outS.append("\t").append(D_h.toString());
-            
-            Double D_hsim = Double.valueOf(h_sim[i]);
-            outS.append("\t").append(D_hsim.toString());
-            
-            v.add(outS.toString());
+            int L = i + 1;
+            String outS = String.valueOf(L);
+            outS += "\t" + this.g[i];
+            outS += "\t" + g[i];
+            outS += "\t" + this.h[i];
+            outS += "\t" + h[i];
+            v.add(outS);
         }
         Utils.saveFile(v, file);
     }
@@ -146,29 +135,28 @@ public class HIModel {
      * cleavage specificities
      */
     int[] getCuts(int[] seq, Random rand) {
-        // Modernized: Replaced Vector with ArrayList
         List<Integer> cuts = new ArrayList<>();
         for (int i = 1; i < n; i++) {
             double d = rand.nextDouble();
             if (d < cs.c[seq[i]]) {
-                cuts.add(Integer.valueOf(i));
+                cuts.add(i);
             }
         }
-        cuts.add(Integer.valueOf(n));
+        cuts.add(n);
         int[] res = new int[cuts.size()];
         for (int i = 0; i < cuts.size(); i++) {
-            // Using .get(i) instead of .elementAt(i)
-            Integer I = cuts.get(i);
-            res[i] = I.intValue();
+            res[i] = cuts.get(i);
         }
         return res;
     }
 
     /**
      * generates a random CleavedSequence (generates a BKHS chain and randomly
-     * cleaves it based on cleavage specificities)
+     * cleaves it based on cleavage specificities); see methods getFragments()
+     * of class CleavedSequence to access resulting fragments
      * @param rand
-     * @return a random CleavedSequence
+     * @return a random CleavedSequence (generates a BKHS chain and randomly cleaves
+     * it based on cleavage specificities)
      */
     CleavedSequence getCleavedSequence(Random rand) {
         int[] seq = null;
@@ -201,8 +189,8 @@ public class HIModel {
         g = new double[n];
         for (int ll = 1; ll <= n - 1; ll++) {
             int l = ll - 1;
-            g[l] = 1. + c * (double) (n - ll - 1);
-            g[l] /= (double) (n - 1);
+            g[l] = 1. + c * (double)(n - ll - 1);
+            g[l] /= (double)(n - 1);
             g[l] *= Math.pow((1. - c), (double) l);
         }
     }
@@ -222,47 +210,65 @@ public class HIModel {
      * @param file output file
      */
     void saveH(String file) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+        try {
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
             bw.write("l\th");
             bw.newLine();
             for (int i = 0; i < lm; i++) {
-                Integer L = Integer.valueOf(i + 1);
-                Double D = Double.valueOf(h[i]);
-                bw.write(L.toString() + "\t" + D.toString());
+                bw.write((i + 1) + "\t" + h[i]);
                 bw.newLine();
             }
+            bw.close();
+            fw.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
+    /**
+     * saves fragment length distribution expected under H&I for hepI
+     * and performs numerical check
+     * @param inDir input directory (ends with "\\")
+     * @param outDir output directory (ends with "\\")
+     */
     public static void hepI(String inDir, String outDir) {
         Random rand = new Random();
         String file = inDir + "US.ab.txt";
         BBSet bbs = new BBSet(file);
         file = inDir + "US.hepI.txt";
         CSpec cs = new CSpec(file, bbs);
-        int n_len = 16;
-        HIModel pm = new HIModel(n_len, bbs, cs, 11);
+        int n = 16;
+        HIModel pm = new HIModel(n, bbs, cs, 11);
         pm.checkGL(rand, outDir + "HIM.hepIgl.check.res");
         pm.saveH(outDir + "HIM.hepIhl.res");
     }
 
+    /**
+     * saves fragment length distribution expected under H&I for hepIII
+     * and performs numerical check
+     * @param inDir input directory (ends with "\\")
+     * @param outDir output directory (ends with "\\")
+     */
     public static void hepIII(String inDir, String outDir) {
         Random rand = new Random();
         String file = inDir + "US.ab.txt";
         BBSet bbs = new BBSet(file);
         file = inDir + "US.hepIII.txt";
         CSpec cs = new CSpec(file, bbs);
-        int n_len = 16;
-        HIModel pm = new HIModel(n_len, bbs, cs, 6);
+        int n = 16;
+        HIModel pm = new HIModel(n, bbs, cs, 6);
         pm.checkGL(rand, outDir + "HIM.hepIIIgl.check.res");
         pm.saveH(outDir + "HIM.hepIIIhl.res");
     }
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
-        String inDir = "input/";
-        String outDir = "output/";
+        String inDir = "input\\";
+        String outDir = "output\\";
         hepI(inDir, outDir);
         hepIII(inDir, outDir);
     }

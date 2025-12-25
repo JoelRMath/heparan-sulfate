@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Class that represents linear equality/inequality constraints: Ax = b or Ax <= b,
  * where A is an m by n matrix and b an m vector. The main utility of this class
- * is merging of linear constraints.
+ * is merging of linear constraints
  */
 public class LinEqCons {
     /**
@@ -43,7 +43,7 @@ public class LinEqCons {
         type = new String[m];
         for (int i = 0; i < m; i++) {
             this.b[i] = b[i];
-            type[i] = new String(label[i]);
+            type[i] = label[i];
             for (int j = 0; j < n; j++) {
                 this.A[i][j] = A[i][j];
             }
@@ -68,7 +68,7 @@ public class LinEqCons {
             for (int l = 0; l < lec[k].m; l++) {
                 i++;
                 b[i] = lec[k].b[l];
-                type[i] = new String(lec[k].type[l]);
+                type[i] = lec[k].type[l];
                 for (int j = 0; j < lec[k].n; j++) {
                     A[i][j] = lec[k].A[l][j];
                 }
@@ -97,7 +97,7 @@ public class LinEqCons {
             for (int l = 0; l < lc.m; l++) {
                 i++;
                 b[i] = lc.b[l];
-                type[i] = new String(lc.type[l]);
+                type[i] = lc.type[l];
                 for (int j = 0; j < lc.n; j++) {
                     A[i][j] = lc.A[l][j];
                 }
@@ -106,20 +106,21 @@ public class LinEqCons {
     }
 
     /**
-     * Returns a String representation of this LinEqCons
+     * Returns a String representation of this LinEqCons:
+     * type \t b \t A[][0] \t A[][1] \t ... \t A[][n-1]
      * @return a String representation of this LinEqCons
      */
     public String getStringRep() {
-        StringBuilder res = new StringBuilder();
+        String res = "";
         for (int i = 0; i < m; i++) {
-            res.append(type[i]);
-            res.append("\t").append(b[i]);
+            res += type[i];
+            res += "\t" + b[i];
             for (int j = 0; j < n; j++) {
-                res.append("\t").append(A[i][j]);
+                res += "\t" + A[i][j];
             }
-            res.append("\n");
+            res += "\n";
         }
-        return res.toString();
+        return res;
     }
 
     /**
@@ -137,7 +138,7 @@ public class LinEqCons {
         for (int i = 0; i < lec.m; i++) {
             row++;
             b[row] = lec.b[i];
-            tp[row] = new String(lec.type[i]);
+            tp[row] = lec.type[i];
             for (int j = 0; j < n; j++) {
                 A[row][j] = lec.A[i][j];
             }
@@ -145,7 +146,7 @@ public class LinEqCons {
         for (int i = 0; i < lec.m; i++) {
             row++;
             b[row] = -lec.b[i];
-            tp[row] = new String(lec.type[i]);
+            tp[row] = lec.type[i];
             for (int j = 0; j < n; j++) {
                 A[row][j] = -lec.A[i][j];
             }
@@ -166,15 +167,11 @@ public class LinEqCons {
         String[] lab = new String[m];
         for (int i = 0; i < m; i++) {
             b[i] = lec.b[i];
-            lab[i] = new String(lec.type[i]);
+            lab[i] = lec.type[i];
             for (int j = 0; j < n; j++) {
                 A[i][j] = lec.A[i][j];
             }
         }
         return new LinEqCons(A, b, lab);
-    }
-
-    public static void main(String[] args){
-        
     }
 }

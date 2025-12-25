@@ -1,3 +1,5 @@
+package heparansulfate;
+
 import java.util.Random;
 
 /**
@@ -6,32 +8,35 @@ import java.util.Random;
  * (for phase I of the simplex)
  */
 public class AVSFormCons {
+
     /**
      * affine constraint in standard form, before adding artificial variables
      */
     SFormCons sfc = null;
+
     /**
      * number of variables, after adding artificial ones
      */
     int n = 0;
+
     /**
      * number of equality constraints
      */
     int m = 0;
+
     /**
      * matrix for the constraints, after adding artificial variables
      */
     double[][] A = null;
+
     /**
      * vector of constraints, in standard form
      */
     double[] b = null;
 
     /**
-     * creates an affine constraint in standard canonical form (with added
-     * artificial
+     * creates an affine constraint in standard canonical form (with added artificial
      * variables) for phase I of the simplex: [I A] x = b, with b >= 0
-     * 
      * @param mA constraint matrix
      * @param mb constraint values
      */
@@ -51,7 +56,10 @@ public class AVSFormCons {
             }
         }
     }
-     
+
+    /**
+     * prints out the constraint
+     */
     void print() {
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -63,7 +71,6 @@ public class AVSFormCons {
 
     /**
      * for testing
-     * 
      * @param args
      */
     public static void main(String[] args) {

@@ -1,10 +1,10 @@
 package heparansulfate;
 
 /**
- * Solution to nonnegative quadratic programming:
+ * solution to nonnegative quadratic programming:
  * minimize (1/2)x^TQx + c^Tx subject to x >= 0
  * via coordinate descent. Note that Q must be symmetric
- * and positive definite.
+ * and positive definite
  */
 public class CoordDescNNQP {
     /**
@@ -53,7 +53,7 @@ public class CoordDescNNQP {
     /**
      * Solves: minimize (1/2)x^TQx + c^Tx subject to x >= 0.
      * Solution x is in this.optimum
-     * * @param Q coefficients of the quadratic terms in the cost function
+     * @param Q coefficients of the quadratic terms in the cost function
      * @param c coefficients of the linear terms in the cost function
      * @param y starting point (any random point in the positive orthant)
      */
@@ -70,7 +70,6 @@ public class CoordDescNNQP {
         iter = 0;
         double cost = getCost(x);
         boolean b = true;
-        
         // coordinate descent method
         while (b) {
             iter++;
@@ -92,7 +91,7 @@ public class CoordDescNNQP {
                 }
             }
             alpha = Math.sqrt(alpha);
-            alpha /= (double) n;
+            alpha /= (double) x.length;
             cost = getCost(x);
             if (alpha < eps) {
                 b = false;
@@ -115,12 +114,11 @@ public class CoordDescNNQP {
 
     /**
      * computes (1/2)z^TQz + c^Tz
-     * * @param z vector
+     * @param z
      * @return (1/2)z^TQz + c^Tz
      */
     double getCost(double[] z) {
         double res = 0.;
-        // Note: MatrixOp class must be present in the same package
         res = MatrixOp.geInnerProd(MatrixOp.multMatVec(Q, z), z);
         res /= 2.;
         res += MatrixOp.geInnerProd(c, z);
@@ -129,7 +127,7 @@ public class CoordDescNNQP {
 
     /**
      * returns z^Tz
-     * * @param z vector
+     * @param z vector
      * @return z^Tz
      */
     double getNorm2(double[] z) {

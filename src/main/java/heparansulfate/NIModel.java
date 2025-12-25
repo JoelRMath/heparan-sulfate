@@ -1,8 +1,8 @@
-
 package heparansulfate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 
 /**
  * represents a nonhomogeneity and independence (N&I) model:
@@ -144,18 +144,17 @@ public class NIModel {
      * heparinase cleavage specificities/yields
      */
     int[] getCleavages(int[] seq, Random rand) {
-        Vector<Integer> cuts = new Vector<Integer>();
+        List<Integer> cuts = new ArrayList<>();
         for (int i = 1; i < n; i++) {
             double d = rand.nextDouble();
             if (d < cs.c[seq[i]]) {
-                cuts.add(Integer.valueOf(i));
+                cuts.add(i);
             }
         }
-        cuts.add(Integer.valueOf(n));
+        cuts.add(n);
         int[] res = new int[cuts.size()];
         for (int i = 0; i < cuts.size(); i++) {
-            Integer I = cuts.elementAt(i);
-            res[i] = I.intValue();
+            res[i] = cuts.get(i);
         }
         return res;
     }
@@ -172,10 +171,8 @@ public class NIModel {
         while (cuts.length < 2) {
             seq = getSequence(rand);
             cuts = getCleavages(seq, rand);
-            return new CleavedSequence(seq, cuts);
         }
-        // Original logic returns null if loop condition is never met
-        return null; 
+        return new CleavedSequence(seq, cuts);
     }
 
     /**
@@ -249,12 +246,10 @@ public class NIModel {
         double[] f = new double[n];
         for (int sim = 0; sim < nsim; sim++) {
             CleavedSequence cseq = getCleavageSequence(rand);
-            if (cseq != null) {
-                int[][] frag = cseq.getFragments();
-                totfrag += frag.length;
-                for (int i = 0; i < frag.length; i++) {
-                    f[frag[i].length - 1] += 1.;
-                }
+            int[][] frag = cseq.getFragments();
+            totfrag += frag.length;
+            for (int i = 0; i < frag.length; i++) {
+                f[frag[i].length - 1] += 1.;
             }
         }
         for (int i = 0; i < n; i++) {

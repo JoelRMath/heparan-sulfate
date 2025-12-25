@@ -17,8 +17,8 @@ public class Utils {
     /**
      * random selection of index i in F based on probabilities F[i+1]-F[i]
      * @param F cumulative probabilities
-     * @param rand Random number generator
-     * @return random index i in F based on probabilities
+     * @param rand
+     * @return random index i in F based on probabilities F[i+1]-F[i]
      */
     public static int getRandIndexInF(double[] F, Random rand) {
         double d = rand.nextDouble() * 0.99999999;
@@ -34,74 +34,84 @@ public class Utils {
     }
 
     /**
-     * minimum of array x
+     * minimum
+     * @param x
+     * @return min of x
      */
     public static double getMin(double[] x) {
         double res = x[0];
-        for (double val : x) {
-            if (val < res) {
-                res = val;
+        for (int i = 0; i < x.length; i++) {
+            if (x[i] < res) {
+                res = x[i];
             }
         }
         return res;
     }
 
     /**
-     * maximum of array x
+     * maximum
+     * @param x
+     * @return max of x
      */
     public static double getMax(double[] x) {
         double res = x[0];
-        for (double val : x) {
-            if (val > res) {
-                res = val;
+        for (int i = 0; i < x.length; i++) {
+            if (x[i] > res) {
+                res = x[i];
             }
         }
         return res;
     }
 
     /**
-     * average of array x
+     * average
+     * @param x
+     * @return average of x
      */
     public static double getAverage(double[] x) {
         double res = 0.;
-        for (double val : x) {
-            res += val;
+        for (int i = 0; i < x.length; i++) {
+            res += x[i];
         }
         res /= (double) x.length;
         return res;
     }
 
     /**
-     * standard deviation of array x
+     * standard deviation
+     * @param x
+     * @return standard deviation of x
      */
     public static double getSD(double[] x) {
         double res = 0.;
         double av = getAverage(x);
-        for (double val : x) {
-            res += (val - av) * (val - av);
+        for (int i = 0; i < x.length; i++) {
+            res += (x[i] - av) * (x[i] - av);
         }
-        res /= (double) (x.length - 1);
+        res /= (double)(x.length - 1);
         res = Math.sqrt(res);
         return res;
     }
 
     /**
-     * loads an ASCII file into a list, line by line, skipping header
+     * loads an ASCII file into a vector, line by line
      * @param file ASCII file, tab-delimited
-     * @return List representation of file lines
+     * @return Vector representation (one line in each element) of file
      */
     public static List<String> loadFileNoheader(String file) {
         List<String> res = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            // Read and discard header
-            br.readLine();
-            String line;
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
             while ((line = br.readLine()) != null) {
                 StringTokenizer st = new StringTokenizer(line, "\t");
                 if (st.countTokens() >= 2) {
                     res.add(line);
                 }
             }
+            br.close();
+            fr.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -109,16 +119,20 @@ public class Utils {
     }
 
     /**
-     * saves each element of List v into a line of ASCII file
+     * saves each element of Vector v into a line of ASCII file ’file’
      * @param v contains file lines, each one being tab-delimited
-     * @param file output file path
+     * @param file output file
      */
     public static void saveFile(List<String> v, String file) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-            for (String line : v) {
-                bw.write(line);
+        try {
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (int i = 0; i < v.size(); i++) {
+                bw.write(v.get(i));
                 bw.newLine();
             }
+            bw.close();
+            fw.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

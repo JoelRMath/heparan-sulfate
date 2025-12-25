@@ -21,7 +21,7 @@ public class Tableau {
      */
     int m = 0;
     /**
-     * simplex tableau matrix
+     * simplex tableau
      */
     double[][] y = null;
     /**
@@ -50,9 +50,8 @@ public class Tableau {
             }
             y[i][n] = avsfc.b[i];
         }
-        for (int j = 0; j < n; j++) {
+        for (int j = 0; j < n; j++)
             y[m][j] = c[j];
-        }
         reduce();
     }
 
@@ -68,8 +67,7 @@ public class Tableau {
         ncols = n + 1;
         c = new double[n];
         for (int j = 0; j < n; j++) {
-            Integer J = Integer.valueOf(j);
-            Integer col = sp1.var2col.get(J);
+            Integer col = sp1.var2col.get(j);
             c[col] = coef[j];
         }
         y = new double[nrows][ncols];
@@ -78,15 +76,15 @@ public class Tableau {
                 y[i][j] = sp1.phaseIITableau[i][j];
             }
         }
-        for (int j = 0; j < n; j++) {
+        for (int j = 0; j < n; j++)
             y[m][j] = c[j];
-        }
         reduce();
     }
 
     /**
      * constructor for phase II based on an array-tableau
      * already in canonical form, at the exception of the last row
+     * (cost coefficients) which is reduced at the end of this constructor
      * @param t array-tableau in canonical form
      */
     public Tableau(double[][] t) {
@@ -127,14 +125,16 @@ public class Tableau {
         for (int i = 0; i < nrows; i++) {
             for (int j = 0; j < n; j++) {
                 double d = y[i][j];
-                if (Math.abs(d) < 1e-12) d = 0.;
+                if (Math.abs(d) < 1e-12)
+                    d = 0.;
                 System.out.print(d + "\t");
             }
             double d = y[i][n];
-            if (Math.abs(d) < 1e-12) d = 0.;
+            if (Math.abs(d) < 1e-12)
+                d = 0.;
             System.out.println(d);
-            System.out.println("-------------");
         }
+        System.out.println("-------------");
     }
 
     /**
@@ -144,8 +144,14 @@ public class Tableau {
     public static void main(String[] args) {
         double[][] A = new double[2][3];
         double[] b = new double[2];
-        A[0][0] = 2.; A[0][1] = 1.; A[0][2] = 2.; b[0] = 4.;
-        A[1][0] = 3.; A[1][1] = 3.; A[1][2] = 1.; b[1] = 3.;
+        A[0][0] = 2.;
+        A[0][1] = 1.;
+        A[0][2] = 2.;
+        b[0] = 4.;
+        A[1][0] = 3.;
+        A[1][1] = 3.;
+        A[1][2] = 1.;
+        b[1] = 3.;
         AVSFormCons avsfc = new AVSFormCons(A, b);
         Tableau tab = new Tableau(avsfc);
         tab.print();

@@ -9,66 +9,87 @@ import java.util.List;
  * for BKHS chains of length n
  */
 public class ProfileFeasibility {
+    /**
+     * enumerates molecular species (all possible sequences)
+     */
     Species sp = null;
+    /**
+     * matrix for constraints
+     */
     double[][] A = null;
+    /**
+     * vector for constraints
+     */
     double[] b = null;
+    /**
+     * wrapper for all constraints in equality form
+     */
     LinEqCons lec = null;
+    /**
+     * phase I of the simplex
+     */
     SimplexPhaseI sp1 = null;
-    public double infeasibility = 0.;
+    /**
+     * infeasibility (produced by this.sp1)
+     */
+    double infeasibility = 0.;
+    /**
+     * disaccaride labels
+     */
     String[] lab = null;
 
     /**
-     * Constructor for a single chain length n
+     * gives infeasibility of the constraint set (overall disaccharide composition and
+     * heparinase digest) for BKHS chains of length n
+     * @param m number of disaccharides
+     * @param n BKHS chain length
+     * @param lab disaccharide labels
+     * @param inDir input directory (ends with "\\")
+     * @param outDir output directory (ends with "\\")
      */
     public ProfileFeasibility(int m, int n, String[] lab, String inDir, String outDir) {
         this.lab = lab;
         sp = new Species(m, n);
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
-        String[] csFile = {inDir + "US.hepI.txt", inDir + "US.hepIII.txt"};
-        String[] fragFile = {inDir + "hepI.f.txt", inDir + "hepIII.f.txt"};
-        
-        // Complete LEC combines the normalization, composition, and digest constraints
+        String[] csFile = new String[2];
+        String[] fragFile = new String[2];
+        csFile[0] = inDir + "US.hepI.txt";
+        csFile[1] = inDir + "US.hepIII.txt";
+        fragFile[0] = inDir + "hepI.f.txt";
+        fragFile[1] = inDir + "hepIII.f.txt";
         lec = sp.getCompleteLEC(bbs, csFile, fragFile);
         A = lec.A;
         b = lec.b;
-        
-        // Simplex Phase I finds the minimum artificial variable cost (infeasibility)
         sp1 = new SimplexPhaseI(A, b);
         infeasibility = sp1.finalCost;
-        System.err.println("Length " + n + " -> Infeasibility: " + infeasibility);
+        System.err.println(n + "\t" + infeasibility);
     }
 
     /**
-     * The method called by ReproduceFigures.java
-     * @param inDir Input directory path
-     * @param outDir Output directory path
-     * @param nMin Start of chain length range
-     * @param nMax End of chain length range
-     */
-    public static void run(String inDir, String outDir, int nMin, int nMax) {
-        String[] labels = {"U", "S"};
-        List<String> results = new ArrayList<>();
-        results.add("n\tinfeasibility");
-
-        for (int n = nMin; n <= nMax; n++) {
-            ProfileFeasibility pf = new ProfileFeasibility(2, n, labels, inDir, outDir);
-            results.add(n + "\t" + pf.infeasibility);
-            
-            // Save inside the loop so you can see progress in the file
-            Utils.saveFile(results, outDir + "Feasibility.res");
-        }
-    }
-
-    /**
-     * Legacy method preserved for compatibility with existing code
+     * makes profile of infeasibility for BKHS chain length from 5 to 20
+     * @param inDir input directory (ends with "\\")
+     * @param outDir output directory (ends with "\\")
      */
     public static void makeProfile(String inDir, String outDir) {
-        run(inDir, outDir, 5, 20);
+        String[] lab = new String[2];
+        lab[0] = "U";
+        lab[1] = "S";
+        List<String> v = new ArrayList<>();
+        v.add("n\tinfeasibility");
+        for (int n = 5; n <= 20; n++) {
+            ProfileFeasibility hf = new ProfileFeasibility(2, n, lab, inDir, outDir);
+            v.add(n + "\t" + hf.infeasibility);
+        }
+        Utils.saveFile(v, outDir + "Feasibility.res");
     }
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
-        String inDir = "input/";
-        String outDir = "output/";
-        run(inDir, outDir, 5, 20);
+        String inDir = "input\\";
+        String outDir = "output\\";
+        makeProfile(inDir, outDir);
     }
 }
