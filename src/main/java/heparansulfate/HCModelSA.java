@@ -407,7 +407,7 @@ public class HCModelSA {
      */
     public static void main(String[] args) {
         String inDir = "input\\";
-        String outDir = "output\\";
+        String outDir = "output\\HC\\";
         defaultN(inDir, outDir);
         varyingN(inDir, outDir);
     }

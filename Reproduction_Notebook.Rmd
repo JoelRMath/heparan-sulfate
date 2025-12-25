@@ -23,8 +23,8 @@ library(rJava)
 
 ```{r figure1, echo=TRUE, message=FALSE, warning=FALSE}
 # Generating figure data
-  .jcall("heparansulfate/HIModel", "V", "hepI", "input/", "output/HIM/")
-  .jcall("heparansulfate/HIModel", "V", "hepIII", "input/", "output/HIM/")
+#  .jcall("heparansulfate/HIModel", "V", "hepI", "input/", "output/HIM/")
+#  .jcall("heparansulfate/HIModel", "V", "hepIII", "input/", "output/HIM/")
 ```
 
 Figure 1. Distributions of fragment lengths $l$ in heparinase digests (crosses) as compared to distributions
@@ -104,3 +104,8 @@ compared to distributions expected under model H&C (dots). Modeling results are 
 of optimization with different initial conditions. Transition probabilities of homogeneous Markov models for
 H&C (c) and H&I (d).
 
+```{r figure2, echo=TRUE, message=FALSE, warning=FALSE}
+args <- .jarray(character(0), "[Ljava/lang/String;")
+# Generating figure data
+ .jcall("heparansulfate/HCModelSA", "V", "main", args)
+```
