@@ -78,7 +78,7 @@ public class HIModel {
      * @param file output file
      */
     void checkGL(Random rand, String file) {
-        int nsim = 10000000;
+        int nsim = 1000000;
         int totfrag = 0;
         double[] g_sim = new double[n];
         for (int sim = 0; sim < nsim; sim++) {

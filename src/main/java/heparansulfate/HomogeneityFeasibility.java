@@ -1,6 +1,7 @@
 package heparansulfate;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Feasibility problem (phase I via simplex) to test for the possibility
@@ -45,7 +46,7 @@ public class HomogeneityFeasibility {
      * @param m number of disaccharides
      * @param n BKHD chain length
      * @param lab disaccharide labels
-     * @param inDir input directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
      */
     public HomogeneityFeasibility(int m, int n, String[] lab, String inDir) {
         this.lab = lab;
@@ -58,7 +59,7 @@ public class HomogeneityFeasibility {
         fragFile[0] = inDir + "hepI.f.txt";
         fragFile[1] = inDir + "hepIII.f.txt";
         
-        Vector<LinEqCons> v = new Vector<LinEqCons>();
+        List<LinEqCons> v = new ArrayList<>();
         v.add(sp.getNormLEC());
         v.add(LinEqCons.removeLastRow(sp.getFragLEC(Species.loadFragAbund(fragFile[0]),
                 new CSpec(csFile[0], bbs), bbs)));
@@ -77,20 +78,18 @@ public class HomogeneityFeasibility {
     /**
      * computes feasibility of combining homogeneity and heparinase digest constraints
      * for BKHS chain lengths between 5 and 20
-     * @param inDir input directory (ends with "\\")
-     * @param outDir output directory (ends with "\\")
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void makeProfile(String inDir, String outDir) {
         String[] lab = new String[2];
         lab[0] = "U";
         lab[1] = "S";
-        Vector<String> v = new Vector<String>();
+        List<String> v = new ArrayList<>();
         v.add("n\tinfeasibility");
         for (int n = 5; n <= 20; n++) {
             HomogeneityFeasibility hf = new HomogeneityFeasibility(2, n, lab, inDir);
-            Integer N = Integer.valueOf(n);
-            Double D = Double.valueOf(hf.infeasibility);
-            v.add(N.toString() + "\t" + D.toString());
+            v.add(n + "\t" + hf.infeasibility);
             Utils.saveFile(v, outDir + "HomogeneityFeasibility.res");
         }
     }
