@@ -106,7 +106,7 @@ public class HCModelSA {
         double E = bestE;
         while (nup > 0) {
             t *= alpha;
-            System.err.println(t + "\t" + E + "\t" + bestE + "\t" + nup);
+            // System.err.println(t + "\t" + E + "\t" + bestE + "\t" + nup);
             nup = 0;
             for (int i = 0; i < nPert; i++) {
                 perturb();
@@ -340,11 +340,12 @@ public class HCModelSA {
      */
     public static void varyingN(String inDir, String outDir) {
         Random rand = new Random(1);
-        int ns = 20;
+        int ns = 10;
         List<String> v = new ArrayList<>();
         v.add("N\tminE\tavE\tmaxE");
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
         for (int n = 12; n <= 20; n++) {
+            System.out.println(n);
             double avE = 0.;
             double minE = 10.;
             double maxE = 0.;
@@ -386,6 +387,7 @@ public class HCModelSA {
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
         int n = 16;
         for (int s = 1; s <= 100; s++) {
+            System.out.println(s);
             String pref = "s" + s;
             String[] specFile = new String[2];
             specFile[0] = inDir + "US.hepI.txt";
@@ -409,6 +411,6 @@ public class HCModelSA {
         String inDir = "input/";
         String outDir = "output/HC/";
         defaultN(inDir, outDir);
-        varyingN(inDir, outDir);
+        // varyingN(inDir, outDir);
     }
 }

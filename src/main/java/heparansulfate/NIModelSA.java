@@ -65,11 +65,11 @@ public class NIModelSA {
     /**
      * number of perturbations at each temperature
      */
-    int nPert = 400;
+    int nPert = 100;
     /**
      * annealing schedule (geometric temperature decrease)
      */
-    double alpha = 0.999;
+    double alpha = 0.99;
     /**
      * best encountered value of the objective function
      */
@@ -446,6 +446,7 @@ public class NIModelSA {
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
         int n = 16;
         for (int s = 1; s <= 100; s++) {
+            System.out.println(s);
             String pref = "s" + s;
             String[] specFile = new String[2];
             specFile[0] = inDir + "US.hepI.txt";
@@ -526,9 +527,9 @@ public class NIModelSA {
      */
     public static void main(String[] args) {
         String inDir = "input/";
-        String outDir = "output/";
+        String outDir = "output/NI/";
         withoutREC(inDir, outDir);
-        withoutRECandN(inDir, outDir);
-        withREC(inDir, outDir);
+     /*    withoutRECandN(inDir, outDir);
+        withREC(inDir, outDir); */
     }
 }
