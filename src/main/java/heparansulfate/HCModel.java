@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Homogeneous Markov model of species (chain sequence) abundances (model H&C);
+ * Homogeneous Markov model of species (chain sequence) abundances (model H&amp;C);
  * field this.g contains the expected fragment length distribution after digestion
  * by one heparinase
  */
@@ -23,7 +23,7 @@ public class HCModel {
      */
     double[][] P = null;
     /**
-     * cumulative P: pF[i][j] = sum_{k=0}^j P[i][k], utilized for random drawing
+     * cumulative P: {@code pF[i][j] = sum_{k=0}^j P[i][k]}, utilized for random drawing
      */
     double[][] pF = null;
     /**
@@ -47,7 +47,7 @@ public class HCModel {
      */
     double[] g = null;
     /**
-     * fragment length distribution with cumulative abundance for length >= lm
+     * fragment length distribution with cumulative abundance for {@code length >= lm}
      */
     double[] h = null;
     /**
@@ -60,7 +60,7 @@ public class HCModel {
     double[] rhoF = null;
 
     /**
-     * Homogeneous Markov model of species (chain sequence) abundances (model H&C);
+     * Homogeneous Markov model of species (chain sequence) abundances (model H&amp;C);
      * field this.g contains the expected fragment length distribution after digestion
      * by one heparinase
      * @param n BKHS chain length
@@ -102,7 +102,7 @@ public class HCModel {
     }
 
     /**
-     * computes expected distribution of fragment length (this.h) cumulative for length >= lm
+     * computes expected distribution of fragment length (this.h) cumulative for {@code length >= lm}
      */
     void makeH() {
         h = new double[n];
@@ -163,7 +163,7 @@ public class HCModel {
     }
 
     /**
-     * computes parameter c of H&C
+     * computes parameter c of H&amp;C
      */
     void makeC() {
         c = 0.;
@@ -174,7 +174,7 @@ public class HCModel {
 
     /**
      * generates a random BKHS sequence based on this.P
-     * @param rand
+     * @param rand random number generator
      * @return a random BKHS sequence based on this.P
      */
     int[] getSequence(Random rand) {
@@ -190,7 +190,7 @@ public class HCModel {
      * generates a random set of cleavage positions in BKHS sequence seq based
      * on heparinase cleavage specificities
      * @param seq BKHS sequence
-     * @param rand
+     * @param rand random number generator
      * @return a random set of cleavage positions in BKHS sequence seq based
      * on heparinase cleavage specificities
      */
@@ -214,7 +214,7 @@ public class HCModel {
      * generates a random CutSequence (generates a BKHS chain and randomly cleaves
      * it based on cleavage specificities); see method getFragments() of class
      * CutSequence to access resulting fragments
-     * @param rand
+     * @param rand random number generator
      * @return a random CutSequence (generates a BKHS chain and randomly cleaves
      * it based on cleavage specificities)
      */
@@ -230,7 +230,7 @@ public class HCModel {
 
     /**
      * numerical check for this.g
-     * @param rand
+     * @param rand random number generator
      */
     void checkGL(Random rand) {
         int nsim = 10000000;
@@ -251,7 +251,7 @@ public class HCModel {
 
     /**
      * returns a vector version of matrix P
-     * @param P
+     * @param P matrix of transition probabilities
      * @return a vector version of matrix P
      */
     public static double[] toVector(double[][] P) {
@@ -286,7 +286,7 @@ public class HCModel {
 
     /**
      * for testing
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";

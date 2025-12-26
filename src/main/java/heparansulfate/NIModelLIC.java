@@ -3,16 +3,16 @@ package heparansulfate;
 import java.util.Random;
 
 /**
- * linear inequality constraints on a N&I model: nonnegativity, sum to 1 at each position
+ * linear inequality constraints on a N&amp;I model: nonnegativity, sum to 1 at each position
  * and overall disaccharide abundances
  */
 public class NIModelLIC {
     /**
-     * matrix in Ax <= b
+     * matrix in {@code Ax <= b}
      */
     double[][] A = null;
     /**
-     * vector in Ax <= b
+     * vector in {@code Ax <= b}
      */
     double[] b = null;
     /**
@@ -25,8 +25,8 @@ public class NIModelLIC {
     int m = 0;
 
     /**
-     * linear inequality constraints on a N&I model:
-     * Ax <= b including nonnegativity, sum to 1 at each position and
+     * linear inequality constraints on a N&amp;I model:
+     * {@code Ax <= b} including nonnegativity, sum to 1 at each position and
      * overall disaccharide abundances
      * @param n chain length in PModel
      * @param bbs set of disaccharides
@@ -112,8 +112,8 @@ public class NIModelLIC {
     }
 
     /**
-     * linear inequality constraints on a N&I model:
-     * Ax <= b including nonnegativity, sum to 1 at each position and overall
+     * linear inequality constraints on a N&amp;I model:
+     * {@code Ax <= b} including nonnegativity, sum to 1 at each position and overall
      * disaccharide abundances
      * @param n chain length in PModel
      * @param bbs set of building blocks (disaccharides)
@@ -208,7 +208,7 @@ public class NIModelLIC {
 
     /**
      * for testing
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";

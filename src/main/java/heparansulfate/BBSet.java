@@ -72,7 +72,7 @@ public class BBSet {
 
     /**
      * for testing
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String file = "input/US.ab.txt";

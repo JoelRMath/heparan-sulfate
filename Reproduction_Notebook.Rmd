@@ -63,7 +63,7 @@ plot_figure1_panel <- function(exp_file, model_file, title, threshold, is_hepI =
     theme(
       legend.position = "bottom",
       panel.grid.minor = element_blank(),
-      axis.text = element_text(size = 12),        # Tick labels
+      axis.text = element_text(size = 1),        # Tick labels
       axis.title = element_text(size = 14),       # Axis titles
       plot.title = element_text(size = 16, face = "bold"), # Panel Title
       legend.text = element_text(size = 12)       # Legend Text

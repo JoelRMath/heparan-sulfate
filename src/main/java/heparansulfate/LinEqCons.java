@@ -3,7 +3,7 @@ package heparansulfate;
 import java.util.List;
 
 /**
- * Class that represents linear equality/inequality constraints: Ax = b or Ax <= b,
+ * Class that represents linear equality/inequality constraints: {@code Ax = b} or {@code Ax <= b},
  * where A is an m by n matrix and b an m vector. The main utility of this class
  * is merging of linear constraints
  */
@@ -17,11 +17,11 @@ public class LinEqCons {
      */
     int n = 0;
     /**
-     * matrix in Ax = b
+     * matrix in {@code Ax = b}
      */
     public double[][] A = null;
     /**
-     * vector in Ax = b
+     * vector in {@code Ax = b}
      */
     public double[] b = null;
     /**
@@ -30,9 +30,9 @@ public class LinEqCons {
     public String[] type = null;
 
     /**
-     * represents a linear equality constraint: Ax = b
-     * @param A matrix in Ax = b
-     * @param b vector in Ax = b
+     * represents a linear equality constraint: {@code Ax = b}
+     * @param A matrix in {@code Ax = b}
+     * @param b vector in {@code Ax = b}
      * @param label row labels
      */
     public LinEqCons(double[][] A, double[] b, String[] label) {
@@ -77,7 +77,7 @@ public class LinEqCons {
     }
 
     /**
-     * Merges several linear constraints (List<LinEqCons>) into one
+     * Merges several linear constraints ({@code List<LinEqCons>}) into one
      * @param lec List containing linear constraints
      */
     public LinEqCons(List<LinEqCons> lec) {
@@ -107,7 +107,7 @@ public class LinEqCons {
 
     /**
      * Returns a String representation of this LinEqCons:
-     * type \t b \t A[][0] \t A[][1] \t ... \t A[][n-1]
+     * {@code type \t b \t A[][0] \t A[][1] \t ... \t A[][n-1]}
      * @return a String representation of this LinEqCons
      */
     public String getStringRep() {
@@ -124,9 +124,9 @@ public class LinEqCons {
     }
 
     /**
-     * transforms Ax = b into Ax <= b and -Ax <= -b
+     * transforms {@code Ax = b} into {@code Ax <= b} and {@code -Ax <= -b}
      * @param lec set of equality constraints
-     * @return inequality version of Ax = b (Ax <= b and -Ax <= -b)
+     * @return inequality version of {@code Ax = b} ({@code Ax <= b} and {@code -Ax <= -b})
      */
     public static LinEqCons equalitiesToInequalities(LinEqCons lec) {
         int n = lec.n;

@@ -3,8 +3,8 @@ package heparansulfate;
 import java.util.Random;
 
 /**
- * projection of a vector y onto a polyhedral set (Ax <= b) via coordinate
- * descent: minimize w.r.t. x ||x-y||^2 subject to Ax <= b
+ * projection of a vector y onto a polyhedral set ({@code Ax <= b}) via coordinate
+ * descent: minimize w.r.t. x {@code ||x-y||^2} subject to {@code Ax <= b}
  */
 public class ProjOnPolyHSet {
     /**
@@ -12,16 +12,16 @@ public class ProjOnPolyHSet {
      */
     boolean success = false;
     /**
-     * projection of y onto polyhedral set Ax <= b
+     * projection of y onto polyhedral set {@code Ax <= b}
      */
     public double[] optimum = null;
 
     /**
-     * projection of a vector y onto a polyhedral set (Ax <= b) via coordinate
-     * descent: minimize w.r.t. x ||x-y||^2 subject to Ax <= b
+     * projection of a vector y onto a polyhedral set ({@code Ax <= b}) via coordinate
+     * descent: minimize w.r.t. x {@code ||x-y||^2} subject to {@code Ax <= b}
      * @param y vector to project
-     * @param A matrix in inequality constraints Ax <= b
-     * @param b vector in inequality constraints Ax <= b
+     * @param A matrix in inequality constraints {@code Ax <= b}
+     * @param b vector in inequality constraints {@code Ax <= b}
      * @param rand used to seed the coordinate descent
      */
     public ProjOnPolyHSet(double[] y, double[][] A, double[] b, Random rand) {

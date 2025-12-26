@@ -2,7 +2,7 @@ package heparansulfate;
 
 /**
  * solution to nonnegative quadratic programming:
- * minimize (1/2)x^TQx + c^Tx subject to x >= 0
+ * minimize {@code (1/2)x^TQx + c^Tx} subject to {@code x >= 0}
  * via coordinate descent. Note that Q must be symmetric
  * and positive definite
  */
@@ -12,11 +12,11 @@ public class CoordDescNNQP {
      */
     int n = 0;
     /**
-     * quadratic coefficients in the cost (1/2)x^TQx + c^Tx
+     * quadratic coefficients in the cost {@code (1/2)x^TQx + c^Tx}
      */
     double[][] Q = null;
     /**
-     * linear coefficients in the cost (1/2)x^TQx + c^Tx
+     * linear coefficients in the cost {@code (1/2)x^TQx + c^Tx}
      */
     double[] c = null;
     /**
@@ -34,7 +34,7 @@ public class CoordDescNNQP {
      */
     int maxIter = 1000000;
     /**
-     * final value of the objective function (1/2)x^TQx + c^Tx
+     * final value of the objective function {@code (1/2)x^TQx + c^Tx}
      */
     double finalCost = 0.;
     /**
@@ -51,7 +51,7 @@ public class CoordDescNNQP {
     boolean success = false;
 
     /**
-     * Solves: minimize (1/2)x^TQx + c^Tx subject to x >= 0.
+     * Solves: minimize {@code (1/2)x^TQx + c^Tx} subject to {@code x >= 0}.
      * Solution x is in this.optimum
      * @param Q coefficients of the quadratic terms in the cost function
      * @param c coefficients of the linear terms in the cost function
@@ -113,9 +113,9 @@ public class CoordDescNNQP {
     }
 
     /**
-     * computes (1/2)z^TQz + c^Tz
-     * @param z
-     * @return (1/2)z^TQz + c^Tz
+     * computes {@code (1/2)z^TQz + c^Tz}
+     * @param z vector z
+     * @return {@code (1/2)z^TQz + c^Tz}
      */
     double getCost(double[] z) {
         double res = 0.;

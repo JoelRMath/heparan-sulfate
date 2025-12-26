@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * represents a nonhomogeneity and independence (N&I) model:
+ * represents a nonhomogeneity and independence (N&amp;I) model:
  * different building block composition at each position in a chain
  * and independence between positions; field this.g contains the expected
- * heparinase fragment length distribution under model N&I
+ * heparinase fragment length distribution under model N&amp;I
  */
 public class NIModel {
     /**
@@ -25,7 +25,7 @@ public class NIModel {
      */
     double[][] gamma = null;
     /**
-     * cumulative version of gamma: gamF[i][j] = sum_{k=0}^j gamma[i][k]
+     * cumulative version of gamma: {@code gamF[i][j] = sum_{k=0}^j gamma[i][k]}
      */
     double[][] gamF = null;
     /**
@@ -53,7 +53,7 @@ public class NIModel {
      */
     double[] g = null;
     /**
-     * same as this.g but cumulative for length ll >= lm
+     * same as this.g but cumulative for length {@code ll >= lm}
      */
     double[] h = null;
     /**
@@ -62,7 +62,7 @@ public class NIModel {
     int lm = 0;
 
     /**
-     * represents a nonhomogeneity and independence (N&I) model:
+     * represents a nonhomogeneity and independence (N&amp;I) model:
      * different building block composition at each position in a chain
      * and independence between positions
      * @param bbs disaccharides and their overall proportions
@@ -105,8 +105,8 @@ public class NIModel {
     }
 
     /**
-     * this.h: fragment length distribution expected under N&I
-     * and cumulative for length ll >= lm
+     * this.h: fragment length distribution expected under N&amp;I
+     * and cumulative for length {@code ll >= lm}
      */
     void makeH() {
         h = new double[lm];
@@ -124,7 +124,7 @@ public class NIModel {
 
     /**
      * generates one random BKHS sequence based on this.gamma
-     * @param rand
+     * @param rand random number generator
      * @return one random BKHS sequence based on this.gamma
      */
     int[] getSequence(Random rand) {
@@ -139,7 +139,7 @@ public class NIModel {
      * generate a random set of cleavage positions in seq based on
      * heparinase cleavage specificities/yields
      * @param seq BKHS sequence
-     * @param rand
+     * @param rand random number generator
      * @return a random set of cleavage positions in seq based on
      * heparinase cleavage specificities/yields
      */
@@ -162,7 +162,7 @@ public class NIModel {
     /**
      * generates one BKHS sequence and cleaves;
      * see getFragments() of CleavedSequence to obtain fragments
-     * @param rand
+     * @param rand random number generator
      * @return one cleaved BKHS chain
      */
     CleavedSequence getCleavageSequence(Random rand) {
@@ -177,7 +177,7 @@ public class NIModel {
 
     /**
      * distribution of fragment length after heparinase digestion
-     * and expected under N&I
+     * and expected under N&amp;I
      */
     void makeG() {
         g = new double[n];
@@ -238,7 +238,7 @@ public class NIModel {
 
     /**
      * numerical check for this.g
-     * @param rand
+     * @param rand random number generator
      */
     void checkGL(Random rand) {
         int nsim = 10000000;

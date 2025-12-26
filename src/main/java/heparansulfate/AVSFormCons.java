@@ -3,8 +3,8 @@ package heparansulfate;
 import java.util.Random;
 
 /**
- * creates an affine constraint in standard form (Ax = b, with rank(A) < dim(b)
- * and b >= 0)and with artificial variables
+ * creates an affine constraint in standard form ({@code Ax = b}, with {@code rank(A) < dim(b)}
+ * and {@code b >= 0})and with artificial variables
  * (for phase I of the simplex)
  */
 public class AVSFormCons {
@@ -36,7 +36,7 @@ public class AVSFormCons {
 
     /**
      * creates an affine constraint in standard canonical form (with added artificial
-     * variables) for phase I of the simplex: [I A] x = b, with b >= 0
+     * variables) for phase I of the simplex: {@code [I A] x = b}, with {@code b >= 0}
      * @param mA constraint matrix
      * @param mb constraint values
      */
@@ -71,7 +71,7 @@ public class AVSFormCons {
 
     /**
      * for testing
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         int M = 10;

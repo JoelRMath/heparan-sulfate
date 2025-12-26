@@ -392,6 +392,8 @@ public class GradientWidth {
 
     /**
      * bounds of S/U proportions at each position for mixture of BKHS chain lengths
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void defaultMixSpec(String inDir, String outDir) {
         String[] lab = new String[2];
@@ -403,8 +405,8 @@ public class GradientWidth {
     }
 
     /**
-     *
-     * @param args
+     * Main entry point
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";

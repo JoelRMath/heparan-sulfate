@@ -328,6 +328,7 @@ public class MaxEntOptim {
 
     /**
      * default linear equality constraint = composition-1 + 2(digest-1)
+     * @param inDir input directory
      * @return default linear equality constraint = composition-1 + 2(digest-1)
      */
     public static LinEqCons getDefaultLEC(String inDir) {

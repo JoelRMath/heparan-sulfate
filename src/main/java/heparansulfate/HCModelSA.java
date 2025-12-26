@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
- * Optimization of a homogeneous Markov model (model H&C) via simulated
+ * Optimization of a homogeneous Markov model (model H&amp;C) via simulated
  * annealing to fit two heparinase digest constraint sets
  */
 public class HCModelSA {
@@ -79,14 +79,16 @@ public class HCModelSA {
     double bestE = 0.;
 
     /**
-     * Optimization of a homogeneous Markov model (model H&C) via simulated annealing
+     * Optimization of a homogeneous Markov model (model H&amp;C) via simulated annealing
      * to fit two heparinase digest constraint sets
      * @param n BKHS chain length
      * @param bbs disaccharides and their overall proportions
      * @param specFile cleavage specificities
      * @param consFile experimental constraints (files with experimentally measured
      * distributions of fragment length)
-     * @param rand
+     * @param outFile output file for modeled fragment length distributions
+     * @param modFile output file for optimized transition matrix P
+     * @param rand random number generator
      */
     public HCModelSA(int n, BBSet bbs, String[] specFile, String[] consFile,
                      String[] outFile, String modFile, Random rand) {
@@ -170,7 +172,7 @@ public class HCModelSA {
 
     /**
      * saves experimental digest data and modeled digest data
-     * @param file
+     * @param file output file
      * @param i digest number (heparinase number)
      */
     void saveFit(String file, int i) {
@@ -378,7 +380,7 @@ public class HCModelSA {
     }
 
     /**
-     * generates data used for figure of H&C fit
+     * generates data used for figure of H&amp;C fit
      * @param inDir input directory (ends with "/")
      * @param outDir output directory (ends with "/")
      */
@@ -404,8 +406,8 @@ public class HCModelSA {
     }
 
     /**
-     *
-     * @param args
+     * Main entry point
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";

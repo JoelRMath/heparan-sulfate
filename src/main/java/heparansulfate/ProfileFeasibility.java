@@ -84,8 +84,8 @@ public class ProfileFeasibility {
     }
 
     /**
-     *
-     * @param args
+     * Main entry point
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";

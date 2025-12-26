@@ -139,7 +139,7 @@ public class Tableau {
 
     /**
      * for testing
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         double[][] A = new double[2][3];

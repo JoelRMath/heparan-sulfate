@@ -3,16 +3,16 @@ package heparansulfate;
 import java.util.Random;
 
 /**
- * linear inequality constraints on a H&C model (homogeneous Markov model):
+ * linear inequality constraints on a H&amp;C model (homogeneous Markov model):
  * nonnegativity, balance equation and stochastic matrix
  */
 public class HCModelLIC {
     /**
-     * matrix in Ax <= b
+     * matrix in {@code Ax <= b}
      */
     double[][] A = null;
     /**
-     * vector in Ax <= b
+     * vector in {@code Ax <= b}
      */
     double[] b = null;
     /**
@@ -21,9 +21,8 @@ public class HCModelLIC {
     int m = 0;
 
     /**
-     * linear inequality constraints on a H&C model (homogeneous Markov model):
+     * linear inequality constraints on a H&amp;C model (homogeneous Markov model):
      * nonnegativity, balance equation and stochastic matrix
-     * @param n chain length
      * @param bbs set of building blocks
      */
     public HCModelLIC(BBSet bbs) {
@@ -118,7 +117,7 @@ public class HCModelLIC {
 
     /**
      * for testing
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";

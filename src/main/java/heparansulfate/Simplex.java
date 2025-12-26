@@ -38,12 +38,12 @@ public class Simplex {
     Map<Integer, Integer> col2var = new HashMap<>();
     /**
      * used to keep track of which variables indices are basic,
-     * in order to implement Bland’s rule
+     * in order to implement Bland's rule
      */
     TreeSet<Integer> basic = new TreeSet<>();
     /**
      * used to keep track of which variables indices are nonbasic,
-     * in order to implement Bland’s rule
+     * in order to implement Bland's rule
      */
     TreeSet<Integer> nonbasic = new TreeSet<>();
     /**
@@ -169,7 +169,7 @@ public class Simplex {
     /**
      * Given the index q of the column to enter next the basic set, finds the
      * index q of the column to leave the basic set, or -1 if the linear
-     * problem is unbounded below. This method also implements Bland’s rule
+     * problem is unbounded below. This method also implements Bland's rule
      * @param q index of the column to enter the basic set
      * @return index of the column to leave the basis
      */

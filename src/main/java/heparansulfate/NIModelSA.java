@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
- * Fitting of N&I model parameters with heparinase digest constraints via simulated annealing
+ * Fitting of N&amp;I model parameters with heparinase digest constraints via simulated annealing
  */
 public class NIModelSA {
     /**
@@ -76,17 +76,17 @@ public class NIModelSA {
     double bestE = 0.;
 
     /**
-     * Fitting of N&I model parameters with heparinase digest constraints via simulated annealing;
+     * Fitting of N&amp;I model parameters with heparinase digest constraints via simulated annealing;
      * special constructor which adds constraints
      * @param n BKHS chain length
      * @param bbs disachharides and their overall proportions
      * @param specFile cleavage specificities/yields
      * @param consFile constraints (experimental fragment length distributions)
      * @param outFile output file for modeled fragment length distributions
-     * @param modFile output file for optimized matrix Gamma of N&I model
+     * @param modFile output file for optimized matrix Gamma of N&amp;I model
      * @param zeta specified compositions at positions in pos (additional constraints)
      * @param pos positions at which composition is further specified (additional constraints)
-     * @param rand
+     * @param rand random number generator
      */
     public NIModelSA(int n, BBSet bbs, String[] specFile, String[] consFile, String[] outFile,
                      String modFile, double[][] zeta, int[] pos, Random rand) {
@@ -177,15 +177,15 @@ public class NIModelSA {
     }
 
     /**
-     * Fitting of parameters of a N&I model with heparinase digest constraints
+     * Fitting of parameters of a N&amp;I model with heparinase digest constraints
      * via simulated annealing
      * @param n BKHS chain length
      * @param bbs disachharides and their overall proportions
      * @param specFile cleavage specificities/yields
      * @param consFile constraints (experimental fragment length distributions)
      * @param outFile output file for modeled fragment length distributions
-     * @param modFile output file for optimized matrix Gamma of N&I model
-     * @param rand
+     * @param modFile output file for optimized matrix Gamma of N&amp;I model
+     * @param rand random number generator
      */
     public NIModelSA(int n, BBSet bbs, String[] specFile, String[] consFile,
                      String[] outFile, String modFile, Random rand) {
@@ -244,8 +244,8 @@ public class NIModelSA {
     }
 
     /**
-     * saves matrix Gamma of the optimized N&I model
-     * @param file
+     * saves matrix Gamma of the optimized N&amp;I model
+     * @param file output file
      */
     void savePM(String file) {
         try {
@@ -436,7 +436,7 @@ public class NIModelSA {
     }
 
     /**
-     * fits N&I model without added constraint at the reducing end;
+     * fits N&amp;I model without added constraint at the reducing end;
      * for supplementary material
      * @param inDir input directory (ends with "/")
      * @param outDir output directory (ends with "/")
@@ -463,7 +463,7 @@ public class NIModelSA {
     }
 
     /**
-     * fits N&I model without added constraint at the reducing end
+     * fits N&amp;I model without added constraint at the reducing end
      * and for different values of BKHS chain length n; for supplementary material
      * @param inDir input directory (ends with "/")
      * @param outDir output directory (ends with "/")
@@ -490,7 +490,7 @@ public class NIModelSA {
     }
 
     /**
-     * fits N&I model with added constraint at the reducing end
+     * fits N&amp;I model with added constraint at the reducing end
      * and for different values of BKHS chain length n; for supplementary material
      * @param inDir input directory (ends with "/")
      * @param outDir output directory (ends with "/")
@@ -522,14 +522,14 @@ public class NIModelSA {
     }
 
     /**
-     *
-     * @param args
+     * Main entry point
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";
         String outDir = "output/NI/";
         withoutREC(inDir, outDir);
-     /*    withoutRECandN(inDir, outDir);
+     /* withoutRECandN(inDir, outDir);
         withREC(inDir, outDir); */
     }
 }

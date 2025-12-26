@@ -2,7 +2,7 @@ package heparansulfate;
 
 /**
  * This class represents a linear constraint Ax = b in standard form:
- * matrix A (m x n) has rank m < n and b >= 0.
+ * matrix A (m x n) has rank {@code m < n} and {@code b >= 0}.
  */
 public class SFormCons {
     /**
@@ -11,7 +11,7 @@ public class SFormCons {
     double[][] A = null;
     /**
      * vector in constraint Ax = b, matrix A being transformed
-     * so that b >= 0
+     * so that {@code b >= 0}
      */
     double[] b = null;
     /**
@@ -25,8 +25,8 @@ public class SFormCons {
 
     /**
      * creates a linear equality constraint in standard form (Ax = b with
-     * b >= 0) starting from a m x n matrix A (of rank m) and a vector b
-     * @param mA m x n matrix of rank m < n
+     * {@code b >= 0}) starting from a m x n matrix A (of rank m) and a vector b
+     * @param mA m x n matrix of rank {@code m < n}
      * @param mb m dimensional vector
      */
     public SFormCons(double[][] mA, double[] mb) {
@@ -63,7 +63,7 @@ public class SFormCons {
 
     /**
      * for testing
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         double[][] mA = new double[2][3];

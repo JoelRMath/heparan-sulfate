@@ -6,6 +6,12 @@ package heparansulfate;
 public class MatrixOp {
 
     /**
+     * Default constructor
+     */
+    public MatrixOp() {
+    }
+
+    /**
      * Prints out a matrix
      * @param mat matrix
      */

@@ -56,7 +56,7 @@ public class CSpec {
 
     /**
      * for testing
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input\\";

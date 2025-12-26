@@ -15,9 +15,15 @@ import java.util.StringTokenizer;
 public class Utils {
 
     /**
+     * Default constructor
+     */
+    public Utils() {
+    }
+
+    /**
      * random selection of index i in F based on probabilities F[i+1]-F[i]
      * @param F cumulative probabilities
-     * @param rand
+     * @param rand random number generator
      * @return random index i in F based on probabilities F[i+1]-F[i]
      */
     public static int getRandIndexInF(double[] F, Random rand) {
@@ -35,7 +41,7 @@ public class Utils {
 
     /**
      * minimum
-     * @param x
+     * @param x array of values
      * @return min of x
      */
     public static double getMin(double[] x) {
@@ -50,7 +56,7 @@ public class Utils {
 
     /**
      * maximum
-     * @param x
+     * @param x array of values
      * @return max of x
      */
     public static double getMax(double[] x) {
@@ -65,7 +71,7 @@ public class Utils {
 
     /**
      * average
-     * @param x
+     * @param x array of values
      * @return average of x
      */
     public static double getAverage(double[] x) {
@@ -79,7 +85,7 @@ public class Utils {
 
     /**
      * standard deviation
-     * @param x
+     * @param x array of values
      * @return standard deviation of x
      */
     public static double getSD(double[] x) {

@@ -219,6 +219,7 @@ public class MaxEntModel {
 
     /**
      * default linear equality constraint = composition-1 + 2(digest-1)
+     * @param inDir input directory (ends with "/")
      * @return default linear equality constraint = composition-1 + 2(digest-1)
      */
     public static LinEqCons getDefaultLEC(String inDir) {
@@ -330,11 +331,11 @@ public class MaxEntModel {
 
     /**
      * relative abundance of a species (seq) under the MaxEnt model defined by only
-     * overall disaccharide composition constraint (model H&I)
+     * overall disaccharide composition constraint (model H&amp;I)
      * @param seq species sequence
      * @param bbs disaccharide overall abundances
      * @return relative abundance of a species (seq) under the MaxEnt model defined
-     * by only overall disaccharide composition constraint (model H&I)
+     * by only overall disaccharide composition constraint (model H&amp;I)
      */
     public static double getP2(String seq, BBSet bbs) {
         double res = 1.;
@@ -347,8 +348,8 @@ public class MaxEntModel {
     }
 
     /**
-     *
-     * @param args
+     * Main entry point
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";

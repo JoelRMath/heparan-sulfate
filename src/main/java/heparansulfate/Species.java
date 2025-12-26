@@ -192,9 +192,9 @@ public class Species {
 
     /**
      * vector of individual species abundances; this method is based on a
-     * N&I model and utilized to numerically check linear constraints
-     * @param gamma matrix Gamma in model N&I
-     * @return vector of individual species abundances under N&I with Gamma
+     * N&amp;I model and utilized to numerically check linear constraints
+     * @param gamma matrix Gamma in model N&amp;I
+     * @return vector of individual species abundances under N&amp;I with Gamma
      */
     double[] getP(double[][] gamma) {
         double[] res = new double[N];
@@ -229,10 +229,10 @@ public class Species {
     }
 
     /**
-     * loads matrix Gamma of model N&I from a file;
+     * loads matrix Gamma of model N&amp;I from a file;
      * used for testing of linear constraints
-     * @param file ASCII file with one header row: position \t u \t s
-     * @return matrix Gamma of a N&I model
+     * @param file ASCII file with one header row: {@code position \t u \t s}
+     * @return matrix Gamma of a N&amp;I model
      */
     public static double[][] loadGamma(String file) {
         List<String> v = Utils.loadFileNoheader(file);
@@ -254,7 +254,7 @@ public class Species {
 
     /**
      * loads fragment length abundances for one heparinase digest
-     * @param file ASCII file with header row: length \t abundance;
+     * @param file ASCII file with header row: {@code length \t abundance};
      * note that lengths are assumed to be in ascending order, the last row
      * ll represents abundances of lengths at least ll and abundances must sum to 1
      * @return fragment length abundances for one heparinase digest
@@ -273,7 +273,7 @@ public class Species {
     }
 
     /**
-     * testing of the sum-to-1 constraint, with a N&I model
+     * testing of the sum-to-1 constraint, with a N&amp;I model
      * @param inDir input directory (ends with "\\")
      */
     public static void testNormCons(String inDir) {
@@ -290,7 +290,7 @@ public class Species {
 
     /**
      * testing of the constraint for overall disaccharide composition,
-     * with a N&I model
+     * with a N&amp;I model
      * @param inDir input directory (ends with "\\")
      */
     public static void testCompCons(String inDir) {
@@ -309,9 +309,9 @@ public class Species {
 
     /**
      * testing of the constraints for fragment length distributions,
-     * with a N&I model; note that since N&I cannot reproduce fragment
+     * with a N&amp;I model; note that since N&amp;I cannot reproduce fragment
      * length distributions, values of constraints are calculated
-     * from the N&I model
+     * from the N&amp;I model
      * @param inDir input directory (ends with "\\")
      */
     public static void testFragCons(String inDir) {
@@ -344,7 +344,7 @@ public class Species {
     }
 
     /**
-     * testing of homogeneity constraint with model H&I
+     * testing of homogeneity constraint with model H&amp;I
      * @param inDir input directory (ends with "\\")
      */
     public static void testHomogeneityCons(String inDir) {
@@ -369,7 +369,7 @@ public class Species {
     }
 
     /**
-     * testing of computed linear constraints with N&I or H&I model
+     * testing of computed linear constraints with N&amp;I or H&amp;I model
      * @param inDir input directory (ends with "\\")
      */
     public static void testing(String inDir) {
@@ -381,7 +381,7 @@ public class Species {
 
     /**
      * for testing
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";

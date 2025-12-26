@@ -360,6 +360,8 @@ public class MaxEntModelW {
     /**
      * saves distributions of chain lengths, composition as a function of chain length
      * and profiles (composition and transition probabilities)
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
      */
     public static void glAndRholAndProfExamples(String inDir, String outDir) {
         makeProf(inDir, outDir + "MEMW");
@@ -367,8 +369,8 @@ public class MaxEntModelW {
     }
 
     /**
-     *
-     * @param args
+     * Main entry point
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";
