@@ -369,8 +369,8 @@ public class GradientWidth {
      */
     public static void bounds(String inDir, String outDir) {
         String[] lab = new String[2];
-        lab[0] = "U";
-        lab[1] = "S";
+        lab[0] = "S";
+        lab[1] = "U";
         GradientWidth gw = new GradientWidth(2, 16, lab, inDir);
         gw.saveBounds(outDir + "GradientWidth.res");
     }
@@ -382,8 +382,8 @@ public class GradientWidth {
      */
     public static void boundsAndN(String inDir, String outDir) {
         String[] lab = new String[2];
-        lab[0] = "U";
-        lab[1] = "S";
+        lab[0] = "S";
+        lab[1] = "U";
         for (int n = 13; n <= 18; n++) {
             GradientWidth gw = new GradientWidth(2, n, lab, inDir);
             gw.saveBounds(outDir + "GradientWidth.N" + n + ".res");
@@ -397,8 +397,8 @@ public class GradientWidth {
      */
     public static void defaultMixSpec(String inDir, String outDir) {
         String[] lab = new String[2];
-        lab[0] = "U";
-        lab[1] = "S";
+        lab[0] = "S";
+        lab[1] = "U";
         GradientWidth gw = new GradientWidth(lab, 10, 20, 3.5, 16., inDir);
         gw.saveBoundsMixSpNRE(outDir + "BoundsMixSpNRE.res");
         gw.saveBoundsMixSpRE(outDir + "BoundsMixSpRE.res");

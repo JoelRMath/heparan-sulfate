@@ -353,7 +353,7 @@ public class MaxEntModel {
      */
     public static void main(String[] args) {
         String inDir = "input/";
-        String outDir = "output/";
+        String outDir = "output/ME/";
         defaultModel(inDir, outDir);
         defaultModelAndN(inDir, outDir);
         defaultModelSpecies(inDir, outDir);

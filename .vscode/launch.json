@@ -1,0 +1,154 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "AVSFormCons",
+            "request": "launch",
+            "mainClass": "heparansulfate.AVSFormCons",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "BBSet",
+            "request": "launch",
+            "mainClass": "heparansulfate.BBSet",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "CSpec",
+            "request": "launch",
+            "mainClass": "heparansulfate.CSpec",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "CleavedSequence",
+            "request": "launch",
+            "mainClass": "heparansulfate.CleavedSequence",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "GradientWidth",
+            "request": "launch",
+            "mainClass": "heparansulfate.GradientWidth",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "HCModel",
+            "request": "launch",
+            "mainClass": "heparansulfate.HCModel",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "HCModelLIC",
+            "request": "launch",
+            "mainClass": "heparansulfate.HCModelLIC",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "HCModelSA",
+            "request": "launch",
+            "mainClass": "heparansulfate.HCModelSA",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "HIModel",
+            "request": "launch",
+            "mainClass": "heparansulfate.HIModel",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "HomogeneityFeasibility",
+            "request": "launch",
+            "mainClass": "heparansulfate.HomogeneityFeasibility",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "MaxEntModel",
+            "request": "launch",
+            "mainClass": "heparansulfate.MaxEntModel",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "MaxEntModelW",
+            "request": "launch",
+            "mainClass": "heparansulfate.MaxEntModelW",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "MixSpecies",
+            "request": "launch",
+            "mainClass": "heparansulfate.MixSpecies",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "NIModelLIC",
+            "request": "launch",
+            "mainClass": "heparansulfate.NIModelLIC",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "NIModelSA",
+            "request": "launch",
+            "mainClass": "heparansulfate.NIModelSA",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "ProfileFeasibility",
+            "request": "launch",
+            "mainClass": "heparansulfate.ProfileFeasibility",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "SFormCons",
+            "request": "launch",
+            "mainClass": "heparansulfate.SFormCons",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "SimplexPhaseI",
+            "request": "launch",
+            "mainClass": "heparansulfate.SimplexPhaseI",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "Species",
+            "request": "launch",
+            "mainClass": "heparansulfate.Species",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
+            "name": "Tableau",
+            "request": "launch",
+            "mainClass": "heparansulfate.Tableau",
+            "projectName": "heparan-sulfate"
+        }
+    ]
+}

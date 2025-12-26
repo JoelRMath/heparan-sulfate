@@ -81,7 +81,7 @@ public class MaxEntOptim {
         this.b = b;
         m = A.length;
         n = A[0].length;
-        rand = new Random(2);
+        rand = new Random(1);
         x = new double[m];
         gradZ = new double[m];
         gradG = new double[m];
