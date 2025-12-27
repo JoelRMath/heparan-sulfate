@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "PrototypeFilter",
+            "request": "launch",
+            "mainClass": "heparansulfate.PrototypeFilter",
+            "projectName": "heparan-sulfate"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

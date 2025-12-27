@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -39,6 +40,25 @@ public class MaxEntModelW {
     String outPref = null;
 
     /**
+     * Helper class for sorting species by abundance (New Implementation)
+     */
+    class SpeciesEntry implements Comparable<SpeciesEntry> {
+        double p;
+        int[] seq;
+
+        public SpeciesEntry(double p, int[] seq) {
+            this.p = p;
+            this.seq = seq;
+        }
+
+        @Override
+        public int compareTo(SpeciesEntry o) {
+            // Sort descending (largest probability first)
+            return Double.compare(o.p, this.p);
+        }
+    }
+
+    /**
      * MaxEnt model of profiles of S/U composition and transition probabilities
      * along BKHS chains when BKHS is represented with a mixture of chain lengths;
      * saves MaxEnt individual species abundances (*.pind.res file)
@@ -66,6 +86,63 @@ public class MaxEntModelW {
             }
             bw.close();
             fw.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * POST-PUBLICATION CONVENIENCE CONSTRUCTOR.
+     * Optimized to filter species by cumulative mass threshold to reduce file size for Git/GitHub.
+     * MaxEnt model of profiles of S/U composition and transition probabilities
+     * along BKHS chains when BKHS is represented with a mixture of chain lengths;
+     * saves filtered MaxEnt individual species abundances (*.pind.res file)
+     * @param outF prefix for output files
+     * @param lmin smallest chain length
+     * @param lmax largest chain length
+     * @param sigma spread of chain lengths
+     * @param mu average chain length
+     * @param inDir input directory
+     * @param massThreshold cumulative abundance threshold (e.g. 0.999)
+     */
+    public MaxEntModelW(String outF, int lmin, int lmax, double sigma, double mu, String inDir, double massThreshold) {
+        outPref = outF;
+        LinEqCons lec = getWLEC(lmin, lmax, sigma, mu, inDir);
+        opt = new MaxEntOptim(lec.A, lec.b);
+        
+        // 1. Collect all species in memory
+        List<SpeciesEntry> entries = new ArrayList<>();
+        for (int i = 0; i < msp.N; i++) {
+            entries.add(new SpeciesEntry(opt.p[i], msp.seq[i]));
+        }
+
+        // 2. Sort by abundance (descending)
+        Collections.sort(entries);
+
+        // 3. Write only until threshold is reached
+        try {
+            FileWriter fw = new FileWriter(outPref + ".pind.res");
+            BufferedWriter bw = new BufferedWriter(fw);
+            double currentMass = 0.0;
+            int count = 0;
+
+            for (SpeciesEntry e : entries) {
+                String s = String.valueOf(e.p);
+                for (int val : e.seq) {
+                    s += "\t" + val;
+                }
+                bw.write(s);
+                bw.newLine();
+
+                currentMass += e.p;
+                count++;
+                if (currentMass >= massThreshold) {
+                    break;
+                }
+            }
+            bw.close();
+            fw.close();
+            System.out.println("Saved " + outPref + " with " + count + " species (Mass: " + currentMass + ")");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -349,6 +426,19 @@ public class MaxEntModelW {
     }
 
     /**
+     * POST-PUBLICATION CONVENIENCE METHOD.
+     * Makes and saves individual species abundances for sigma = 3.5
+     * filtering species to keep 0.999 cumulative mass.
+     * Use this to reduce file sizes for version control (GitHub).
+     * Output Prefix: MEMWF
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
+     */
+    public static void makeSig35Filtered(String inDir, String outDir) {
+        new MaxEntModelW(outDir + "MEMWF", 10, 20, 3.5, 16., inDir, 0.999);
+    }
+
+    /**
      * makes and saves individual species abundances for sigma = 1.5
      * @param inDir input directory (ends with "/")
      * @param outDir output directory (ends with "/")
@@ -358,8 +448,21 @@ public class MaxEntModelW {
     }
 
     /**
+     * POST-PUBLICATION CONVENIENCE METHOD.
+     * Makes and saves individual species abundances for sigma = 1.5
+     * filtering species to keep 0.999 cumulative mass.
+     * Use this to reduce file sizes for version control (GitHub).
+     * Output Prefix: MEMWSig1.5F
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
+     */
+    public static void makeSig15Filtered(String inDir, String outDir) {
+        new MaxEntModelW(outDir + "MEMWSig1.5F", 10, 20, 1.5, 16., inDir, 0.999);
+    }
+
+    /**
      * saves distributions of chain lengths, composition as a function of chain length
-     * and profiles (composition and transition probabilities)
+     * and profiles (composition and transition probabilities) for ORIGINAL FULL FILES
      * @param inDir input directory (ends with "/")
      * @param outDir output directory (ends with "/")
      */
@@ -369,14 +472,32 @@ public class MaxEntModelW {
     }
 
     /**
+     * POST-PUBLICATION CONVENIENCE METHOD.
+     * Saves distributions and profiles for FILTERED FILES (suffix "F").
+     * @param inDir input directory (ends with "/")
+     * @param outDir output directory (ends with "/")
+     */
+    public static void glAndRholAndProfExamplesFiltered(String inDir, String outDir) {
+        makeProf(inDir, outDir + "MEMWF");
+        makeProf(inDir, outDir + "MEMWSig1.5F");
+    }
+
+    /**
      * Main entry point
      * @param args command line arguments
      */
     public static void main(String[] args) {
         String inDir = "input/";
         String outDir = "output/";
+        
+        // Original (Full) Run - Comment out if disk space is critical
         makeSig35(inDir, outDir);
         makeSig15(inDir, outDir);
         glAndRholAndProfExamples(inDir, outDir);
+        
+        // Filtered Run (0.999 mass) - Optimized for GitHub storage
+        makeSig35Filtered(inDir, outDir);
+        makeSig15Filtered(inDir, outDir);
+        glAndRholAndProfExamplesFiltered(inDir, outDir);
     }
 }
