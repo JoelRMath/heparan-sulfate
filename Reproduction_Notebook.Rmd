@@ -523,7 +523,7 @@ Figure 6. (a,b) Two models of BKHS chain length distributions (a) and resulting 
 
 
 
-```{r figure_6_data_1, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
+```{r figure_6_data_1, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}
 # Data, individual species abundances
 .jcall("heparansulfate/MaxEntModelW", "V", "makeSig35Filtered", "input/", "output/MEW/")
 .jcall("heparansulfate/MaxEntModelW", "V", "makeSig15Filtered", "input/", "output/MEW/")
@@ -532,60 +532,265 @@ Figure 6. (a,b) Two models of BKHS chain length distributions (a) and resulting 
 ```{r figure_6_data_2, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}
 # Data, averages over individual species
 .jcall("heparansulfate/MaxEntModelW", "V", "glAndRholAndProfExamplesFiltered", "input/", "output/MEW/")
-```
-```{r figure_6_data_3, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
 # Data, LP bounds
-.jcall("heparansulfate/GradientWidth", "V", "defaultMixSpec", "input/", "output/MEW/")
+# .jcall("heparansulfate/GradientWidth", "V", "defaultMixSpec", "input/", "output/MEW/")
+# Data, chain length distributions
+.jcall("heparansulfate/MixSpecies", "V", "saveDistribution", as.integer(10), as.integer(20), 3.5, 16., "output/MEW/FullDistSig3.5.res")
+.jcall("heparansulfate/MixSpecies", "V", "saveDistribution", as.integer(10), as.integer(20), 1.5, 16., "output/MEW/FullDistSig1.5.res")
 ```
 
-```{r verify_filtering_fixed, echo=TRUE, message=FALSE, warning=FALSE}
-verify_files <- function(orig_name, filt_name, dir = "output/MEW/") {
-  path_orig <- paste0(dir, orig_name)
-  path_filt <- paste0(dir, filt_name)
-  
-  if (!file.exists(path_orig) | !file.exists(path_filt)) {
-    return(data.frame(File = orig_name, Max_Error = NA, Status = "Missing"))
-  }
-  
-  df_o <- read.table(path_orig, header = TRUE, sep = "\t")
-  df_f <- read.table(path_filt, header = TRUE, sep = "\t")
-  
-  # Check if dimensions match
-  if (nrow(df_o) != nrow(df_f) | ncol(df_o) != ncol(df_f)) {
-    return(data.frame(File = orig_name, Max_Error = NA, Status = "Dim Mismatch"))
-  }
-  
-  # Identify numeric columns for comparison (excluding the index/pos columns)
-  # We assume the first column is always the position/index
-  cols_to_compare <- names(df_o)[sapply(df_o, is.numeric)][-1]
-  
-  if (length(cols_to_compare) == 0) {
-     return(data.frame(File = orig_name, Max_Error = NA, Status = "No Numeric Data"))
-  }
+```{r figure_6_plot_final, echo=FALSE, message=FALSE, warning=FALSE, fig.width=12, fig.height=15}
+library(ggplot2)
+library(patchwork)
 
-  # Calculate differences
-  diffs <- abs(as.matrix(df_o[, cols_to_compare]) - as.matrix(df_f[, cols_to_compare]))
-  max_err <- max(diffs, na.rm = TRUE)
-  
-  return(data.frame(File = orig_name, Max_Error = max_err, Status = "OK"))
+# --- 1. DATA LOADING & PREP ---
+prof_file   <- "output/MEW/MEMWF.prof.res"
+pt_nre_file <- "output/MEW/MEMWF.ptnre.res"
+pt_re_file  <- "output/MEW/MEMWF.ptre.res"
+full_35     <- "output/MEW/FullDistSig3.5.res"
+full_15     <- "output/MEW/FullDistSig1.5.res"
+rhol_35     <- "output/MEW/MEMWF.rhol.res"
+rhol_15     <- "output/MEW/MEMWSig1.5F.rhol.res"
+bn_nre_file <- "output/MEW/BoundsMixSpNRE.res"
+bn_re_file  <- "output/MEW/BoundsMixSpRE.res"
+ab_file     <- "input/US.ab.txt"
+
+df_prof   <- read.table(prof_file, header = TRUE, sep = "\t")
+df_pt_nre <- read.table(pt_nre_file, header = TRUE, sep = "\t")
+df_pt_re  <- read.table(pt_re_file, header = TRUE, sep = "\t")
+df_a_35   <- read.table(full_35, header = TRUE, sep = "\t")
+df_a_15   <- read.table(full_15, header = TRUE, sep = "\t")
+df_b_35   <- read.table(rhol_35, header = TRUE, sep = "\t")
+df_b_15   <- read.table(rhol_15, header = TRUE, sep = "\t")
+df_bn_nre <- read.table(bn_nre_file, header = TRUE, sep = "\t")
+df_bn_re  <- read.table(bn_re_file, header = TRUE, sep = "\t")
+
+# Add mapping column for panel (d)
+df_bn_re$nre_map <- 21 - df_bn_re$posRE
+
+# Reference rho_S from the Building Block file
+df_ab <- read.table(ab_file, header = TRUE, sep = "\t")
+rho_S <- df_ab$rho[tolower(df_ab$name) == "s"]
+
+# Borders logic
+#get_borders <- function(pos, type="NRE") {
+#  ifelse(pos <= 10, "black", "gray")
+#}
+get_borders <- function(pos, type="NRE") {
+  if(type == "NRE") {
+    # 1 to 10 from the NRE are black
+    ifelse(pos <= 10, "black", "gray")
+  } else {
+    # 11 to 20 from the NRE (which are 1 to 10 from the RE) are black
+    ifelse(pos > 10, "black", "gray")
+  }
 }
 
-# Define the pairs
-pairs <- list(
-  c("MEMW.prof.res", "MEMWF.prof.res"),
-  c("MEMW.ptnre.res", "MEMWF.ptnre.res"),
-  c("MEMW.ptre.res", "MEMWF.ptre.res"),
-  c("MEMW.rhol.res", "MEMWF.rhol.res"),
-  c("MEMWSig1.5.prof.res", "MEMWSig1.5F.prof.res"),
-  c("MEMWSig1.5.ptnre.res", "MEMWSig1.5F.ptnre.res"),
-  c("MEMWSig1.5.ptre.res", "MEMWSig1.5F.ptre.res"),
-  c("MEMWSig1.5.rhol.res", "MEMWSig1.5F.rhol.res")
+# --- 2. GENERATE PANELS ---
+
+# (a) Full Length Distribution
+p_a <- ggplot() +
+  geom_line(data=df_a_35, aes(l, w), color="black", size=0.5) +
+  geom_point(data=df_a_35, aes(l, w), shape=21, fill="white", size=4, stroke=1) +
+  geom_line(data=df_a_15, aes(l, w), color="black", size=0.5) +
+  geom_point(data=df_a_15, aes(l, w), shape=4, size=4, stroke=1) +
+  scale_y_continuous(limits=c(0, 0.25)) +
+  scale_x_continuous(breaks=10:20) +
+  labs(title="(a)", x="Chain length", y="Proportion of chains") +
+  theme_bw() + theme(plot.title=element_text(face="bold", size=16), panel.grid.minor=element_blank())
+
+# (b) RhoS vs Length
+p_b <- ggplot() +
+  geom_line(data=df_b_35, aes(l, rhoS), color="black", size=0.5) +
+  geom_point(data=df_b_35, aes(l, rhoS), shape=21, fill="white", size=4, stroke=1) +
+  geom_line(data=df_b_15, aes(l, rhoS), color="black", size=0.5) +
+  geom_point(data=df_b_15, aes(l, rhoS), shape=4, size=4, stroke=1) +
+  scale_y_continuous(limits=c(0.13, 0.175)) +
+  scale_x_continuous(breaks=10:20) +
+  labs(title="(b)", x="Chain length", y="Proportion of S") +
+  theme_bw() + theme(plot.title=element_text(face="bold", size=16), panel.grid.minor=element_blank())
+
+# (c) NRE Profile + Bounds
+p_c <- ggplot() +
+  # Reference line: Solid (Global proportion of S)
+  geom_hline(yintercept = rho_S, linetype = "solid", color = "black", size = 0.8) +
+  
+  # Bounds (Segments): Dashed and prominent
+  geom_segment(data = df_bn_nre, 
+               aes(x = posNRE, xend = posNRE, y = lowerS, yend = upperS, color = get_borders(posNRE)), 
+               linetype = "dotted", size = 1.0) +
+  
+  # Bound Points: Squares (shape = 15)
+  geom_point(data = df_bn_nre, aes(posNRE, lowerS, color = get_borders(posNRE)), shape = 15, size = 3.5) +
+  geom_point(data = df_bn_nre, aes(posNRE, upperS, color = get_borders(posNRE)), shape = 15, size = 3.5) +
+  
+  # MaxEnt Profile: Line + Points
+  geom_line(data = df_prof, aes(nrePos, pnreS), size = 0.6, color = "black") +
+  geom_point(data = df_prof, aes(nrePos, pnreS, color = get_borders(nrePos)), 
+             shape = 21, fill = "white", size = 4.5, stroke = 1.2) +
+  
+  # Identity mapping and axis limits
+  scale_color_identity() + 
+  scale_x_continuous(breaks = 1:20, limits = c(0.5, 20.5)) + 
+  scale_y_continuous(limits = c(-0.02, 1.02), breaks = seq(0, 1, 0.2)) +
+  
+  labs(title = "(c) Aligned by Non-Reducing End", 
+       x = "Position from Non-Reducing End (NRE)", 
+       y = "Proportion of S") +
+  
+  # Theme: Clean white background, no gridlines
+  theme_bw() + 
+  theme(
+    panel.grid.major = element_blank(), # Remove major grid
+    panel.grid.minor = element_blank(), # Remove minor grid
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    plot.title = element_text(face = "bold", size = 14)
+  )
+
+# (d) RE Profile + Bounds
+p_d <- ggplot() +
+  geom_hline(yintercept = rho_S, linetype = "solid", color = "black", size = 0.8) +
+  
+  # Bounds (Mapped 21 - posRE)
+  geom_segment(data = df_bn_re, 
+               aes(x = nre_map, xend = nre_map, y = lowerS, yend = upperS, color = get_borders(posRE, "NRE")), 
+               linetype = "dotted", size = 1.0) +
+  geom_point(data = df_bn_re, aes(nre_map, lowerS, color = get_borders(posRE, "NRE")), shape = 15, size = 3.5) +
+  geom_point(data = df_bn_re, aes(nre_map, upperS, color = get_borders(posRE, "NRE")), shape = 15, size = 3.5) +
+  
+  # Profile: FLIP THE X-AXIS MAPPING HERE TOO
+  # We use (21 - nrePos) so the RE-most data (nrePos 1 in file) 
+  # lands at the RE-most position on the plot (x = 20)
+  geom_line(data = df_prof, aes(x = 21 - nrePos, y = preS), size = 0.6, color = "black") +
+  geom_point(data = df_prof, aes(x = 21 - nrePos, y = preS, color = get_borders(21 - nrePos, "RE")), 
+             shape = 21, fill = "white", size = 4.5, stroke = 1.2) +
+  
+  scale_color_identity() + 
+  scale_x_continuous(breaks = 1:20, limits = c(0.5, 20.5)) + 
+  scale_y_continuous(limits = c(-0.02, 1.02), breaks = seq(0, 1, 0.2)) +
+  labs(title = "(d) Aligned by Reducing End", 
+       x = "Position from Non-Reducing End (NRE)", 
+       y = "Proportion of S") +
+  theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+# (e) Transitions NRE (Using LOWERCASE headers from your file)
+p_e <- ggplot() +
+  # Global reference line (Solid Black)
+  geom_hline(yintercept = rho_S, linetype = "solid", color = "black", size = 0.8) +
+  
+  # 1. POSITIONAL COMPOSITION SERIES (Subtle background)
+  geom_line(data=df_prof, aes(x=nrePos, y=pnreS), color="lightgray", size=0.4, alpha=0.5) +
+  geom_line(data=df_prof, aes(x=nrePos, y=pnreU), color="lightgray", size=0.4, alpha=0.5) +
+  geom_point(data=df_prof, aes(nrePos, pnreS, color=get_borders(nrePos)), shape=22, fill="white", size=4, stroke=1) +
+  geom_point(data=df_prof, aes(nrePos, pnreU, color=get_borders(nrePos)), shape=21, fill="white", size=4, stroke=1) +
+  
+  # 2. TRANSITION SERIES (Connected lines)
+  geom_path(data=df_pt_nre, aes(x=pos, y=pss, color=get_borders(pos), group=1), size=0.5) +
+  geom_path(data=df_pt_nre, aes(x=pos, y=psu, color=get_borders(pos), group=2), size=0.5) +
+  
+  # Solid Squares (pss: S->S) and Solid Circles (psu: S->U)
+  geom_point(data=df_pt_nre, aes(pos, pss, color=get_borders(pos)), shape=15, size=4) +
+  geom_point(data=df_pt_nre, aes(pos, psu, color=get_borders(pos)), shape=16, size=4) +
+  
+  # 3. TOP-LEFT ANNOTATIONS (Manual Legend)
+  # Square + Label for pss
+  annotate("point", x = 1.2, y = 0.05, shape = 15, size = 4, color = "black") +
+  annotate("text", x = 1.8, y = 0.05, label = "from S to S", hjust = 0, size = 4.5) +
+  # Circle + Label for psu
+  annotate("point", x = 1.2, y = 0.95, shape = 16, size = 4, color = "black") +
+  annotate("text", x = 1.8, y = 0.95, label = "from S to U", hjust = 0, size = 4.5) +
+  
+  # Aesthetics and Themes
+  scale_color_identity() + 
+  scale_x_continuous(breaks=1:20, limits=c(0.5, 20.5)) + 
+  scale_y_continuous(limits=c(-0.02, 1.02), breaks=seq(0, 1, 0.2)) +
+  labs(title="(e) aligned by non-reducing end", 
+       x="Position from Non-Reducing End (NRE)", 
+       y="Probability") +
+  theme_bw() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    plot.title = element_text(face = "bold", size = 14)
+  )
+
+# (f) Transitions RE (Using LOWERCASE headers from your file)
+p_f <- ggplot(df_pt_re) +
+  # Global reference line (rhoS)
+  geom_hline(yintercept = rho_S, linetype = "solid", color = "black", size = 0.8) +
+  
+  # 1. POSITIONAL COMPOSITION (White Markers)
+  # reProf in Java already aligned RE to index 0, so nrePos 1 is the RE.
+  # To put RE on the right side of the plot: x = 21 - nrePos
+  geom_point(data=df_prof, aes(x=rePos, y=preS, color=get_borders(21-nrePos, "RE")),  shape=22, fill="white", size=4.5, stroke=1.2) +
+  geom_point(data=df_prof, aes(x=rePos, y=preU, color=get_borders(21-nrePos, "RE")), 
+             shape=21, fill="white", size=4.5, stroke=1.2) +
+  # 2. TRANSITIONS (Black Markers)
+  # pos 1 in your file is the RE. We want it at x = 20.
+  geom_path(aes(x=pos, y=pss, color=get_borders(pos, "RE"), group=1), size=0.6) +
+  geom_path(aes(x=pos, y=psu, color=get_borders(pos, "RE"), group=2), size=0.6) +
+  
+  # Solid Squares (pss) and Solid Circles (psu)
+  geom_point(aes(x=pos, y=pss, color=get_borders(pos, "RE")), shape=15, size=4) +
+  geom_point(aes(x=pos, y=psu, color=get_borders(pos, "RE")), shape=16, size=4) +
+  
+  # Aesthetics
+  scale_color_identity() + 
+  scale_x_continuous(breaks=seq(1, 20, 1), limits=c(0.5, 20.5)) + 
+  scale_y_continuous(limits=c(-0.02, 1.02), breaks=seq(0, 1, 0.2)) +
+  labs(title="(f) aligned by reducing end", 
+       x="Position from Non-Reducing End (NRE)", 
+       y="Probability") +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA, size=1),
+        plot.title = element_text(face = "bold", size = 14))
+# --- 3. ASSEMBLY ---
+(p_a | p_b) / (p_c | p_d) / (p_e | p_f)
+print(head(df_pt_re, 3))
+```
+
+
+
+
+```{r fast_bit_check}
+library(data.table)
+
+pind_file <- "output/MEW/MEMWF.pind.res"
+
+# We read the whole file into a character vector. 
+# Each row is one string.
+raw_lines <- fread(pind_file, header = FALSE, sep = "\n", col.names = "V1")$V1
+
+# 1. Extract the abundance (weight) from the start of each string
+# The weight is everything before the first tab
+weights <- as.numeric(sub("\t.*", "", raw_lines))
+
+# 2. Extract the bit sequence (everything after the first tab)
+# Then remove the remaining tabs to get a clean string of 0s and 1s
+bit_strings <- sub("^[^\t]*\t", "", raw_lines)
+bit_strings <- gsub("\t", "", bit_strings)
+
+# 3. Count 0s and 1s weighted by the sequence abundance
+# We can use nchar() to get lengths, and stringr to count specific characters
+library(stringr)
+
+count_0 <- str_count(bit_strings, "0")
+count_1 <- str_count(bit_strings, "1")
+
+total_mass_0 <- sum(count_0 * weights)
+total_mass_1 <- sum(count_1 * weights)
+grand_total_bits <- total_mass_0 + total_mass_1
+
+# Final Proportions
+results <- data.frame(
+  Species = c("Bit 0", "Bit 1"),
+  Proportion = c(total_mass_0 / grand_total_bits, total_mass_1 / grand_total_bits)
 )
 
-# Run Comparison
-results_list <- lapply(pairs, function(p) verify_files(p[1], p[2]))
-comparison_results <- do.call(rbind, results_list)
-print(comparison_results)
+print(results)
 ```
 
 ```{r stop_knit, echo=FALSE}
@@ -593,200 +798,6 @@ print(comparison_results)
 knitr::knit_exit()
 ##########################
 ```
-
-```{r figure_6a, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
-library(ggplot2)
-
-# 1. Read Data
-# Using the filtered results as they are identical to the original full files for these stats
-file_35 <- "output/MEW/MEMWF.rhol.res"
-file_15 <- "output/MEW/MEMWSig1.5F.rhol.res"
-
-df_35 <- read.table(file_35, header = TRUE, sep = "\t")
-df_35$Model <- "sigma = 3.5"
-
-df_15 <- read.table(file_15, header = TRUE, sep = "\t")
-df_15$Model <- "sigma = 1.5"
-
-# Combine for plotting
-df_all <- rbind(df_35, df_15)
-
-# 2. Plot Panel (a)
-ggplot(df_all, aes(x = l, y = w, group = Model, shape = Model)) +
-  # Thin black line linking points
-  geom_line(size = 0.5, color = "black") +
-  
-  # Points with specific shapes
-  # shape 21 = open circle (can have fill), shape 4 = cross
-  geom_point(aes(fill = Model), size = 3, color = "black", stroke = 1) +
-  
-  # Manual scale to set shapes and ensure circle is white
-  scale_shape_manual(values = c("sigma = 3.5" = 21, "sigma = 1.5" = 4)) +
-  scale_fill_manual(values = c("sigma = 3.5" = "white", "sigma = 1.5" = "black")) +
-  
-  # Scales and Labels
-  scale_x_continuous(breaks = seq(10, 20, 1), limits = c(10, 20)) +
-  scale_y_continuous(limits = c(0, 0.25)) +
-  labs(title = "(a)", x = "Chain length", y = "Proportion of chains") +
-  
-  # Theme
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14),
-    legend.position = "none", # Legend usually omitted or shared in final patchwork
-    panel.grid.minor = element_blank()
-  )
-```
-
-``{r figure_6b, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
-library(ggplot2)
-
-# 1. Read Data
-# (Same logic as panel a)
-file_35 <- "output/MEW/MEMWF.rhol.res"
-file_15 <- "output/MEW/MEMWSig1.5F.rhol.res"
-
-df_35 <- read.table(file_35, header = TRUE, sep = "\t")
-df_35$Model <- "sigma = 3.5"
-
-df_15 <- read.table(file_15, header = TRUE, sep = "\t")
-df_15$Model <- "sigma = 1.5"
-
-df_all <- rbind(df_35, df_15)
-
-# 2. Plot Panel (b)
-ggplot(df_all, aes(x = l, y = rhoS, group = Model, shape = Model)) +
-  # Thin black line linking points
-  geom_line(size = 0.5, color = "black") +
-  
-  # Points: Shape 21 (Circle with fill) and Shape 4 (Cross)
-  geom_point(aes(fill = Model), size = 3, color = "black", stroke = 1) +
-  
-  # Styling markers
-  scale_shape_manual(values = c("sigma = 3.5" = 21, "sigma = 1.5" = 4)) +
-  scale_fill_manual(values = c("sigma = 3.5" = "white", "sigma = 1.5" = "black")) +
-  
-  # Scales and Labels
-  scale_x_continuous(breaks = seq(10, 20, 1), limits = c(10, 20)) +
-  # S proportions usually reside in the 0.8+ range for this data
-  scale_y_continuous(limits = c(0.8, 0.9)) + 
-  labs(title = "(b)", x = "Chain length", y = "Proportion of S") +
-  
-  # Theme
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14),
-    legend.position = "none",
-    panel.grid.minor = element_blank()
-  )
-```
-
-```{r figure_6c, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
-library(ggplot2)
-
-# 1. Read Data
-prof_file <- "output/MEW/MEMWF.prof.res"
-ab_file   <- "input/US.ab.txt"
-
-df_prof <- read.table(prof_file, header = TRUE, sep = "\t")
-
-# Overall Abundance for horizontal line
-df_ab <- read.table(ab_file, header = TRUE, sep = "\t")
-rho_S <- df_ab$rho[df_ab$name == "s" | df_ab$name == "S"]
-
-# 2. Prepare Aesthetics
-# Borders are black for pos <= 10 and gray for pos > 10
-df_prof$border_color <- ifelse(df_prof$nrePos <= 10, "black", "gray")
-
-# 3. Plot Panel (c)
-ggplot(df_prof, aes(x = nrePos, y = pnreS)) +
-  # Overall S proportion (Solid Horizontal line)
-  geom_hline(yintercept = rho_S, linetype = "solid", color = "black") +
-  
-  # Thin black line linking points
-  geom_line(size = 0.5, color = "black") +
-  
-  # Points: White circles with conditional border colors
-  # shape 21 allows for separate stroke (color) and fill
-  geom_point(aes(color = border_color), shape = 21, fill = "white", 
-             size = 4, stroke = 1.2) +
-  
-  # Map colors manually
-  scale_color_identity() +
-  
-  # Scales and Labels
-  scale_y_continuous(limits = c(0, 1)) +
-  scale_x_continuous(breaks = seq(1, 20, 1)) +
-  labs(title = "(c) aligned by non-reducing end", 
-       x = "Position from non-reducing end", 
-       y = "Proportion of S") +
-  
-  # Theme
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14),
-    panel.grid.minor = element_blank()
-  )
-```
-
-```{r figure_6d, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
-library(ggplot2)
-
-# 1. Read Data
-prof_file <- "output/MEW/MEMWF.prof.res"
-ab_file   <- "input/US.ab.txt"
-
-df_prof <- read.table(prof_file, header = TRUE, sep = "\t")
-
-# Overall Abundance for horizontal line
-df_ab <- read.table(ab_file, header = TRUE, sep = "\t")
-rho_S <- df_ab$rho[df_ab$name == "s" | df_ab$name == "S"]
-
-# 2. Prepare Aesthetics for (d)
-# The first 10 positions (nrePos 1:10) are far from the reducing end -> gray borders
-# The last 10 positions (nrePos 11:20) are close to the reducing end -> black borders
-df_prof$border_color_d <- ifelse(df_prof$nrePos <= 10, "gray", "black")
-
-# 3. Plot Panel (d)
-ggplot(df_prof, aes(x = nrePos, y = preS)) +
-  # Overall S proportion (Solid Horizontal line)
-  geom_hline(yintercept = rho_S, linetype = "solid", color = "black") +
-  
-  # Thin black line linking points
-  geom_line(size = 0.5, color = "black") +
-  
-  # Points: preS values with conditional border colors
-  geom_point(aes(color = border_color_d), shape = 21, fill = "white", 
-             size = 4, stroke = 1.2) +
-  
-  # Map colors manually
-  scale_color_identity() +
-  
-  # Scales and Labels (X-axis stays nrePos 1-20)
-  scale_y_continuous(limits = c(0, 1)) +
-  scale_x_continuous(breaks = seq(1, 20, 1)) +
-  labs(title = "(d) aligned by reducing end", 
-       x = "Position from non-reducing end", 
-       y = "Proportion of S") +
-  
-  # Theme
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14),
-    panel.grid.minor = element_blank()
-  )
-```
-
-
-
 
 
 
