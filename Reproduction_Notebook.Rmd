@@ -523,7 +523,7 @@ Figure 6. (a,b) Two models of BKHS chain length distributions (a) and resulting 
 
 
 
-```{r figure_6_data_1, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}
+```{r figure_6_data_1, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
 # Data, individual species abundances
 .jcall("heparansulfate/MaxEntModelW", "V", "makeSig35Filtered", "input/", "output/MEW/")
 .jcall("heparansulfate/MaxEntModelW", "V", "makeSig15Filtered", "input/", "output/MEW/")

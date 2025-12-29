@@ -517,10 +517,10 @@ public class MaxEntModelW {
         String outDir = "output/";
         
         // Original (Full) Run - Comment out if disk space is critical
-        makeSig35(inDir, outDir);
+/*         makeSig35(inDir, outDir);
         makeSig15(inDir, outDir);
         glAndRholAndProfExamples(inDir, outDir);
-        
+ */        
         // Filtered Run (0.999 mass) - Optimized for GitHub storage
         makeSig35Filtered(inDir, outDir);
         makeSig15Filtered(inDir, outDir);
