@@ -1,28 +1,33 @@
 package heparansulfate;
 
 /**
- * Represents a chain that was cut (cleaved). This includes chain sequence,
- * the cut positions and methods to return the fragments. This class is
- * utilized for numerical check (cleavage simulations) of derived equations
- * for distributions of fragment lengths
+ * Represents a molecular chain that has been enzymatically or chemically cleaved.
+ * <p>
+ * This class stores the original sequence and the specific indices where cleavage 
+ * occurred. It provides methods to extract the resulting fragments as individual 
+ * sub-sequences. It is primarily used for numerical validation and cleavage 
+ * simulations to check derived equations for fragment length distributions.
  */
 public class CleavedSequence {
 
     /**
-     * Sequence of the original chain.
+     * The integer-encoded sequence of the original parent chain before cleavage.
      */
     int[] oriseq = null;
 
     /**
-     * Positions of the cuts. By convention, cuts happen on the left side
-     * and for a chain of length n there is always a cut at 0 and at n
+     * The indices representing cut positions. 
+     * <p>
+     * <b>Convention:</b> Cuts occur on the left side of the index. For a chain of 
+     * length {@code n}, the array must always include {@code 0} (start) and 
+     * {@code n} (end) to correctly delineate the first and last fragments.
      */
     int[] cutPos = null;
 
     /**
-     * Creates a new cut sequence of a chain.
-     * @param seq chain sequence
-     * @param cuts Positions of the cut
+     * Constructs a representation of a cleaved chain.
+     * @param seq The original parent chain sequence.
+     * @param cuts An ordered array of cut positions, including {@code 0} and {@code n}.
      */
     public CleavedSequence(int[] seq, int[] cuts) {
         oriseq = seq;
@@ -30,10 +35,14 @@ public class CleavedSequence {
     }
 
     /**
-     * Returns the fragments as an array of sequences,
-     * each sequence being represented by int[].
-     * This method returns fragments in the same order as getOrigins.
-     * @return fragments as an int[][]
+     * Extracts and returns the fragments resulting from the cleavage.
+     * <p>
+     * Each fragment is returned as an independent {@code int[]} array. The order of 
+     * fragments in the resulting 2D array corresponds to their linear order 
+     * (from start to end) in the original sequence.
+     * * 
+     * * @return A 2D array {@code int[fragment_index][sequence_data]} containing 
+     * the sub-sequences of all resulting fragments.
      */
     int[][] getFragments() {
         int[][] res = new int[cutPos.length - 1][];
@@ -50,8 +59,8 @@ public class CleavedSequence {
     }
 
     /**
-     * for testing
-     * @param args command line arguments
+     * Main method for verifying the fragment extraction logic via simulation.
+     * @param args Command line arguments (not used).
      */
     public static void main(String[] args) {
         int[] seq = new int[10];

@@ -9,29 +9,38 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * Set of building blocks (e.g. S and U), including names and relative abundances
+ * Represents a set of chemical building blocks (e.g., disaccharides S and U),
+ * storing their unique labels and their relative abundances. 
+ * <p>
+ * This class handles the ingestion of building block data and ensures that 
+ * abundances are normalized to sum to 1.0.
  */
 public class BBSet {
     /**
-     * number of building blocks
+     * Number of building blocks
      */
     int m = 0;
-    /**
-     * building block labels, lower case
+    /** * Array of building block labels (e.g., "s", "u"), stored in lower case. 
      */
     String[] name = null;
     /**
-     * building block relative abundances, they must sum to 1
+     * Building block relative abundances. Their sum is normalized to 1 during construction.
      */
     double[] rho = null;
-    /**
-     * maps name (lower case) to index in this.name
+    /** * A lookup map connecting lower-case labels to their respective index 
+     * in the {@code name} and {@code rho} arrays.
      */
     Map<String, Integer> name2i = null;
 
     /**
-     * creates a set of building blocks (names and relative abundances) from a file
-     * @param file ascii tab-delimited with one header row: name \t abundance
+     * Constructs a set of building blocks from a data file.
+     * <p>
+     * The input file must be an ASCII tab-delimited file with a single header
+     * row. Each subsequent row should follow the format: {@code name \t abundance}.
+     * Labels are automatically converted to lower case, and abundances are 
+     * normalized relative to the total sum of the input values.
+     * * @param file The path to the tab-delimited file containing building block data.
+     * @param file ASCII tab-delimited file containing building block names and proportions.
      */
     public BBSet(String file) {
         List<String> v = new ArrayList<>();
@@ -71,7 +80,7 @@ public class BBSet {
     }
 
     /**
-     * for testing
+     * For testing
      * @param args command line arguments
      */
     public static void main(String[] args) {

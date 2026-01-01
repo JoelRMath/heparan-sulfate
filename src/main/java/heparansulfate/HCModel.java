@@ -5,70 +5,70 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Homogeneous Markov model of species (chain sequence) abundances (model H&amp;C);
- * field this.g contains the expected fragment length distribution after digestion
- * by one heparinase
+ * Homogeneous Markov model of species (chain sequence) abundances (model H&amp;C).
+ * Field {@code this.g} contains the expected fragment length distribution after digestion
+ * by one heparinase.
  */
 public class HCModel {
     /**
-     * number of building blocks
+     * Number of building blocks.
      */
     int m = 0;
     /**
-     * chain length
+     * Chain length.
      */
     int n = 0;
     /**
-     * matrix of transition probabilities
+     * Matrix of transition probabilities.
      */
     double[][] P = null;
     /**
-     * cumulative P: {@code pF[i][j] = sum_{k=0}^j P[i][k]}, utilized for random drawing
+     * Cumulative P: {@code pF[i][j] = sum_{k=0}^j P[i][k]}, utilized for random drawing.
      */
     double[][] pF = null;
     /**
-     * powers of P
+     * Powers of P.
      */
     double[][][] pi = null;
     /**
-     * overall cleavage probability
+     * Overall cleavage probability.
      */
     double c = 0.;
     /**
-     * set of building blocks
+     * Set of building blocks.
      */
     BBSet bbs = null;
     /**
-     * cleavage specificities/yields
+     * Cleavage specificities/yields.
      */
     CSpec cs = null;
     /**
-     * fragment length distribution
+     * Fragment length distribution.
      */
     double[] g = null;
     /**
-     * fragment length distribution with cumulative abundance for {@code length >= lm}
+     * Fragment length distribution with cumulative abundance for {@code length >= lm}.
      */
     double[] h = null;
     /**
-     * maximum fragment length in experimental data
+     * Maximum fragment length in experimental data.
      */
     int lm = 0;
     /**
-     * cumulative version of overall building-block composition in this.bbs.rho
+     * Cumulative version of overall building-block composition in {@code this.bbs.rho}.
      */
     double[] rhoF = null;
 
     /**
-     * Homogeneous Markov model of species (chain sequence) abundances (model H&amp;C);
-     * field this.g contains the expected fragment length distribution after digestion
-     * by one heparinase
-     * @param n BKHS chain length
-     * @param bbs disaccharides and their overall proportions
-     * @param cs cleavage specificities/yields for one heparinase
-     * @param tp initial matrix of transition probabilities (random or already optimized)
-     * which is then projected to satisfy constraints: output in this.P
-     * @param lm maximum fragment length
+     * Homogeneous Markov model of species (chain sequence) abundances (model H&amp;C).
+     * Field {@code this.g} contains the expected fragment length distribution after digestion
+     * by one heparinase.
+     * @param n BKHS chain length.
+     * @param bbs Disaccharides and their overall proportions.
+     * @param cs Cleavage specificities/yields for one heparinase.
+     * @param tp Initial matrix of transition probabilities (random or already optimized)
+     * which is then projected to satisfy constraints: output in {@code this.P}.
+     * @param lm Maximum fragment length.
      */
     public HCModel(int n, BBSet bbs, CSpec cs, double[][] tp, int lm) {
         this.n = n;
@@ -83,7 +83,7 @@ public class HCModel {
             for (int j = 0; j < m; j++) {
                 s += tp[i][j];
             }
-            for (int j = 0; j < m; j++) { // projection is not always perfect due to numerical accurarcy
+            for (int j = 0; j < m; j++) { // projection is not always perfect due to numerical accuracy
                 P[i][j] = tp[i][j] / s;
             }
             pF[i][0] = P[i][0];
@@ -102,7 +102,7 @@ public class HCModel {
     }
 
     /**
-     * computes expected distribution of fragment length (this.h) cumulative for {@code length >= lm}
+     * Computes expected distribution of fragment length ({@code this.h}) cumulative for {@code length >= lm}.
      */
     void makeH() {
         h = new double[n];
@@ -115,7 +115,7 @@ public class HCModel {
     }
 
     /**
-     * computes expected distribution of fragment length (this.g)
+     * Computes expected distribution of fragment length ({@code this.g}).
      */
     void makeG() {
         pi = new double[n][m][m];
@@ -163,7 +163,7 @@ public class HCModel {
     }
 
     /**
-     * computes parameter c of H&amp;C
+     * Computes parameter {@code c} of H&amp;C.
      */
     void makeC() {
         c = 0.;
@@ -173,9 +173,9 @@ public class HCModel {
     }
 
     /**
-     * generates a random BKHS sequence based on this.P
-     * @param rand random number generator
-     * @return a random BKHS sequence based on this.P
+     * Generates a random BKHS sequence based on {@code this.P}.
+     * @param rand Random number generator.
+     * @return A random BKHS sequence based on {@code this.P}.
      */
     int[] getSequence(Random rand) {
         int[] res = new int[n];
@@ -187,12 +187,12 @@ public class HCModel {
     }
 
     /**
-     * generates a random set of cleavage positions in BKHS sequence seq based
-     * on heparinase cleavage specificities
-     * @param seq BKHS sequence
-     * @param rand random number generator
-     * @return a random set of cleavage positions in BKHS sequence seq based
-     * on heparinase cleavage specificities
+     * Generates a random set of cleavage positions in BKHS sequence {@code seq} based
+     * on heparinase cleavage specificities.
+     * @param seq BKHS sequence.
+     * @param rand Random number generator.
+     * @return A random set of cleavage positions in BKHS sequence {@code seq} based
+     * on heparinase cleavage specificities.
      */
     int[] getCuts(int[] seq, Random rand) {
         List<Integer> cuts = new ArrayList<>();
@@ -211,12 +211,12 @@ public class HCModel {
     }
 
     /**
-     * generates a random CutSequence (generates a BKHS chain and randomly cleaves
-     * it based on cleavage specificities); see method getFragments() of class
-     * CutSequence to access resulting fragments
-     * @param rand random number generator
-     * @return a random CutSequence (generates a BKHS chain and randomly cleaves
-     * it based on cleavage specificities)
+     * Generates a random {@code CleavedSequence} (generates a BKHS chain and randomly cleaves
+     * it based on cleavage specificities); see method {@code getFragments()} of class
+     * {@code CleavedSequence} to access resulting fragments.
+     * @param rand Random number generator.
+     * @return A random {@code CleavedSequence} (generates a BKHS chain and randomly cleaves
+     * it based on cleavage specificities).
      */
     CleavedSequence getCutSequence(Random rand) {
         int[] seq = null;
@@ -229,8 +229,8 @@ public class HCModel {
     }
 
     /**
-     * numerical check for this.g
-     * @param rand random number generator
+     * Numerical check for {@code this.g}.
+     * @param rand Random number generator.
      */
     void checkGL(Random rand) {
         int nsim = 10000000;
@@ -250,9 +250,9 @@ public class HCModel {
     }
 
     /**
-     * returns a vector version of matrix P
-     * @param P matrix of transition probabilities
-     * @return a vector version of matrix P
+     * Returns a vector version of matrix {@code P}.
+     * @param P Matrix of transition probabilities.
+     * @return A vector version of matrix {@code P}.
      */
     public static double[] toVector(double[][] P) {
         double[] res = new double[P.length * P.length];
@@ -267,10 +267,10 @@ public class HCModel {
     }
 
     /**
-     * returns a matrix version of vector p
-     * @param m number of rows/columns
-     * @param p vector
-     * @return a m by m matrix version of vector p
+     * Returns a matrix version of vector {@code p}.
+     * @param m Number of rows/columns.
+     * @param p Vector.
+     * @return A {@code m} by {@code m} matrix version of vector {@code p}.
      */
     public static double[][] toMatrix(int m, double[] p) {
         double[][] res = new double[m][m];
@@ -285,8 +285,8 @@ public class HCModel {
     }
 
     /**
-     * for testing
-     * @param args command line arguments
+     * For testing.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input/";

@@ -11,84 +11,94 @@ import java.util.StringTokenizer;
 
 /**
  * Optimization of a homogeneous Markov model (model H&amp;C) via simulated
- * annealing to fit two heparinase digest constraint sets
+ * annealing to fit two heparinase digest constraint sets.
  */
 public class HCModelSA {
     /**
-     * Markov models (e.g. one for hepI and one for hepIII)
+     * Markov models (e.g., one for HepI and one for HepIII).
      */
     HCModel[] mm = null;
+
     /**
-     * f[i][] is the distribution of fragment length (experimental data)
-     * for digest model i
+     * {@code f[i][]} is the distribution of fragment length (experimental data)
+     * for digest model {@code i}.
      */
     double[][] f = null;
+
     /**
-     * for perturbations
+     * Random number generator for perturbations.
      */
     Random rand = null;
+
     /**
-     * chain length
+     * Chain length.
      */
     int n = 0;
+
     /**
-     * number of building blocks
+     * Number of building blocks.
      */
     int m = 0;
+
     /**
-     * number of digests
+     * Number of digests.
      */
     int nd = 0;
+
     /**
-     * enzyme specificities
+     * Enzyme specificities.
      */
     CSpec[] cs = null;
+
     /**
-     * set of building blocks
+     * Set of building blocks.
      */
     BBSet bbs = null;
+
     /**
-     * Markov model parameters
+     * Markov model parameters (transition matrix).
      */
     double[][] P = null;
+
     /**
-     * best encountered model
+     * Best transition matrix encountered during optimization.
      */
     double[][] bestP = null;
 
     /**
-     * buffer for this.P
+     * Buffer for {@code this.P}.
      */
     double[][] buffP = null;
+
     /**
-     * linear inequality constraints (inequality version of nonnegativity,
-     * sum to 1 and balance equations)
+     * Linear inequality constraints (nonnegativity, sum to 1, and balance equations).
      */
     HCModelLIC mlic = null;
+
     /**
-     * number of perturbations at each temperature
+     * Number of perturbations performed at each temperature.
      */
     int nPert = 200;
+
     /**
-     * annealing schedule (temperature multiplied by alpha when decreased)
+     * Annealing schedule: temperature is multiplied by {@code alpha} when decreased.
      */
     double alpha = 0.999;
+
     /**
-     * best objective function value
+     * Best objective function value (energy) found.
      */
     double bestE = 0.;
 
     /**
-     * Optimization of a homogeneous Markov model (model H&amp;C) via simulated annealing
-     * to fit two heparinase digest constraint sets
-     * @param n BKHS chain length
-     * @param bbs disaccharides and their overall proportions
-     * @param specFile cleavage specificities
-     * @param consFile experimental constraints (files with experimentally measured
-     * distributions of fragment length)
-     * @param outFile output file for modeled fragment length distributions
-     * @param modFile output file for optimized transition matrix P
-     * @param rand random number generator
+     * Constructs and optimizes a homogeneous Markov model (model H&amp;C) via simulated annealing.
+     * @param n BKHS chain length.
+     * @param bbs Disaccharides and their overall proportions.
+     * @param specFile Files containing cleavage specificities.
+     * @param consFile Files containing experimental constraints (fragment length distributions).
+     * @param outFile Output files for modeled fragment length distributions.
+     * @param modFile Output file for the optimized transition matrix {@code P}.
+     * @param rand Random number generator.
      */
     public HCModelSA(int n, BBSet bbs, String[] specFile, String[] consFile,
                      String[] outFile, String modFile, Random rand) {
@@ -108,7 +118,6 @@ public class HCModelSA {
         double E = bestE;
         while (nup > 0) {
             t *= alpha;
-            // System.err.println(t + "\t" + E + "\t" + bestE + "\t" + nup);
             nup = 0;
             for (int i = 0; i < nPert; i++) {
                 perturb();
@@ -148,8 +157,8 @@ public class HCModelSA {
     }
 
     /**
-     * saves the optimized transition probability matrix
-     * @param file output file for matrix of transition probabilities
+     * Saves the optimized transition probability matrix.
+     * * @param file Output file path for the matrix.
      */
     void saveMM(String file) {
         try {
@@ -171,9 +180,9 @@ public class HCModelSA {
     }
 
     /**
-     * saves experimental digest data and modeled digest data
-     * @param file output file
-     * @param i digest number (heparinase number)
+     * Saves experimental digest data and modeled digest data for comparison.
+     * * @param file Output file path.
+     * @param i Digest index (e.g., heparinase type index).
      */
     void saveFit(String file, int i) {
         try {
@@ -193,7 +202,7 @@ public class HCModelSA {
     }
 
     /**
-     * buffers encountered optimal P
+     * Buffers the best encountered transition matrix {@code P}.
      */
     void saveP() {
         bestP = new double[m][m];
@@ -205,8 +214,8 @@ public class HCModelSA {
     }
 
     /**
-     * estimation of initial temperature (pr(upward jump) = 0.6)
-     * @return estimation of initial temperature (pr(upward jump) = 0.6)
+     * Estimates initial temperature for the annealing schedule (based on {@code pr(upward jump) = 0.6}).
+     * * @return Initial temperature estimation.
      */
     double initT() {
         double res = 0.;
@@ -224,9 +233,8 @@ public class HCModelSA {
     }
 
     /**
-     * perturbation of transition probability matrix P (random perturbation of one
-     * entry followed by projection) after buffering the current matrix in case
-     * the perturbation is not accepted
+     * Perturbs the transition probability matrix {@code P}.
+     * Randomly modifies one entry and projects the matrix onto the constraint polytope.
      */
     void perturb() {
         for (int i = 0; i < m; i++) {
@@ -244,7 +252,7 @@ public class HCModelSA {
     }
 
     /**
-     * restoration of previous P when a perturbation was not accepted
+     * Restores the previous matrix {@code P} if a perturbation was rejected.
      */
     void restore() {
         for (int i = 0; i < m; i++) {
@@ -259,7 +267,7 @@ public class HCModelSA {
     }
 
     /**
-     * initialization of global variables and random initialization of this.P
+     * Initializes global variables and performs random initialization of the transition matrix {@code P}.
      */
     void initModel() {
         P = new double[m][m];
@@ -284,10 +292,8 @@ public class HCModelSA {
     }
 
     /**
-     * objective function (L1 distance between modeled and experimental fragment
-     * length distributions)
-     * @return objective function (L1 distance between modeled and experimental
-     * fragment length distributions)
+     * Computes the objective function (L1 distance between modeled and experimental distributions).
+     * * @return Calculated objective function value.
      */
     double getE() {
         double res = 0.;
@@ -302,8 +308,8 @@ public class HCModelSA {
     }
 
     /**
-     * reads experimental fragment length distributions from two files
-     * @param file digest constraint files
+     * Reads experimental fragment length distributions from input files.
+     * * @param file Array of digest constraint file paths.
      */
     void loadConstraints(String[] file) {
         f = new double[nd][];
@@ -336,9 +342,9 @@ public class HCModelSA {
     }
 
     /**
-     * For supplementary material
-     * @param inDir input directory (ends with"/")
-     * @param outDir output directory (ends with"/")
+     * Generates data for varying chain lengths {@code n}.
+     * @param inDir Input directory.
+     * @param outDir Output directory.
      */
     public static void varyingN(String inDir, String outDir) {
         Random rand = new Random(1);
@@ -380,9 +386,9 @@ public class HCModelSA {
     }
 
     /**
-     * generates data used for figure of H&amp;C fit
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Generates default data used for H&amp;C fit figures.
+     * @param inDir Input directory.
+     * @param outDir Output directory.
      */
     public static void defaultN(String inDir, String outDir) {
         Random rand = new Random(1);
@@ -406,13 +412,12 @@ public class HCModelSA {
     }
 
     /**
-     * Main entry point
-     * @param args command line arguments
+     * Main entry point for the simulated annealing optimization.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input/";
         String outDir = "output/HC/";
         defaultN(inDir, outDir);
-        // varyingN(inDir, outDir);
     }
 }

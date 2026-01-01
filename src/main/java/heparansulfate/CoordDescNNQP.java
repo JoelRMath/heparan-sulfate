@@ -1,61 +1,61 @@
 package heparansulfate;
 
 /**
- * solution to nonnegative quadratic programming:
+ * Solution to nonnegative quadratic programming:
  * minimize {@code (1/2)x^TQx + c^Tx} subject to {@code x >= 0}
  * via coordinate descent. Note that Q must be symmetric
  * and positive definite
  */
 public class CoordDescNNQP {
     /**
-     * dimension of x (Q is n*n)
+     * Dimension of x (Q is n*n)
      */
     int n = 0;
     /**
-     * quadratic coefficients in the cost {@code (1/2)x^TQx + c^Tx}
+     * Quadratic coefficients in the cost {@code (1/2)x^TQx + c^Tx}
      */
     double[][] Q = null;
     /**
-     * linear coefficients in the cost {@code (1/2)x^TQx + c^Tx}
+     * Linear coefficients in the cost {@code (1/2)x^TQx + c^Tx}
      */
     double[] c = null;
     /**
-     * point being iterated
+     * Point being iterated
      */
     double[] x = null;
     /**
-     * keeps track of the number of iterations (1 iter == change of
+     * Keeps track of the number of iterations (1 iter == change of
      * all components x_1, x_2, ..., x_n)
      */
     public int iter = 0;
     /**
-     * maximum number of iterations (1e6); if it goes above,
+     * Maximum number of iterations (1e6); if it goes above,
      * matrix Q is likely ill-conditioned
      */
     int maxIter = 1000000;
     /**
-     * final value of the objective function {@code (1/2)x^TQx + c^Tx}
+     * Final value of the objective function {@code (1/2)x^TQx + c^Tx}
      */
     double finalCost = 0.;
     /**
-     * solution
+     * Optimal value of {@code x}.
      */
     public double[] optimum = null;
     /**
-     * used to stop iterations
+     * Used to stop iterations
      */
     double eps = 1e-10;
     /**
-     * certificate
+     * Certificate
      */
     boolean success = false;
 
     /**
      * Solves: minimize {@code (1/2)x^TQx + c^Tx} subject to {@code x >= 0}.
      * Solution x is in this.optimum
-     * @param Q coefficients of the quadratic terms in the cost function
-     * @param c coefficients of the linear terms in the cost function
-     * @param y starting point (any random point in the positive orthant)
+     * @param Q coefficients of the quadratic terms in the cost function.
+     * @param c coefficients of the linear terms in the cost function.
+     * @param y starting point (any random point in the positive orthant).
      */
     public CoordDescNNQP(double[][] Q, double[] c, double[] y) {
         // initializations
@@ -113,7 +113,7 @@ public class CoordDescNNQP {
     }
 
     /**
-     * computes {@code (1/2)z^TQz + c^Tz}
+     * Computes the objective function value: {@code (1/2)z^TQz + c^Tz}
      * @param z vector z
      * @return {@code (1/2)z^TQz + c^Tz}
      */
@@ -126,9 +126,9 @@ public class CoordDescNNQP {
     }
 
     /**
-     * returns z^Tz
-     * @param z vector
-     * @return z^Tz
+     * Returns the Euclidean norm of a vector: {@code z^T z}.
+     * @param z Input vector.
+     * @return {@code z^T z}.
      */
     double getNorm2(double[] z) {
         double res = 0.;

@@ -5,76 +5,50 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Geometric programming for solving a MaxEnt problem subject to
- * linear equality constraints (in the probability simplex)
+ * Geometric programming for solving a Maximum Entropy (MaxEnt) problem subject to
+ * linear equality constraints in the probability simplex.
+ * <p>
+ * This class implements a Newton-based optimization method to find the 
+ * probability distribution that maximizes entropy while satisfying linear 
+ * constraints of the form {@code Ax = b}.
  */
 public class MaxEntOptim {
-    /**
-     * used for seeding multipliers
-     */
+    /** Random number generator for seeding initial Lagrange multipliers. */
     Random rand = null;
-    /**
-     * matrix in constraints Ax = b
-     */
+    /** Matrix representing the linear equality constraints {@code Ax = b}. */
     double[][] A = null;
-    /**
-     * vector in constraints Ax = b
-     */
+    /** Constant vector representing the targets in the constraints {@code Ax = b}. */
     double[] b = null;
-    /**
-     * number of constraints
-     */
+    /** Number of constraints (rows in matrix {@code A}). */
     int m = 0;
-    /**
-     * number of variables in primal MaxEnt problem
-     */
+    /** Number of variables in the primal MaxEnt problem (columns in matrix {@code A}). */
     int n = 0;
-    /**
-     * Lagrange multipliers, solution to the dual
-     */
+    /** Lagrange multipliers; the numerical solution to the dual problem. */
     double[] x = null;
-    /**
-     * Hessian of partition function Z
-     */
+    /** Hessian of the partition function {@code Z}. */
     double[][] HZ = null;
-    /**
-     * Hessian of Legendre potential Gamma
-     */
+    /** Hessian of the Legendre potential {@code Gamma}. */
     double[][] HG = null;
-    /**
-     * gradient of partition function Z
-     */
+    /** Gradient of the partition function {@code Z}. */
     double[] gradZ = null;
-    /**
-     * gradient of Legendre potential Gamma
-     */
+    /** Gradient of the Legendre potential {@code Gamma}. */
     double[] gradG = null;
-    /**
-     * partition function
-     */
+    /** The partition function value. */
     double Z = 0.;
-    /**
-     * Legendre potential
-     */
+    /** The Legendre potential (dual objective) value. */
     double gamma = 0.;
-    /**
-     * descent direction
-     */
+    /** The calculated descent direction for the current Newton step. */
     double[] delta = null;
-    /**
-     * solution to the primal
-     */
+    /** The calculated solution to the primal problem (probabilities). */
     double[] p = null;
-    /**
-     * entropy
-     */
+    /** The calculated Gibbs entropy of the distribution. */
     double S = 0.;
 
     /**
-     * Geometric programming for solving a MaxEnt problem subject to linear
-     * equality constraints (in the probability simplex)
-     * @param A matrix in constraint Ap = b
-     * @param b vector in constraint Ap = b
+     * Solves the MaxEnt problem subject to linear equality constraints using Newton's method.
+     * 
+     * @param A Matrix of the constraint system {@code Ap = b}.
+     * @param b Target vector of the constraint system {@code Ap = b}.
      */
     public MaxEntOptim(double[][] A, double[] b) {
         this.A = A;
@@ -107,8 +81,8 @@ public class MaxEntOptim {
     }
 
     /**
-     * checks feasibility of p
-     * @return feasibility of p
+     * Checks the feasibility of the current primal solution {@code p}.
+     * @return The absolute sum of the residual {@code |Ap - b|}.
      */
     double getFeasibility() {
         double[] t = MatrixOp.multMatVec(A, p);
@@ -120,7 +94,8 @@ public class MaxEntOptim {
     }
 
     /**
-     * computes primal solution and entropy
+     * Computes the primal probability distribution {@code p} and its entropy {@code S} 
+     * based on current dual variables.
      */
     void makeP() {
         S = 0.;
@@ -132,8 +107,8 @@ public class MaxEntOptim {
     }
 
     /**
-     * Newton step
-     * @return Newton step
+     * Computes the Newton decrement.
+     * @return The absolute value of the inner product of the descent direction and gradient.
      */
     double getLambda() {
         double res = MatrixOp.geInnerProd(delta, gradG);
@@ -141,8 +116,8 @@ public class MaxEntOptim {
     }
 
     /**
-     * line search parameter (Armijo rule)
-     * @return line search parameter (Armijo rule)
+     * Calculates the line search parameter using the Armijo rule.
+     * @return The line search step size {@code alpha}.
      */
     double getAlpha() {
         double s = 0.999;
@@ -166,7 +141,7 @@ public class MaxEntOptim {
     }
 
     /**
-     * computes the descent direction
+     * Computes the Newton descent direction by solving the system involving the Hessian.
      */
     void makeDelta() {
         double[] t = new double[m];
@@ -177,10 +152,11 @@ public class MaxEntOptim {
     }
 
     /**
-     * convenience method for computing ((As)^T)y
-     * @param s column index
-     * @param y vector of dim m
-     * @return ((As)^T)y
+     * Computes the inner product between the {@code s}-th column of matrix {@code A} 
+     * and vector {@code y}.
+     * @param s Column index of matrix {@code A}.
+     * @param y Input vector.
+     * @return The calculated dot product.
      */
     double getDotProd(int s, double[] y) {
         double res = 0.;
@@ -191,7 +167,7 @@ public class MaxEntOptim {
     }
 
     /**
-     * computes gradient and Hessian
+     * Computes the dual objective function values, gradients, and Hessians.
      */
     void makeDerivatives() {
         makeZ();
@@ -203,7 +179,7 @@ public class MaxEntOptim {
     }
 
     /**
-     * Hessian of gamma
+     * Computes the Hessian of the Legendre potential {@code Gamma}.
      */
     void makeHG() {
         for (int i = 0; i < m; i++) {
@@ -213,22 +189,13 @@ public class MaxEntOptim {
         }
         double[][] L = MatrixOp.cholesky(HG);
         double min = Math.abs(L[0][0]);
-        double max = Math.abs(L[0][0]);
-        double smin = L[0][0];
         for (int i = 1; i < L.length; i++) {
             double d = Math.abs(L[i][i]);
             if (d < min) {
                 min = d;
             }
-            if (d > max) {
-                max = d;
-            }
-            if (L[i][i] < smin) {
-                smin = L[i][i];
-            }
         }
-        System.out.println(min + "\t" + smin);
-        if (min < 0.0001) { // approximate detection of ill-conditioned problems
+        if (min < 0.0001) { // Tikhonov regularization for ill-conditioned Hessians
             for (int i = 0; i < m; i++) {
                 HG[i][i] += (min * min);
             }
@@ -236,7 +203,7 @@ public class MaxEntOptim {
     }
 
     /**
-     * Hessian of Z
+     * Computes the Hessian of the partition function {@code Z}.
      */
     void makeHZ() {
         for (int i = 0; i < m; i++) {
@@ -250,9 +217,9 @@ public class MaxEntOptim {
     }
 
     /**
-     * partition function Z
-     * @param y multipliers
-     * @return partition function Z
+     * Computes the partition function {@code Z} for a given set of multipliers.
+     * @param y Lagrange multipliers.
+     * @return The partition function value.
      */
     double getZ(double[] y) {
         double res = 0.;
@@ -264,10 +231,10 @@ public class MaxEntOptim {
     }
 
     /**
-     * Legendre potential Gamma
-     * @param y multipliers
-     * @param alpha line search parameter
-     * @return Legendre potential Gamma
+     * Evaluates the Legendre potential {@code Gamma} at a stepped position.
+     * @param y Base Lagrange multipliers.
+     * @param alpha Step size.
+     * @return The potential at {@code y + alpha * delta}.
      */
     double getGamma(double[] y, double alpha) {
         double[] t = new double[m];
@@ -278,9 +245,9 @@ public class MaxEntOptim {
     }
 
     /**
-     * Legendre potential Gamma
-     * @param y multipliers
-     * @return Legendre potential Gamma
+     * Evaluates the Legendre potential {@code Gamma}.
+     * @param y Lagrange multipliers.
+     * @return The Legendre potential value.
      */
     double getGamma(double[] y) {
         double res = Math.log(getZ(y));
@@ -290,32 +257,24 @@ public class MaxEntOptim {
         return res;
     }
 
-    /**
-     * partition function Z
-     */
+    /** Updates the current partition function {@code Z}. */
     void makeZ() {
         Z = getZ(x);
     }
 
-    /**
-     * Legendre potential Gamma
-     */
+    /** Updates the current dual objective {@code Gamma}. */
     void makeGamma() {
         gamma = getGamma(x);
     }
 
-    /**
-     * gradient of Gamma
-     */
+    /** Updates the current gradient of the Legendre potential {@code Gamma}. */
     void makeGradG() {
         for (int i = 0; i < m; i++) {
             gradG[i] = b[i] + gradZ[i] / Z;
         }
     }
 
-    /**
-     * gradient of Z
-     */
+    /** Updates the current gradient of the partition function {@code Z}. */
     void makeGradZ() {
         for (int i = 0; i < m; i++) {
             gradZ[i] = 0.;
@@ -327,9 +286,9 @@ public class MaxEntOptim {
     }
 
     /**
-     * default linear equality constraint = composition-1 + 2(digest-1)
-     * @param inDir input directory
-     * @return default linear equality constraint = composition-1 + 2(digest-1)
+     * Generates default constraints for the MaxEnt problem.
+     * @param inDir Input directory for abundance and specificity files.
+     * @return A merged set of linear constraints.
      */
     public static LinEqCons getDefaultLEC(String inDir) {
         Species sp = new Species(2, 16);

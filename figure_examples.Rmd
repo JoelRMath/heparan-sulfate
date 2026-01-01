@@ -1,5 +1,5 @@
 ---
-title: "Figure Reproduction for Scientific Reports Paper 24829"  
+title: "Examples of usage of the Java heparansulfate package"  
 author: "Joel R Pradines"
 date: "`r Sys.Date()`"
 output: html_document
@@ -20,6 +20,14 @@ library(scales)
 library(rJava)
 .jinit(classpath = "target/classes")
 ```
+## Introduction
+
+The Java package heparansulfate is built with the code developed for 
+
+"Combining measurements to estimate properties and characterization extent of complex biochemical mixtures; applications to Heparan Sulfate". 
+J.R. Pradines, D. Beccati, M. Lech, J. Ozug, V. Farutin, Y. Huang, N.S. Gunay & I. Capila. Scientific Reports volume 6, Article number: 24829 (2016). 
+
+Examples of usage are provided by running the code utilized to make the 6 figures of the publication.
 
 ## Figure 1
 
@@ -435,10 +443,10 @@ df_gw <- read.table(gw_file, header = TRUE, sep = "\t")
 
 p_a <- ggplot() +
   geom_hline(yintercept = rho_S, linetype = "solid", color = "black") +
-  geom_segment(data = df_gw, aes(x = pos, xend = pos, y = lowerU, yend = upperU),
+  geom_segment(data = df_gw, aes(x = pos, xend = pos, y = lowerS, yend = upperS),
                linetype = "dotted", size = 0.5, color = "black") +
-  geom_point(data = df_gw, aes(x = pos, y = lowerU), shape = 15, size = 3, color = "black") +
-  geom_point(data = df_gw, aes(x = pos, y = upperU), shape = 15, size = 3, color = "black") +
+  geom_point(data = df_gw, aes(x = pos, y = lowerS), shape = 15, size = 3, color = "black") +
+  geom_point(data = df_gw, aes(x = pos, y = upperS), shape = 15, size = 3, color = "black") +
   geom_point(data = df_gamma, aes(x = pos, y = s), shape = 1, size = 4, stroke = 1.2, color = "black") +
   scale_y_continuous(limits = c(0, 1)) +
   scale_x_continuous(breaks = seq(1, max(df_gamma$pos), 1)) +
@@ -452,10 +460,10 @@ p_a <- ggplot() +
 
 p_b <- ggplot() +
   geom_hline(yintercept = rho_U, linetype = "solid", color = "black") +
-  geom_segment(data = df_gw, aes(x = pos, xend = pos, y = lowerS, yend = upperS),
+  geom_segment(data = df_gw, aes(x = pos, xend = pos, y = lowerU, yend = upperU),
                linetype = "dotted", size = 0.5, color = "black") +
-  geom_point(data = df_gw, aes(x = pos, y = lowerS), shape = 15, size = 3, color = "black") +
-  geom_point(data = df_gw, aes(x = pos, y = upperS), shape = 15, size = 3, color = "black") +
+  geom_point(data = df_gw, aes(x = pos, y = lowerU), shape = 15, size = 3, color = "black") +
+  geom_point(data = df_gw, aes(x = pos, y = upperU), shape = 15, size = 3, color = "black") +
   geom_point(data = df_gamma, aes(x = pos, y = u), shape = 1, size = 4, stroke = 1.2, color = "black") +
   scale_y_continuous(limits = c(0, 1)) +
   scale_x_continuous(breaks = seq(1, max(df_gamma$pos), 1)) +
@@ -533,13 +541,13 @@ Figure 6. (a,b) Two models of BKHS chain length distributions (a) and resulting 
 # Data, averages over individual species
 .jcall("heparansulfate/MaxEntModelW", "V", "glAndRholAndProfExamplesFiltered", "input/", "output/MEW/")
 # Data, LP bounds
-# .jcall("heparansulfate/GradientWidth", "V", "defaultMixSpec", "input/", "output/MEW/")
+ # .jcall("heparansulfate/GradientWidth", "V", "defaultMixSpec", "input/", "output/MEW/")
 # Data, chain length distributions
 .jcall("heparansulfate/MixSpecies", "V", "saveDistribution", as.integer(10), as.integer(20), 3.5, 16., "output/MEW/FullDistSig3.5.res")
 .jcall("heparansulfate/MixSpecies", "V", "saveDistribution", as.integer(10), as.integer(20), 1.5, 16., "output/MEW/FullDistSig1.5.res")
 ```
 
-```{r figure_6_plot_final, echo=FALSE, message=FALSE, warning=FALSE, fig.width=12, fig.height=15}
+```{r figure_6_plot, echo=FALSE, message=FALSE, warning=FALSE, fig.width=12, fig.height=15}
 library(ggplot2)
 library(patchwork)
 
@@ -613,7 +621,7 @@ p_b <- ggplot() +
 # (c) NRE Profile + Bounds
 p_c <- ggplot() +
   # Reference line: Solid (Global proportion of S)
-  geom_hline(yintercept = rho_S, linetype = "solid", color = "black", size = 0.8) +
+  geom_hline(yintercept = rho_U, linetype = "solid", color = "black", size = 0.8) +
   
   # Bounds (Segments): Dashed and prominent
   geom_segment(data = df_bn_nre, 
@@ -749,251 +757,10 @@ p_f <- ggplot(df_pt_re) +
         plot.title = element_text(face = "bold", size = 14))
 # --- 3. ASSEMBLY ---
 (p_a | p_b) / (p_c | p_d) / (p_e | p_f)
-print(head(df_pt_re, 3))
-```
-
-
-
-
-```{r fast_bit_check}
-library(data.table)
-
-pind_file <- "output/MEW/MEMWF.pind.res"
-
-# We read the whole file into a character vector. 
-# Each row is one string.
-raw_lines <- fread(pind_file, header = FALSE, sep = "\n", col.names = "V1")$V1
-
-# 1. Extract the abundance (weight) from the start of each string
-# The weight is everything before the first tab
-weights <- as.numeric(sub("\t.*", "", raw_lines))
-
-# 2. Extract the bit sequence (everything after the first tab)
-# Then remove the remaining tabs to get a clean string of 0s and 1s
-bit_strings <- sub("^[^\t]*\t", "", raw_lines)
-bit_strings <- gsub("\t", "", bit_strings)
-
-# 3. Count 0s and 1s weighted by the sequence abundance
-# We can use nchar() to get lengths, and stringr to count specific characters
-library(stringr)
-
-count_0 <- str_count(bit_strings, "0")
-count_1 <- str_count(bit_strings, "1")
-
-total_mass_0 <- sum(count_0 * weights)
-total_mass_1 <- sum(count_1 * weights)
-grand_total_bits <- total_mass_0 + total_mass_1
-
-# Final Proportions
-results <- data.frame(
-  Species = c("Bit 0", "Bit 1"),
-  Proportion = c(total_mass_0 / grand_total_bits, total_mass_1 / grand_total_bits)
-)
-
-print(results)
 ```
 
 ```{r stop_knit, echo=FALSE}
 ##########################
 knitr::knit_exit()
 ##########################
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r figure_5a_final, echo=TRUE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
-library(ggplot2)
-
-gamma_file <- "output/ME/MEM.gamma.res"
-ab_file    <- "input/US.ab.txt"
-gw_file    <- "output/ME/GradientWidth.res"
-
-df_gamma <- read.table(gamma_file, header = TRUE, sep = "\t")
-
-df_ab <- read.table(ab_file, header = TRUE, sep = "\t")
-rho_S <- df_ab$rho[df_ab$name == "s" | df_ab$name == "S"]
-
-df_gw <- read.table(gw_file, header = TRUE, sep = "\t")
-
-ggplot() +
-  geom_hline(yintercept = rho_S, linetype = "solid", color = "black") +
-  
-  geom_segment(data = df_gw, aes(x = pos, xend = pos, y = lowerS, yend = upperS),
-               linetype = "dotted", size = 0.5, color = "black") +
-  
-  geom_point(data = df_gw, aes(x = pos, y = lowerS), 
-             shape = 15, size = 3, color = "black") +
-  
-  geom_point(data = df_gw, aes(x = pos, y = upperS), 
-             shape = 15, size = 3, color = "black") +
-  
-  geom_point(data = df_gamma, aes(x = pos, y = s), 
-             shape = 1, size = 4, stroke = 1.2, color = "black") +
-  
-  scale_y_continuous(limits = c(0, 1)) +
-  scale_x_continuous(breaks = seq(1, max(df_gamma$pos), 1)) +
-  labs(title = "(a) S", x = "Position from non-reducing end", y = "Proportion") +
-  
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14),
-    panel.grid.minor = element_blank()
-  )
-```
-
-```{r figure_5b, echo=TRUE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
-library(ggplot2)
-
-gamma_file <- "output/ME/MEM.gamma.res"
-ab_file    <- "input/US.ab.txt"
-gw_file    <- "output/ME/GradientWidth.res"
-
-df_gamma <- read.table(gamma_file, header = TRUE, sep = "\t")
-
-df_ab <- read.table(ab_file, header = TRUE, sep = "\t")
-rho_U <- df_ab$rho[df_ab$name == "u" | df_ab$name == "U"]
-
-df_gw <- read.table(gw_file, header = TRUE, sep = "\t")
-
-ggplot() +
-  geom_hline(yintercept = rho_U, linetype = "solid", color = "black") +
-  
-  geom_segment(data = df_gw, aes(x = pos, xend = pos, y = lowerU, yend = upperU),
-               linetype = "dotted", size = 0.5, color = "black") +
-  
-  geom_point(data = df_gw, aes(x = pos, y = lowerU), 
-             shape = 15, size = 3, color = "black") +
-  
-  geom_point(data = df_gw, aes(x = pos, y = upperU), 
-             shape = 15, size = 3, color = "black") +
-  
-  geom_point(data = df_gamma, aes(x = pos, y = u), 
-             shape = 1, size = 4, stroke = 1.2, color = "black") +
-  
-  scale_y_continuous(limits = c(0, 1)) +
-  scale_x_continuous(breaks = seq(1, max(df_gamma$pos), 1)) +
-  labs(title = "(b) U", x = "Position from non-reducing end", y = "Proportion") +
-  
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14),
-    panel.grid.minor = element_blank()
-  )
-```
-
-```{r figure_5c_final, echo=TRUE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
-library(ggplot2)
-
-pt_file    <- "output/ME/MEM.pt.res"
-gamma_file <- "output/ME/MEM.gamma.res"
-
-df_pt <- read.table(pt_file, header = TRUE, sep = "\t")
-
-df_gamma <- read.table(gamma_file, header = TRUE, sep = "\t")
-
-ggplot() +
-  
-  geom_line(data = df_gamma, aes(x = pos, y = s), color = "gray", size = 0.5) +
-  geom_point(data = df_gamma, aes(x = pos, y = s), 
-             shape = 0, size = 4, color = "gray", stroke = 1) +
-  
-  geom_line(data = df_gamma, aes(x = pos, y = u), color = "gray", size = 0.5) +
-  geom_point(data = df_gamma, aes(x = pos, y = u), 
-             shape = 1, size = 4, color = "gray", stroke = 1) +
-  
-  geom_line(data = df_pt, aes(x = pos, y = pus), color = "black", size = 0.5) +
-  geom_point(data = df_pt, aes(x = pos, y = pus), 
-             shape = 15, size = 4, color = "black") +
-  
-  geom_line(data = df_pt, aes(x = pos, y = puu), color = "black", size = 0.5) +
-  geom_point(data = df_pt, aes(x = pos, y = puu), 
-             shape = 16, size = 4, color = "black") +
-
-  annotate("point", x = 10, y = 0.75, shape = 16, size = 4, color = "black") +
-  annotate("text",  x = 10.5, y = 0.75, label = "from U to U", hjust = 0, size = 4) +
-  
-  annotate("point", x = 10, y = 0.20, shape = 15, size = 4, color = "black") +
-  annotate("text",  x = 10.5, y = 0.20, label = "from U to S", hjust = 0, size = 4) +
-
-  scale_y_continuous(limits = c(0, 1)) +
-  scale_x_continuous(breaks = seq(1, max(df_pt$pos), 1)) +
-  labs(title = "(c) Transitions from U", 
-       x = "Position from non-reducing end", 
-       y = "Probability") +
-  
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14),
-    panel.grid.minor = element_blank()
-  )
-```
-
-```{r figure_5d, echo=TRUE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5}
-
-pt_file    <- "output/ME/MEM.pt.res"
-gamma_file <- "output/ME/MEM.gamma.res"
-df_pt <- read.table(pt_file, header = TRUE, sep = "\t")
-df_gamma <- read.table(gamma_file, header = TRUE, sep = "\t")
-
-ggplot() +
-  geom_line(data = df_gamma, aes(x = pos, y = s), color = "gray", size = 0.5) +
-  geom_point(data = df_gamma, aes(x = pos, y = s), 
-             shape = 0, size = 4, color = "gray", stroke = 1) +
-  geom_line(data = df_gamma, aes(x = pos, y = u), color = "gray", size = 0.5) +
-  geom_point(data = df_gamma, aes(x = pos, y = u), 
-             shape = 1, size = 4, color = "gray", stroke = 1) +
-
-  geom_line(data = df_pt, aes(x = pos, y = pss), color = "black", size = 0.5) +
-  geom_point(data = df_pt, aes(x = pos, y = pss), 
-             shape = 15, size = 4, color = "black") +
-  geom_line(data = df_pt, aes(x = pos, y = psu), color = "black", size = 0.5) +
-  geom_point(data = df_pt, aes(x = pos, y = psu), 
-             shape = 16, size = 4, color = "black") +
-  
-  annotate("point", x = 10, y = 0.9, shape = 16, size = 4, color = "black") +
-  annotate("text",  x = 10.5, y = 0.9, label = "from S to U", hjust = 0, size = 4) +
-  
-  annotate("point", x = 10, y = 0.15, shape = 15, size = 4, color = "black") +
-  annotate("text",  x = 10.5, y = 0.15, label = "from S to S", hjust = 0, size = 4) +
-
-  scale_y_continuous(limits = c(0, 1)) +
-  scale_x_continuous(breaks = seq(1, max(df_pt$pos), 1)) +
-  labs(title = "(d) Transitions from S", 
-       x = "Position from non-reducing end", 
-       y = "Probability") +
-  
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14),
-    panel.grid.minor = element_blank()
-  )
 ```

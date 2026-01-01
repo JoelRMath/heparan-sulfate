@@ -4,48 +4,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * each instance gives infeasibility of the constraint set
- * (overall disaccharide composition and heparinase digest)
- * for BKHS chains of length n
+ * Calculates the infeasibility of a specific constraint set (overall disaccharide composition 
+ * and heparinase digest) for BKHS chains of a given length {@code n}.
  */
 public class ProfileFeasibility {
     /**
-     * enumerates molecular species (all possible sequences)
+     * Enumerates molecular species (all possible sequences for the given length).
      */
     Species sp = null;
     /**
-     * matrix for constraints
+     * Matrix representing the linear equality constraints {@code Ax = b}.
      */
     double[][] A = null;
     /**
-     * vector for constraints
+     * Constant vector for the linear equality constraints {@code Ax = b}.
      */
     double[] b = null;
     /**
-     * wrapper for all constraints in equality form
+     * Convenience wrapper containing all equality constraints.
      */
     LinEqCons lec = null;
     /**
-     * phase I of the simplex
+     * Phase I of the Simplex algorithm used to determine feasibility.
      */
     SimplexPhaseI sp1 = null;
     /**
-     * infeasibility (produced by this.sp1)
+     * Calculated infeasibility value (residual cost from Phase I).
      */
     double infeasibility = 0.;
     /**
-     * disaccaride labels
+     * Labels for the disaccharides used in the model.
      */
     String[] lab = null;
 
     /**
-     * gives infeasibility of the constraint set (overall disaccharide composition and
-     * heparinase digest) for BKHS chains of length n
-     * @param m number of disaccharides
-     * @param n BKHS chain length
-     * @param lab disaccharide labels
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Constructs an instance to determine the infeasibility of the constraint set for BKHS chains of length {@code n}.
+     * 
+     * @param m Number of disaccharides.
+     * @param n BKHS chain length.
+     * @param lab Disaccharide labels.
+     * @param inDir Input directory path (must end with "/").
+     * @param outDir Output directory path (must end with "/").
      */
     public ProfileFeasibility(int m, int n, String[] lab, String inDir, String outDir) {
         this.lab = lab;
@@ -66,9 +65,9 @@ public class ProfileFeasibility {
     }
 
     /**
-     * makes profile of infeasibility for BKHS chain length from 5 to 20
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Generates a feasibility profile for BKHS chain lengths ranging from 5 to 20.
+     * @param inDir Input directory path (must end with "/").
+     * @param outDir Output directory path (must end with "/").
      */
     public static void makeProfile(String inDir, String outDir) {
         String[] lab = new String[2];
@@ -84,8 +83,8 @@ public class ProfileFeasibility {
     }
 
     /**
-     * Main entry point
-     * @param args command line arguments
+     * Main entry point for generating the feasibility profile.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input/";

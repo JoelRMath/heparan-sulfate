@@ -6,76 +6,91 @@ import java.util.Map;
 import java.util.TreeSet;
 
 /**
- * simplex method for linear programming (phase II)
+ * Simplex method for linear programming (Phase II).
+ * This class handles the optimization of the objective function once a feasible 
+ * starting point has been established by Phase I.
  */
 public class Simplex {
     /**
-     * simplex tableau
+     * Simplex tableau.
      */
     Tableau tab = null;
+
     /**
-     * values of certificate are: -1 for no feasible point, 0 for unbounded
-     * below in phase II and 1 for optimum found
+     * Values of certificate are: {@code -1} for no feasible point, {@code 0} for unbounded
+     * below in Phase II, and {@code 1} for optimum found.
      */
     int certificate = -3;
+
     /**
-     * certificate in words
+     * Certificate description in words.
      */
     String certificateString = null;
+
     /**
-     * buffer copy of the tableau
+     * Buffer copy of the tableau.
      */
     double[][] y = null;
+
     /**
-     * basic variables are always kept in the first m columns,
-     * this hashtable maps variable indices to column indices
+     * Basic variables are always kept in the first {@code m} columns.
+     * This hashtable maps variable indices to column indices.
      */
     Map<Integer, Integer> var2col = new HashMap<>();
+
     /**
-     * basic variables are always kept in the first m columns,
-     * this hashtable maps column indices to variable indices
+     * Basic variables are always kept in the first {@code m} columns.
+     * This hashtable maps column indices to variable indices.
      */
     Map<Integer, Integer> col2var = new HashMap<>();
+
     /**
-     * used to keep track of which variables indices are basic,
-     * in order to implement Bland's rule
+     * Used to keep track of which variable indices are basic,
+     * in order to implement Bland's rule.
      */
     TreeSet<Integer> basic = new TreeSet<>();
+
     /**
-     * used to keep track of which variables indices are nonbasic,
-     * in order to implement Bland's rule
+     * Used to keep track of which variable indices are nonbasic,
+     * in order to implement Bland's rule.
      */
     TreeSet<Integer> nonbasic = new TreeSet<>();
+
     /**
-     * feasible point obtained at the end of phaseI
+     * Feasible point obtained at the end of Phase I.
      */
     double[] feasiblePoint = null;
+
     /**
-     * the point at the end of phase II
+     * The optimal point reached at the end of Phase II.
      */
     public double[] optimum = null;
 
     /**
-     * inconsistency threshold for phase II
+     * Inconsistency threshold for Phase II.
      */
     double epsilon = 1e-5;
+
     /**
-     * number of constraints in phase II
+     * Number of constraints in Phase II.
      */
     int m = 0;
+
     /**
-     * number of variables in phase II
+     * Number of variables in Phase II.
      */
     int n = 0;
+
     /**
-     * solution, i.e. final cost
+     * Final solution value (objective function cost).
      */
     double finalCost = 0.;
 
     /**
-     * simplex method for linear programming
-     * @param sp1 phase I of the simplex (tableau)
-     * @param c vector of cost coefficients
+     * Simplex method for linear programming.
+     * 
+     * @param sp1 Phase I of the simplex (provides the initial feasible tableau).
+     * @param c Vector of cost coefficients for the objective function.
      */
     public Simplex(SimplexPhaseI sp1, double[] c) {
         init(sp1, c);
@@ -110,17 +125,17 @@ public class Simplex {
     }
 
     /**
-     * cost = objective function value
-     * @return objective function value
+     * Returns the current cost (objective function value).
+     * @return The objective function value.
      */
     public double getCost() {
         return -tab.y[tab.y.length - 1][tab.y[0].length - 1];
     }
 
     /**
-     * pivoting operation in the tableau
-     * @param p index of the column to leave the basis
-     * @param q index of the column to enter the basis
+     * Performs a pivoting operation in the tableau.
+     * @param p Index of the row (and corresponding basic column) to leave the basis.
+     * @param q Index of the column to enter the basis.
      */
     void pivot(int p, int q) {
         for (int i = 0; i < tab.nrows; i++) {
@@ -138,10 +153,10 @@ public class Simplex {
     }
 
     /**
-     * swaps columns p and q in the tableau and updates mappings
-     * between column and variable indices
-     * @param p index of the column to leave the basis
-     * @param q index of the column to enter the basis
+     * Swaps columns {@code p} and {@code q} in the tableau and updates mappings 
+     * between column and variable indices.
+     * @param p Index of the column to leave the basis.
+     * @param q Index of the column to enter the basis.
      */
     void swapColumns(int p, int q) {
         double[] buf = new double[tab.y.length];
@@ -167,11 +182,11 @@ public class Simplex {
     }
 
     /**
-     * Given the index q of the column to enter next the basic set, finds the
-     * index q of the column to leave the basic set, or -1 if the linear
-     * problem is unbounded below. This method also implements Bland's rule
-     * @param q index of the column to enter the basic set
-     * @return index of the column to leave the basis
+     * Finds the index {@code p} of the column to leave the basic set given the 
+     * entering column index {@code q}. Returns {@code -1} if the problem is unbounded.
+     * Implements Bland's rule to avoid cycling.
+     * @param q Index of the column entering the basis.
+     * @return Index of the row/column leaving the basis.
      */
     int getP(int q) {
         int res = -1;
@@ -199,10 +214,9 @@ public class Simplex {
     }
 
     /**
-     * returns the index q of the column to enter the basic set in
-     * order to lower the cost, or -1 if the current set of basic
-     * variables is optimal
-     * @return the index q of the column to enter the basis
+     * Returns the index {@code q} of the column to enter the basic set in order 
+     * to lower the cost. Returns {@code -1} if the current basis is optimal.
+     * @return The index {@code q} of the entering column.
      */
     int getQ() {
         int res = -1;
@@ -221,9 +235,9 @@ public class Simplex {
     }
 
     /**
-     * initialization
-     * @param sp1 output of phase I
-     * @param c vector of cost coefficients
+     * Initializes Phase II using the results from Phase I.
+     * @param sp1 Output of Phase I.
+     * @param c Vector of cost coefficients.
      */
     void init(SimplexPhaseI sp1, double[] c) {
         m = sp1.m;
@@ -255,7 +269,7 @@ public class Simplex {
     }
 
     /**
-     * buffers the current tableau
+     * Buffers the current tableau into the {@code y} field.
      */
     void saveTab() {
         for (int i = 0; i < tab.nrows; i++) {

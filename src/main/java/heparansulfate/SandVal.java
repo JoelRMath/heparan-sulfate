@@ -3,28 +3,27 @@ package heparansulfate;
 import java.util.Comparator;
 
 /**
- * convenience class to sort pairs
+ * Convenience class to sort pairs of strings and double values.
  */
 public class SandVal implements Comparator<SandVal> {
     /**
-     * String field
+     * String field representing the label.
      */
     public String s = null;
     /**
-     * double field, used for sorting
+     * Double field used as the sorting criteria.
      */
     double val = 0.;
     /**
-     * 1 for sorting by ascending values and -1 by descending values
+     * Sorting direction: {@code 1} for ascending and {@code -1} for descending.
      */
     int sign = 1;
 
     /**
-     * convenience class to sort two arrays, based on values in one,
-     * while preserving pairs
-     * @param s String (label)
-     * @param val value to sort by
-     * @param dir direction (ascending "a" or descending "d")
+     * Constructs a pair containing a string label and a numerical value for sorting.
+     * @param s String label.
+     * @param val Value to sort by.
+     * @param dir Direction: "a" for ascending or "d" for descending.
      */
     public SandVal(String s, double val, String dir) {
         this.s = s;
@@ -36,10 +35,11 @@ public class SandVal implements Comparator<SandVal> {
     }
 
     /**
-     * defines order
-     * @param sv1 the first object to be compared.
-     * @param sv2 the second object to be compared.
-     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+     * Compares two {@code SandVal} objects based on their numerical values and the specified direction.
+     * @param sv1 The first object to be compared.
+     * @param sv2 The second object to be compared.
+     * @return A negative integer, zero, or a positive integer as the first argument 
+     * is less than, equal to, or greater than the second.
      */
     @Override
     public int compare(SandVal sv1, SandVal sv2) {

@@ -5,72 +5,43 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * represents a nonhomogeneity and independence (N&amp;I) model:
- * different building block composition at each position in a chain
- * and independence between positions; field this.g contains the expected
- * heparinase fragment length distribution under model N&amp;I
+ * Represents a Nonhomogeneity and Independence (N&amp;I) model: different building block 
+ * composition at each position in a chain and independence between positions. 
+ * Field {@code this.g} contains the expected heparinase fragment length distribution 
+ * under model N&amp;I.
  */
 public class NIModel {
-    /**
-     * length of a chain
-     */
+    /** Length of a chain. */
     int n = 0;
-    /**
-     * number of building block types
-     */
+    /** Number of building block types. */
     int m = 0;
-    /**
-     * gamma[i][j] is the proportion of building block j at position i from
-     * the non-reducing end
-     */
+    /** {@code gamma[i][j]} is the proportion of building block {@code j} at position {@code i} from the non-reducing end. */
     double[][] gamma = null;
-    /**
-     * cumulative version of gamma: {@code gamF[i][j] = sum_{k=0}^j gamma[i][k]}
-     */
+    /** Cumulative version of gamma: {@code gamF[i][j] = sum_{k=0}^j gamma[i][k]}. */
     double[][] gamF = null;
-    /**
-     * overall cleavage probability
-     */
+    /** Overall cleavage probability. */
     double c = 0;
-    /**
-     * see equation of g(l) in paper
-     */
+    /** Normalization factor for the fragment length distribution equation. */
     double alpha = 0.;
-    /**
-     * cleavage probability at position i
-     */
+    /** Cleavage probability at each position {@code i}. */
     double[] ci = null;
-    /**
-     * set of disaccharides and their overall proportions
-     */
+    /** Set of disaccharides and their overall proportions. */
     BBSet bbs = null;
-    /**
-     * cleavage specificities/yields for one heparinase
-     */
+    /** Cleavage specificities/yields for one heparinase. */
     CSpec cs = null;
-    /**
-     * expected distribution of fragment length in on heparinase digest
-     */
+    /** Expected distribution of fragment length in one heparinase digest. */
     double[] g = null;
-    /**
-     * same as this.g but cumulative for length {@code ll >= lm}
-     */
+    /** Same as {@code this.g} but cumulative for length {@code ll >= lm}. */
     double[] h = null;
-    /**
-     * maximum measured fragment length
-     */
+    /** Maximum measured fragment length. */
     int lm = 0;
 
     /**
-     * represents a nonhomogeneity and independence (N&amp;I) model:
-     * different building block composition at each position in a chain
-     * and independence between positions
-     * @param bbs disaccharides and their overall proportions
-     * @param cs cleavage specificities/yields for one heparinase
-     * @param gam initial (random or optimized) matrix Gamma of disaccharide
-     * proportions along chains;
-     * this initial matrix is then projected to satisfy constraints
-     * @param lm maximum measured fragment length
+     * Represents a nonhomogeneity and independence (N&amp;I) model.
+     * @param bbs Disaccharides and their overall proportions.
+     * @param cs Cleavage specificities/yields for one heparinase.
+     * @param gam Initial (random or optimized) matrix {@code Gamma} of disaccharide proportions along chains.
+     * @param lm Maximum measured fragment length.
      */
     public NIModel(BBSet bbs, CSpec cs, double[][] gam, int lm) {
         this.lm = lm;
@@ -82,7 +53,7 @@ public class NIModel {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 gamma[i][j] = gam[i][j];
-                // projection is not always perfect due to numerical accuracy
+                // Numerical projection adjustment
                 if (gamma[i][j] > 1.) {
                     gamma[i][j] = 1.;
                 }
@@ -105,8 +76,8 @@ public class NIModel {
     }
 
     /**
-     * this.h: fragment length distribution expected under N&amp;I
-     * and cumulative for length {@code ll >= lm}
+     * Computes {@code this.h}: fragment length distribution expected under N&amp;I, 
+     * cumulative for length {@code ll >= lm}.
      */
     void makeH() {
         h = new double[lm];
@@ -123,9 +94,9 @@ public class NIModel {
     }
 
     /**
-     * generates one random BKHS sequence based on this.gamma
-     * @param rand random number generator
-     * @return one random BKHS sequence based on this.gamma
+     * Generates one random BKHS sequence based on {@code this.gamma}.
+     * @param rand Random number generator.
+     * @return One random BKHS sequence.
      */
     int[] getSequence(Random rand) {
         int[] res = new int[n];
@@ -136,12 +107,11 @@ public class NIModel {
     }
 
     /**
-     * generate a random set of cleavage positions in seq based on
-     * heparinase cleavage specificities/yields
-     * @param seq BKHS sequence
-     * @param rand random number generator
-     * @return a random set of cleavage positions in seq based on
-     * heparinase cleavage specificities/yields
+     * Generates a random set of cleavage positions in {@code seq} based on 
+     * heparinase cleavage specificities.
+     * @param seq BKHS sequence.
+     * @param rand Random number generator.
+     * @return A random set of cleavage positions.
      */
     int[] getCleavages(int[] seq, Random rand) {
         List<Integer> cuts = new ArrayList<>();
@@ -160,10 +130,9 @@ public class NIModel {
     }
 
     /**
-     * generates one BKHS sequence and cleaves;
-     * see getFragments() of CleavedSequence to obtain fragments
-     * @param rand random number generator
-     * @return one cleaved BKHS chain
+     * Generates one BKHS sequence and cleaves it.
+     * @param rand Random number generator.
+     * @return One cleaved BKHS chain.
      */
     CleavedSequence getCleavageSequence(Random rand) {
         int[] seq = null;
@@ -176,8 +145,8 @@ public class NIModel {
     }
 
     /**
-     * distribution of fragment length after heparinase digestion
-     * and expected under N&amp;I
+     * Computes the distribution of fragment length after heparinase digestion 
+     * expected under model N&amp;I.
      */
     void makeG() {
         g = new double[n];
@@ -213,8 +182,8 @@ public class NIModel {
     }
 
     /**
-     * this.ci: cleavage probabilities at each position i
-     * (average quantity in the mixture, defined by this.gamma and this.cs)
+     * Computes {@code this.ci}: cleavage probabilities at each position {@code i} 
+     * defined by {@code this.gamma} and {@code this.cs}.
      */
     void makeCi() {
         ci = new double[n];
@@ -227,7 +196,7 @@ public class NIModel {
     }
 
     /**
-     * overall cleavage probability c
+     * Computes the overall cleavage probability {@code c}.
      */
     void makeC() {
         c = 0.;
@@ -237,8 +206,8 @@ public class NIModel {
     }
 
     /**
-     * numerical check for this.g
-     * @param rand random number generator
+     * Performs a numerical check for {@code this.g} via Monte Carlo simulation.
+     * @param rand Random number generator.
      */
     void checkGL(Random rand) {
         int nsim = 10000000;
@@ -263,9 +232,9 @@ public class NIModel {
     }
 
     /**
-     * turns a gamma matrix (n by m) in vector form
-     * @param G gamma matrix (n by m)
-     * @return a vector representing matrix G
+     * Transforms a {@code gamma} matrix (n by m) into a vector form.
+     * @param G Gamma matrix.
+     * @return A vector representation of matrix {@code G}.
      */
     public static double[] toVector(double[][] G) {
         double[] res = new double[G.length * G[0].length];
@@ -280,10 +249,10 @@ public class NIModel {
     }
 
     /**
-     * turns a vector into a gamma matrix
-     * @param g vector of dimension (m*nn)
-     * @param nn BKHS chain length
-     * @return a matrix representing a gamma vector
+     * Transforms a vector into a {@code gamma} matrix.
+     * @param g Vector of dimension {@code m * nn}.
+     * @param nn BKHS chain length.
+     * @return A matrix representing a {@code gamma} vector.
      */
     public static double[][] toMatrix(double[] g, int nn) {
         int mm = g.length / nn;

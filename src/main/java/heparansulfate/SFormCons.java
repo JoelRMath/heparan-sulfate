@@ -1,33 +1,34 @@
 package heparansulfate;
 
 /**
- * This class represents a linear constraint Ax = b in standard form:
- * matrix A (m x n) has rank {@code m < n} and {@code b >= 0}.
+ * This class represents a linear constraint {@code Ax = b} in standard form:
+ * matrix {@code A} (m x n) has rank {@code m < n} and {@code b >= 0}.
  */
 public class SFormCons {
     /**
-     * matrix for linear equality Ax = b
+     * Matrix for linear equality {@code Ax = b}.
      */
     double[][] A = null;
     /**
-     * vector in constraint Ax = b, matrix A being transformed
-     * so that {@code b >= 0}
+     * Vector in constraint {@code Ax = b}, matrix {@code A} being transformed
+     * so that {@code b >= 0}.
      */
     double[] b = null;
     /**
-     * number of columns
+     * Number of columns.
      */
     int n = 0;
     /**
-     * number of rows (rank of A)
+     * Number of rows (rank of {@code A}).
      */
     int m = 0;
 
     /**
-     * creates a linear equality constraint in standard form (Ax = b with
-     * {@code b >= 0}) starting from a m x n matrix A (of rank m) and a vector b
-     * @param mA m x n matrix of rank {@code m < n}
-     * @param mb m dimensional vector
+     * Creates a linear equality constraint in standard form ({@code Ax = b} with
+     * {@code b >= 0}) starting from a m x n matrix {@code A} (of rank m) and a vector {@code b}.
+     * 
+     * @param mA m x n matrix of rank {@code m < n}.
+     * @param mb m dimensional vector.
      */
     public SFormCons(double[][] mA, double[] mb) {
         m = mA.length;
@@ -50,7 +51,7 @@ public class SFormCons {
     }
 
     /**
-     * prints out the constraint
+     * Prints out the constraint.
      */
     void print() {
         for (int i = 0; i < m; i++) {
@@ -62,8 +63,8 @@ public class SFormCons {
     }
 
     /**
-     * for testing
-     * @param args command line arguments
+     * For testing.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         double[][] mA = new double[2][3];

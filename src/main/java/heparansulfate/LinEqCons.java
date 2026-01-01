@@ -3,37 +3,37 @@ package heparansulfate;
 import java.util.List;
 
 /**
- * Class that represents linear equality/inequality constraints: {@code Ax = b} or {@code Ax <= b},
- * where A is an m by n matrix and b an m vector. The main utility of this class
- * is merging of linear constraints
+ * Class that represents linear equality or inequality constraints: {@code Ax = b} or {@code Ax <= b},
+ * where {@code A} is an {@code m} by {@code n} matrix and {@code b} is an {@code m}-dimensional vector. 
+ * The main utility of this class is the merging of multiple linear constraints.
  */
 public class LinEqCons {
     /**
-     * number of rows
+     * Number of rows (constraints).
      */
     int m = 0;
     /**
-     * number of columns
+     * Number of columns (variables).
      */
     int n = 0;
     /**
-     * matrix in {@code Ax = b}
+     * Matrix in the linear system {@code Ax = b}.
      */
     public double[][] A = null;
     /**
-     * vector in {@code Ax = b}
+     * Constant vector in the linear system {@code Ax = b}.
      */
     public double[] b = null;
     /**
-     * label for each row (type of constraint)
+     * Labels for each row, identifying the type of constraint.
      */
     public String[] type = null;
 
     /**
-     * represents a linear equality constraint: {@code Ax = b}
-     * @param A matrix in {@code Ax = b}
-     * @param b vector in {@code Ax = b}
-     * @param label row labels
+     * Constructs a linear equality constraint: {@code Ax = b}.
+     * @param A Matrix in {@code Ax = b}.
+     * @param b Vector in {@code Ax = b}.
+     * @param label Row labels for identification.
      */
     public LinEqCons(double[][] A, double[] b, String[] label) {
         m = A.length;
@@ -51,8 +51,8 @@ public class LinEqCons {
     }
 
     /**
-     * Merges several linear constraints (array) into one
-     * @param lec array of linear constraints
+     * Merges an array of linear constraints into a single {@code LinEqCons} object.
+     * @param lec Array of linear constraints to merge.
      */
     public LinEqCons(LinEqCons[] lec) {
         m = 0;
@@ -77,8 +77,8 @@ public class LinEqCons {
     }
 
     /**
-     * Merges several linear constraints ({@code List<LinEqCons>}) into one
-     * @param lec List containing linear constraints
+     * Merges a {@code List} of linear constraints into a single {@code LinEqCons} object.
+     * @param lec List containing linear constraints to merge.
      */
     public LinEqCons(List<LinEqCons> lec) {
         m = 0;
@@ -106,9 +106,9 @@ public class LinEqCons {
     }
 
     /**
-     * Returns a String representation of this LinEqCons:
-     * {@code type \t b \t A[][0] \t A[][1] \t ... \t A[][n-1]}
-     * @return a String representation of this LinEqCons
+     * Returns a tab-delimited String representation of this constraint set:
+     * {@code type \t b \t A[][0] \t A[][1] \t ... \t A[][n-1]}.
+     * @return A String representation of this {@code LinEqCons}.
      */
     public String getStringRep() {
         String res = "";
@@ -124,9 +124,10 @@ public class LinEqCons {
     }
 
     /**
-     * transforms {@code Ax = b} into {@code Ax <= b} and {@code -Ax <= -b}
-     * @param lec set of equality constraints
-     * @return inequality version of {@code Ax = b} ({@code Ax <= b} and {@code -Ax <= -b})
+     * Transforms equality constraints {@code Ax = b} into a set of equivalent inequalities: 
+     * {@code Ax <= b} and {@code -Ax <= -b}.
+     * @param lec Set of equality constraints.
+     * @return Inequality version of the provided constraints.
      */
     public static LinEqCons equalitiesToInequalities(LinEqCons lec) {
         int n = lec.n;
@@ -155,9 +156,9 @@ public class LinEqCons {
     }
 
     /**
-     * removes one row (constraint) in lec
-     * @param lec linear constraint
-     * @return lec minus its last row (constraint)
+     * Removes the last row (constraint) from a {@code LinEqCons} object.
+     * @param lec Original linear constraint set.
+     * @return A new {@code LinEqCons} object excluding the last row of the input.
      */
     public static LinEqCons removeLastRow(LinEqCons lec) {
         int m = lec.m - 1;

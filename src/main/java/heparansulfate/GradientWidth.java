@@ -4,54 +4,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * utilizes linear programming to estimate bounds of S/U proportions at each position
- * in chains; two different constructors: one for all BKHS chains having same length
- * and one for a mixture of chain lengths
+ * Utilizes linear programming to estimate bounds of S/U proportions at each position
+ * in chains. Two different constructors are provided: one for all BKHS chains having 
+ * the same length and one for a mixture of chain lengths.
  */
 public class GradientWidth {
     /**
-     * enumeration of all possible sequences, one chain length only
+     * Enumeration of all possible sequences, one chain length only.
      */
     Species sp = null;
     /**
-     * matrix in constraint Ap = b
+     * Matrix in constraint {@code Ap = b}.
      */
     double[][] A = null;
     /**
-     * vector in constraint Ap = b
+     * Vector in constraint {@code Ap = b}.
      */
     double[] b = null;
     /**
-     * convenience wrapper for the constraints
+     * Convenience wrapper for the constraints.
      */
     LinEqCons lec = null;
     /**
-     * phase I of the simplex
+     * Phase I of the simplex.
      */
     SimplexPhaseI sp1 = null;
     /**
-     * output of phase I
+     * Output of phase I.
      */
     double infeasibility = 0.;
     /**
-     * disaccharide labels
+     * Disaccharide labels.
      */
     String[] lab = null;
     /**
-     * enumeration of all sequences, mixture of chain lengths
+     * Enumeration of all sequences, mixture of chain lengths.
      */
     MixSpecies msp = null;
 
     /**
-     * utilizes linear programming to estimate bounds of S/U proportions at each position;
-     * constructor for a mixture of BKHS chain length (average mu and spread sigma),
-     * Note: the second constructor requires large memory (e.g. -Xmx8000M)
-     * @param lb disaccharide labels
-     * @param lmi smallest chain length
-     * @param lmx largest chain length
-     * @param sig spread of chain length distribution
-     * @param mu average chain length
-     * @param inDir input directory (ends with "/")
+     * Utilizes linear programming to estimate bounds of S/U proportions at each position.
+     * Constructor for a mixture of BKHS chain length (average {@code mu} and spread {@code sigma}).
+     * <p>
+     * Note: This constructor requires large memory (e.g., {@code -Xmx8000M}).
+     * </p>
+     * @param lb Disaccharide labels.
+     * @param lmi Smallest chain length.
+     * @param lmx Largest chain length.
+     * @param sig Spread of chain length distribution.
+     * @param mu Average chain length.
+     * @param inDir Input directory (ends with "/").
      */
     public GradientWidth(String[] lb, int lmi, int lmx, double sig, double mu, String inDir) {
         this.lab = lb;
@@ -72,12 +74,12 @@ public class GradientWidth {
     }
 
     /**
-     * utilizes linear programming to estimate bounds of S/U proportions at each position;
-     * constructor for the case of all BKHS chains having same length n
-     * @param m number of disaccharides
-     * @param n BKHS chain length
-     * @param lab disaccharide labels
-     * @param inDir input directory (ends with "\\")
+     * Utilizes linear programming to estimate bounds of S/U proportions at each position.
+     * Constructor for the case of all BKHS chains having same length {@code n}.
+     * @param m Number of disaccharides.
+     * @param n BKHS chain length.
+     * @param lab Disaccharide labels.
+     * @param inDir Input directory (ends with "/").
      */
     public GradientWidth(int m, int n, String[] lab, String inDir) {
         this.lab = lab;
@@ -97,12 +99,11 @@ public class GradientWidth {
     }
 
     /**
-     * linear cost coefficients for presence of bb at position pos,
-     * when chains are aligned by the NRE; mixture of chain lengths
-     * @param pos position in chains (from NRE)
-     * @param bb disaccharide
-     * @return linear cost coefficients for presence of bb at position pos,
-     * when chains are aligned by the NRE
+     * Linear cost coefficients for presence of {@code bb} at position {@code pos},
+     * when chains are aligned by the NRE; mixture of chain lengths.
+     * @param pos Position in chains (from NRE).
+     * @param bb Disaccharide.
+     * @return Linear cost coefficients for presence of {@code bb} at position {@code pos}.
      */
     double[] getCostCoeffNRE(int pos, int bb) {
         double[] res = new double[msp.N];
@@ -117,12 +118,11 @@ public class GradientWidth {
     }
 
     /**
-     * linear cost coefficients for presence of bb at position pos,
-     * when chains are aligned by the RE; mixture of chain lengths
-     * @param pos position from RE
-     * @param bb disaccharide
-     * @return linear cost coefficients for presence of bb at position pos,
-     * when chains are aligned by the RE
+     * Linear cost coefficients for presence of {@code bb} at position {@code pos},
+     * when chains are aligned by the RE; mixture of chain lengths.
+     * @param pos Position from RE.
+     * @param bb Disaccharide.
+     * @return Linear cost coefficients for presence of {@code bb} at position {@code pos}.
      */
     double[] getCostCoeffRE(int pos, int bb) {
         double[] res = new double[msp.N];
@@ -137,12 +137,11 @@ public class GradientWidth {
     }
 
     /**
-     * linear cost coefficients for bb at position pos
-     * when all BKHS have same length
-     * @param pos position from NRE
-     * @param bb disaccharide
-     * @return linear cost coefficients for bb at position pos
-     * when all BKHS have same length
+     * Linear cost coefficients for {@code bb} at position {@code pos}
+     * when all BKHS have same length.
+     * @param pos Position from NRE.
+     * @param bb Disaccharide.
+     * @return Linear cost coefficients for {@code bb} at position {@code pos}.
      */
     double[] getCostCoeff(int pos, int bb) {
         double[] res = new double[sp.N];
@@ -155,12 +154,11 @@ public class GradientWidth {
     }
 
     /**
-     * lower bound for proportion of bb at position pos
-     * when chains are aligned by NRE; mixture of chain lengths
-     * @param pos position from the NRE
-     * @param bb disaccharide
-     * @return lower bound for proportion of bb at position pos
-     * when chains are aligned by NRE; mixture of chain lengths
+     * Lower bound for proportion of {@code bb} at position {@code pos}
+     * when chains are aligned by NRE; mixture of chain lengths.
+     * @param pos Position from the NRE.
+     * @param bb Disaccharide.
+     * @return Lower bound for proportion of {@code bb} at position {@code pos}.
      */
     double getLowerNRE(int pos, int bb) {
         double[] c = getCostCoeffNRE(pos, bb);
@@ -176,12 +174,11 @@ public class GradientWidth {
     }
 
     /**
-     * lower bound for proportion of bb at position pos
-     * when chains are aligned by RE; mixture of chain lengths
-     * @param pos position from RE
-     * @param bb disaccharide
-     * @return lower bound for proportion of bb at position pos
-     * when chains are aligned by RE; mixture of chain lengths
+     * Lower bound for proportion of {@code bb} at position {@code pos}
+     * when chains are aligned by RE; mixture of chain lengths.
+     * @param pos Position from RE.
+     * @param bb Disaccharide.
+     * @return Lower bound for proportion of {@code bb} at position {@code pos}.
      */
     double getLowerRE(int pos, int bb) {
         double[] c = getCostCoeffRE(pos, bb);
@@ -197,12 +194,11 @@ public class GradientWidth {
     }
 
     /**
-     * upper bound for proportion of bb at position pos
-     * when chains are aligned by NRE; mixture of chain lengths
-     * @param pos position from NRE
-     * @param bb disaccharide
-     * @return upper bound for proportion of bb at position pos
-     * when chains are aligned by NRE; mixture of chain lengths
+     * Upper bound for proportion of {@code bb} at position {@code pos}
+     * when chains are aligned by NRE; mixture of chain lengths.
+     * @param pos Position from NRE.
+     * @param bb Disaccharide.
+     * @return Upper bound for proportion of {@code bb} at position {@code pos}.
      */
     double getUpperNRE(int pos, int bb) {
         double[] c = getCostCoeffNRE(pos, bb);
@@ -221,12 +217,11 @@ public class GradientWidth {
     }
 
     /**
-     * upper bound for proportion of bb at position pos
-     * when chains are aligned by RE; mixture of chain lengths
-     * @param pos position from RE
-     * @param bb disaccharide
-     * @return upper bound for proportion of bb at position pos
-     * when chains are aligned by RE; mixture of chain lengths
+     * Upper bound for proportion of {@code bb} at position {@code pos}
+     * when chains are aligned by RE; mixture of chain lengths.
+     * @param pos Position from RE.
+     * @param bb Disaccharide.
+     * @return Upper bound for proportion of {@code bb} at position {@code pos}.
      */
     double getUpperRE(int pos, int bb) {
         double[] c = getCostCoeffRE(pos, bb);
@@ -245,12 +240,11 @@ public class GradientWidth {
     }
 
     /**
-     * lower bound for proportion of bb at position pos
-     * when all BKHS chains have same length
-     * @param pos position from the NRE
-     * @param bb disaccharide
-     * @return lower bound for proportion of bb at position pos
-     * when all BKHS chains have same length
+     * Lower bound for proportion of {@code bb} at position {@code pos}
+     * when all BKHS chains have same length.
+     * @param pos Position from the NRE.
+     * @param bb Disaccharide.
+     * @return Lower bound for proportion of {@code bb} at position {@code pos}.
      */
     double getLower(int pos, int bb) {
         double[] c = getCostCoeff(pos, bb);
@@ -266,12 +260,11 @@ public class GradientWidth {
     }
 
     /**
-     * upper bound for proportion of bb at position pos
-     * when all BKHS chains have same length
-     * @param pos position from NRE
-     * @param bb disaccharide
-     * @return upper bound for proportion of bb at position pos
-     * when all BKHS chains have same length
+     * Upper bound for proportion of {@code bb} at position {@code pos}
+     * when all BKHS chains have same length.
+     * @param pos Position from NRE.
+     * @param bb Disaccharide.
+     * @return Upper bound for proportion of {@code bb} at position {@code pos}.
      */
     double getUpper(int pos, int bb) {
         double[] c = getCostCoeff(pos, bb);
@@ -290,9 +283,9 @@ public class GradientWidth {
     }
 
     /**
-     * saves bounds for S/U proportions at each position
-     * when all BKHS chains have same length
-     * @param file output file
+     * Saves bounds for S/U proportions at each position
+     * when all BKHS chains have same length.
+     * @param file Output file.
      */
     void saveBounds(String file) {
         List<String> v = new ArrayList<>();
@@ -314,9 +307,9 @@ public class GradientWidth {
     }
 
     /**
-     * saves bounds of S/U proportions at each position from the NRE
-     * for a mixture of BKHS chain lengths
-     * @param file output file
+     * Saves bounds of S/U proportions at each position from the NRE
+     * for a mixture of BKHS chain lengths.
+     * @param file Output file.
      */
     void saveBoundsMixSpNRE(String file) {
         List<String> v = new ArrayList<>();
@@ -338,9 +331,9 @@ public class GradientWidth {
     }
 
     /**
-     * saves bounds of S/U proportions at each position from the RE
-     * for a mixture of BKHS chain lengths
-     * @param file output file
+     * Saves bounds of S/U proportions at each position from the RE
+     * for a mixture of BKHS chain lengths.
+     * @param file Output file.
      */
     void saveBoundsMixSpRE(String file) {
         List<String> v = new ArrayList<>();
@@ -362,10 +355,10 @@ public class GradientWidth {
     }
 
     /**
-     * makes and saves S/U bounds at each position
-     * when all BKHS chains have same length
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Makes and saves S/U bounds at each position
+     * when all BKHS chains have same length.
+     * @param inDir Input directory (ends with "/").
+     * @param outDir Output directory (ends with "/").
      */
     public static void bounds(String inDir, String outDir) {
         String[] lab = new String[2];
@@ -376,9 +369,9 @@ public class GradientWidth {
     }
 
     /**
-     * for supplementary material; bounds for different values of chain length n
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * For supplementary material; bounds for different values of chain length {@code n}.
+     * @param inDir Input directory (ends with "/").
+     * @param outDir Output directory (ends with "/").
      */
     public static void boundsAndN(String inDir, String outDir) {
         String[] lab = new String[2];
@@ -391,9 +384,9 @@ public class GradientWidth {
     }
 
     /**
-     * bounds of S/U proportions at each position for mixture of BKHS chain lengths
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Bounds of S/U proportions at each position for mixture of BKHS chain lengths.
+     * @param inDir Input directory (ends with "/").
+     * @param outDir Output directory (ends with "/").
      */
     public static void defaultMixSpec(String inDir, String outDir) {
         String[] lab = new String[2];
@@ -405,8 +398,8 @@ public class GradientWidth {
     }
 
     /**
-     * Main entry point
-     * @param args command line arguments
+     * Main entry point.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input/";

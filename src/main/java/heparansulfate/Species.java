@@ -5,30 +5,32 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
- * enumeration of all possible sequences of length n with m disaccharides
+ * Enumeration of all possible sequences of length {@code n} with {@code m} disaccharides.
+ * This class facilitates the generation of linear equality constraints based on 
+ * molecular species sequences.
  */
 public class Species {
     /**
-     * chain length
+     * Chain length.
      */
     int n = 0;
     /**
-     * number of building blocks
+     * Number of building blocks.
      */
     int m = 0;
     /**
-     * number of species = m^n
+     * Total number of unique species, calculated as {@code m^n}.
      */
     int N = 0;
     /**
-     * seq[i] is the sequence of species i
+     * Array of sequences where {@code seq[i]} represents the sequence of species {@code i}.
      */
     int[][] seq = null;
 
     /**
-     * enumeration of all possible sequences of length n with m disaccharides
-     * @param m number of disaccharides
-     * @param n BKHS chain length
+     * Enumerates all possible sequences of length {@code n} with {@code m} disaccharides.
+     * @param m Number of disaccharides.
+     * @param n BKHS chain length.
      */
     public Species(int m, int n) {
         this.m = m;
@@ -56,10 +58,9 @@ public class Species {
     }
 
     /**
-     * linear constraint for homogeneity of disaccharide composition along chains
-     * @param bbs disaccharide set
-     * @return linear constraint for homogeneity of disaccharide composition
-     * along chains
+     * Creates linear constraints for the homogeneity of disaccharide composition along chains.
+     * @param bbs Disaccharide set.
+     * @return Linear constraint for disaccharide homogeneity along chains.
      */
     LinEqCons getHomogeneityLEC(BBSet bbs) {
         double[][] A = new double[(n - 1) * (m - 1)][N];
@@ -82,11 +83,11 @@ public class Species {
     }
 
     /**
-     * linear constraint for one heparinase digest (fragments lengths f[])
-     * @param f distribution of fragment lengths
-     * @param cs cleavage specificities of one heparinase
-     * @param bbs disaccharide set
-     * @return linear constraint for one heparinase digest
+     * Creates linear constraints for one heparinase digest based on fragment length distribution.
+     * @param f Distribution of fragment lengths.
+     * @param cs Cleavage specificities of the heparinase enzyme.
+     * @param bbs Disaccharide set.
+     * @return Linear constraint for the heparinase digest.
      */
     LinEqCons getFragLEC(double[] f, CSpec cs, BBSet bbs) {
         double[][] A = new double[f.length][N];
@@ -122,11 +123,12 @@ public class Species {
     }
 
     /**
-     * contribution of species s to fragments of length ll
-     * @param s species (sequence) index
-     * @param ll fragment length
-     * @param cs cleavage specificities
-     * @return contribution of species s to fragments of length ll
+     * Calculates the contribution of species {@code s} to fragments of length {@code ll}.
+     * 
+     * @param s Species (sequence) index.
+     * @param ll Fragment length.
+     * @param cs Cleavage specificities.
+     * @return Contribution of species {@code s} to fragments of length {@code ll}.
      */
     double getFragContrib(int s, int ll, CSpec cs) {
         double res = 0.;
@@ -150,9 +152,9 @@ public class Species {
     }
 
     /**
-     * linear constraint for overall disaccharide composition
-     * @param rho overall disaccharide composition
-     * @return linear constraint for overall disaccharide composition
+     * Creates linear constraints for the overall disaccharide composition.
+     * @param rho Overall disaccharide composition vector.
+     * @return Linear constraint for overall disaccharide composition.
      */
     LinEqCons getCompLEC(double[] rho) {
         int m = rho.length;
@@ -175,8 +177,8 @@ public class Species {
     }
 
     /**
-     * linear constraint for normalization (sum to 1)
-     * @return linear constraint for normalization (sum to 1)
+     * Creates linear constraints for normalization (ensuring abundance sums to 1).
+     * @return Linear constraint for normalization.
      */
     LinEqCons getNormLEC() {
         double[][] A = new double[1][N];
@@ -191,10 +193,10 @@ public class Species {
     }
 
     /**
-     * vector of individual species abundances; this method is based on a
-     * N&amp;I model and utilized to numerically check linear constraints
-     * @param gamma matrix Gamma in model N&amp;I
-     * @return vector of individual species abundances under N&amp;I with Gamma
+     * Calculates the vector of individual species abundances based on a Nonhomogeneity 
+     * and Independence (N&amp;I) model. Utilized for numerical checking of linear constraints.
+     * @param gamma Matrix {@code Gamma} in model N&amp;I.
+     * @return Vector of species abundances under the N&amp;I model with {@code Gamma}.
      */
     double[] getP(double[][] gamma) {
         double[] res = new double[N];
@@ -208,13 +210,12 @@ public class Species {
     }
 
     /**
-     * complete set of linear constraints (sum-to-1, overall disaccharide
-     * composition and fragment length distributions)
-     * @param bbs disaccharide set
-     * @param csFile files of cleavage specificities
-     * @param fragFile files of fragment length distributions
-     * @return complete set of linear constraints (sum-to-1, overall
-     * disaccharide composition and fragment length distributions)
+     * Combines all linear constraints including sum-to-1, disaccharide composition, 
+     * and fragment length distributions.
+     * @param bbs Disaccharide set.
+     * @param csFile Array of files specifying cleavage specificities.
+     * @param fragFile Array of files specifying fragment length distributions.
+     * @return Complete set of merged linear equality constraints.
      */
     LinEqCons getCompleteLEC(BBSet bbs, String[] csFile, String[] fragFile) {
         List<LinEqCons> v = new ArrayList<>();
@@ -229,10 +230,9 @@ public class Species {
     }
 
     /**
-     * loads matrix Gamma of model N&amp;I from a file;
-     * used for testing of linear constraints
-     * @param file ASCII file with one header row: {@code position \t u \t s}
-     * @return matrix Gamma of a N&amp;I model
+     * Loads the matrix {@code Gamma} of a N&amp;I model from a tab-delimited ASCII file.
+     * @param file ASCII file with header row: {@code position \t u \t s}.
+     * @return Matrix {@code Gamma} representing the N&amp;I model.
      */
     public static double[][] loadGamma(String file) {
         List<String> v = Utils.loadFileNoheader(file);
@@ -253,11 +253,9 @@ public class Species {
     }
 
     /**
-     * loads fragment length abundances for one heparinase digest
-     * @param file ASCII file with header row: {@code length \t abundance};
-     * note that lengths are assumed to be in ascending order, the last row
-     * ll represents abundances of lengths at least ll and abundances must sum to 1
-     * @return fragment length abundances for one heparinase digest
+     * Loads fragment length abundances for a heparinase digest from a tab-delimited ASCII file.
+     * @param file ASCII file with header row: {@code length \t abundance}.
+     * @return Array of fragment length abundances.
      */
     public static double[] loadFragAbund(String file) {
         List<String> v = Utils.loadFileNoheader(file);
@@ -273,8 +271,8 @@ public class Species {
     }
 
     /**
-     * testing of the sum-to-1 constraint, with a N&amp;I model
-     * @param inDir input directory (ends with "\\")
+     * Performs testing of the sum-to-1 constraint using a N&amp;I model.
+     * @param inDir Input directory.
      */
     public static void testNormCons(String inDir) {
         System.out.println("testNormCons");
@@ -289,9 +287,8 @@ public class Species {
     }
 
     /**
-     * testing of the constraint for overall disaccharide composition,
-     * with a N&amp;I model
-     * @param inDir input directory (ends with "\\")
+     * Performs testing of the overall disaccharide composition constraint using a N&amp;I model.
+     * @param inDir Input directory.
      */
     public static void testCompCons(String inDir) {
         System.out.println("testCompCons");
@@ -308,11 +305,8 @@ public class Species {
     }
 
     /**
-     * testing of the constraints for fragment length distributions,
-     * with a N&amp;I model; note that since N&amp;I cannot reproduce fragment
-     * length distributions, values of constraints are calculated
-     * from the N&amp;I model
-     * @param inDir input directory (ends with "\\")
+     * Performs testing of the fragment length distribution constraints using a N&amp;I model.
+     * @param inDir Input directory.
      */
     public static void testFragCons(String inDir) {
         System.out.println("testFragCons");
@@ -344,8 +338,9 @@ public class Species {
     }
 
     /**
-     * testing of homogeneity constraint with model H&amp;I
-     * @param inDir input directory (ends with "\\")
+     * Performs testing of the homogeneity constraint using a model with overall 
+     * disaccharide composition.
+     * @param inDir Input directory.
      */
     public static void testHomogeneityCons(String inDir) {
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
@@ -369,8 +364,8 @@ public class Species {
     }
 
     /**
-     * testing of computed linear constraints with N&amp;I or H&amp;I model
-     * @param inDir input directory (ends with "\\")
+     * Runs all linear constraint tests using N&amp;I or overall disaccharide composition models.
+     * @param inDir Input directory.
      */
     public static void testing(String inDir) {
         testNormCons(inDir);
@@ -380,8 +375,8 @@ public class Species {
     }
 
     /**
-     * for testing
-     * @param args command line arguments
+     * Main entry point for the test runner.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input/";

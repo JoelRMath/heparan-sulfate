@@ -1,19 +1,22 @@
 package heparansulfate;
 
 /**
- * This class contains a few static methods for matrix and vector operations.
+ * Provides static methods for common matrix and vector operations.
+ * <p>
+ * This class includes utilities for printing, matrix multiplication, transposition, 
+ * and solving linear systems using Cholesky factorization.
  */
 public class MatrixOp {
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     public MatrixOp() {
     }
 
     /**
-     * Prints out a matrix
-     * @param mat matrix
+     * Prints a matrix to the standard output.
+     * @param mat The matrix to print.
      */
     public static void printMat(double[][] mat) {
         String s = null;
@@ -31,9 +34,12 @@ public class MatrixOp {
     }
 
     /**
-     * Prints out a matrix, with "." for 0 and "x" for entries not 0
-     * @param mat matrix
-     * @param eps definition of 0
+     * Prints a symbolic representation of a matrix.
+     * <p>
+     * Entries with absolute values less than or equal to {@code eps} are printed as ".", 
+     * while other entries are printed as "x".
+     * @param mat The matrix to print.
+     * @param eps The threshold value below which an entry is considered zero.
      */
     public static void printMatS(double[][] mat, double eps) {
         String s = null;
@@ -55,9 +61,9 @@ public class MatrixOp {
     }
 
     /**
-     * Returns a String representation of a matrix
-     * @param mat matrix
-     * @return a String representation of matrix ’mat’
+     * Returns a {@code String} representation of a matrix.
+     * @param mat The matrix to convert.
+     * @return A tab-delimited string representation of {@code mat}.
      */
     public static String getMatStringRep(double[][] mat) {
         String res = "*************\n";
@@ -74,9 +80,9 @@ public class MatrixOp {
     }
 
     /**
-     * Returns a String representation of a vector
-     * @param x vector
-     * @return String representation of vector ’x’
+     * Returns a {@code String} representation of a vector.
+     * @param x The vector to convert.
+     * @return A string representation of vector {@code x}.
      */
     public static String getVecStringRep(double[] x) {
         String res = "*************\n";
@@ -88,8 +94,8 @@ public class MatrixOp {
     }
 
     /**
-     * Prints out a vector
-     * @param x vector
+     * Prints a vector to the standard output.
+     * @param x The vector to print.
      */
     public static void printVec(double[] x) {
         System.out.println("*************");
@@ -100,9 +106,9 @@ public class MatrixOp {
     }
 
     /**
-     * Returns the transpose of a matrix
-     * @param a matrix
-     * @return transpose of a
+     * Returns the transpose of the given matrix.
+     * @param a The input matrix.
+     * @return The transposed matrix {@code a^T}.
      */
     public static double[][] transpose(double[][] a) {
         double[][] at = new double[a[0].length][a.length];
@@ -115,9 +121,9 @@ public class MatrixOp {
     }
 
     /**
-     * Returns the L2 norm square of a vector
-     * @param x vector
-     * @return L2 norm square of vector x
+     * Computes the squared L2 norm of a vector.
+     * @param x The input vector.
+     * @return The value of {@code x^T x}.
      */
     public static double getL2Norm(double[] x) {
         double res = 0.;
@@ -128,10 +134,10 @@ public class MatrixOp {
     }
 
     /**
-     * Returns c = ab, where a is a matrix and b a vector
-     * @param a matrix
-     * @param b vector
-     * @return product ab
+     * Performs matrix-vector multiplication.
+     * @param a The input matrix.
+     * @param b The input vector.
+     * @return The product vector {@code c = ab}.
      */
     public static double[] multMatVec(double[][] a, double[] b) {
         double[] c = new double[a.length];
@@ -145,10 +151,10 @@ public class MatrixOp {
     }
 
     /**
-     * Returns the product of two matrices
-     * @param a matrix
-     * @param b matrix
-     * @return c = ab
+     * Performs matrix-matrix multiplication.
+     * @param a The first matrix.
+     * @param b The second matrix.
+     * @return The product matrix {@code c = ab}.
      */
     public static double[][] multMat(double[][] a, double[][] b) {
         double[][] c = new double[a.length][b[0].length];
@@ -163,11 +169,13 @@ public class MatrixOp {
     }
 
     /**
-     * Performs the Cholesky factorization of a symmetric and positive
-     * definite matrix A: A = LL^T, where L is lower triangular with positive
-     * diagonal elements. This method returns L
-     * @param A input matrix (symmetric and positive definite)
-     * @return Cholesky factor L of A = LL^T
+     * Performs the Cholesky factorization of a symmetric and positive-definite matrix {@code A}.
+     * <p>
+     * Decomposes {@code A} into {@code A = LL^T}, where {@code L} is a lower triangular matrix 
+     * with positive diagonal elements.
+     * 
+     * @param A The input matrix (must be symmetric and positive definite).
+     * @return The lower triangular Cholesky factor {@code L}.
      */
     public static double[][] cholesky(double[][] A) {
         int m = A.length;
@@ -190,10 +198,11 @@ public class MatrixOp {
     }
 
     /**
-     * Solves the linear system ax = b, where a is lower triangular
-     * @param a matrix
-     * @param b vector
-     * @return solution x to ax = b
+     * Solves a linear system {@code ax = b} where the matrix {@code a} is lower triangular 
+     * using forward elimination.
+     * @param a A lower triangular matrix.
+     * @param b The constant vector.
+     * @return The solution vector {@code x}.
      */
     public static double[] forwardElimination(double[][] a, double[] b) {
         int m = b.length;
@@ -209,10 +218,11 @@ public class MatrixOp {
     }
 
     /**
-     * Solves the system ax = b, where a is upper triangular
-     * @param a matrix
-     * @param b vector
-     * @return solution x to ax = b
+     * Solves a linear system {@code ax = b} where the matrix {@code a} is upper triangular 
+     * using backward substitution.
+     * @param a An upper triangular matrix.
+     * @param b The constant vector.
+     * @return The solution vector {@code x}.
      */
     public static double[] backwardSubstitution(double[][] a, double[] b) {
         int m = b.length;
@@ -228,11 +238,13 @@ public class MatrixOp {
     }
 
     /**
-     * Solves the linear system ax = b, where matrix a is symmetric and
-     * positive definite
-     * @param a matrix
-     * @param b vector
-     * @return solution x to ax = b
+     * Solves the linear system {@code ax = b} for a symmetric and positive-definite matrix {@code a}.
+     * <p>
+     * This method uses Cholesky factorization followed by forward elimination 
+     * and backward substitution.
+     * @param a Symmetric and positive-definite matrix.
+     * @param b The constant vector.
+     * @return The solution vector {@code x}.
      */
     public static double[] choleskySolve(double[][] a, double[] b) {
         double[][] l = cholesky(a);
@@ -243,10 +255,10 @@ public class MatrixOp {
     }
 
     /**
-     * Computes the inner product between two vectors
-     * @param x vector of dim n
-     * @param y vector of dim n
-     * @return sum_{i=1}^n x_iy_i
+     * Computes the inner product (dot product) between two vectors.
+     * @param x First vector of dimension {@code n}.
+     * @param y Second vector of dimension {@code n}.
+     * @return The scalar value {@code sum_{i=1}^n x_i * y_i}.
      */
     public static double geInnerProd(double[] x, double[] y) {
         double res = 0.;

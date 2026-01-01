@@ -10,58 +10,57 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * represents a MaxEnt model of BKHS (profiles of composition and correlation)
- * when all chains have same length
+ * Represents a Maximum Entropy (MaxEnt) model of BKHS (profiles of composition and correlation)
+ * for cases where all chains have the same length.
  */
 public class MaxEntModel {
     /**
-     * solution (species abundances p) via geometric programming
+     * Solution (species abundances {@code p}) obtained via geometric programming.
      */
     MaxEntOptim opt = null;
     /**
-     * chain length
+     * Chain length.
      */
     int n = 0;
     /**
-     * number of disaccharides
+     * Number of disaccharides.
      */
     int m = 0;
     /**
-     * composition profile
+     * Composition profile.
      */
     double[][] gamma = null;
     /**
-     * transition probabilities averaged over all positions, P[u][s]: from u to s
+     * Transition probabilities averaged over all positions, {@code P[u][s]}: from {@code u} to {@code s}.
      */
     double[][] P = null;
     /**
-     * transition probabilities, pt[i][u][s]: from u at position i to s at i+1
+     * Position-specific transition probabilities, {@code pt[i][u][s]}: from {@code u} at position {@code i} to {@code s} at {@code i+1}.
      */
     double[][][] pt = null;
     /**
-     * disaccharides and overall proportions
+     * Disaccharides and their overall proportions.
      */
     BBSet bbs = null;
     /**
-     * sequences of species
+     * Enumeration of species sequences.
      */
     Species species = null;
     /**
-     * numerical check
+     * Numerical check (sum of probabilities).
      */
     double sump = 0.;
     /**
-     * prefix for output files
+     * Prefix for output files.
      */
     String outPref = null;
 
     /**
-     * represents a MaxEnt model of BKHS (profiles of composition and correlation)
-     * when all chains have same length
-     * @param op MaxEnt model of individual species abundances
-     * @param n BKHS chain length
-     * @param bbs disaccharides
-     * @param outF prefix for output files
+     * Constructs a MaxEnt model for BKHS chains of uniform length.
+     * @param op MaxEnt model of individual species abundances.
+     * @param n BKHS chain length.
+     * @param bbs Set of disaccharides.
+     * @param outF Prefix for output files.
      */
     public MaxEntModel(MaxEntOptim op, int n, BBSet bbs, String outF) {
         outPref = outF;
@@ -96,7 +95,7 @@ public class MaxEntModel {
     }
 
     /**
-     * estimates transition probabilities averaged over all positions
+     * Estimates transition probabilities averaged over all chain positions.
      */
     void makeP() {
         P = new double[m][m];
@@ -122,7 +121,7 @@ public class MaxEntModel {
     }
 
     /**
-     * estimates transition probabilities at each position
+     * Estimates transition probabilities at each specific chain position.
      */
     void makePT() {
         pt = new double[n][m][m];
@@ -175,7 +174,7 @@ public class MaxEntModel {
     }
 
     /**
-     * estimates profile of S/U composition
+     * Estimates the profile of S/U composition along the chain.
      */
     void makeGamma() {
         gamma = new double[n][m];
@@ -201,8 +200,8 @@ public class MaxEntModel {
     }
 
     /**
-     * saves all individual species abundances
-     * @param file output file
+     * Saves all individual species abundances to a file.
+     * @param file Output file path.
      */
     void saveSpeciesAbundance(String file) {
         List<String> v = new ArrayList<>();
@@ -218,9 +217,9 @@ public class MaxEntModel {
     }
 
     /**
-     * default linear equality constraint = composition-1 + 2(digest-1)
-     * @param inDir input directory (ends with "/")
-     * @return default linear equality constraint = composition-1 + 2(digest-1)
+     * Generates the default linear equality constraint: {@code composition-1 + 2(digest-1)}.
+     * @param inDir Input directory (ends with "/").
+     * @return The default linear equality constraint.
      */
     public static LinEqCons getDefaultLEC(String inDir) {
         Species sp = new Species(2, 16);
@@ -235,9 +234,9 @@ public class MaxEntModel {
     }
 
     /**
-     * MaxEnt models for chain length = 13, 14, 15, 16, 17 or 18
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Generates MaxEnt models for varying chain lengths {@code n = 13, 14, 15, 16, 17, or 18}.
+     * @param inDir Input directory (ends with "/").
+     * @param outDir Output directory (ends with "/").
      */
     public static void defaultModelAndN(String inDir, String outDir) {
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
@@ -256,9 +255,9 @@ public class MaxEntModel {
     }
 
     /**
-     * saves maxent S/U composition at each position when all chains have same length n = 16
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Saves MaxEnt S/U composition at each position for uniform chain length {@code n = 16}.
+     * @param inDir Input directory (ends with "/").
+     * @param outDir Output directory (ends with "/").
      */
     public static void defaultModel(String inDir, String outDir) {
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
@@ -268,9 +267,9 @@ public class MaxEntModel {
     }
 
     /**
-     * saves individual species abundances when all chains have same length n = 16
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Saves individual species abundances for uniform chain length {@code n = 16}.
+     * @param inDir Input directory (ends with "/").
+     * @param outDir Output directory (ends with "/").
      */
     public static void defaultModelSpecies(String inDir, String outDir) {
         BBSet bbs = new BBSet(inDir + "US.ab.txt");
@@ -281,9 +280,9 @@ public class MaxEntModel {
     }
 
     /**
-     * saves species abundances after removing the non-reducing end
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Saves species abundances after removing the non-reducing end (NRE).
+     * @param inDir Input directory (ends with "/").
+     * @param outDir Output directory (ends with "/").
      */
     public static void length15Abundances(String inDir, String outDir) {
         List<String> v = Utils.loadFileNoheader(outDir + "MEMspec.species.res");
@@ -319,7 +318,7 @@ public class MaxEntModel {
             for (int j = 0; j < seq.length(); j++) {
                 String t = seq.substring(j, j + 1);
                 if (t.equals("s")) {
-                    seq2 += "{\\bf S}";
+                    seq2 += "S";
                 } else {
                     seq2 += "U";
                 }
@@ -330,12 +329,11 @@ public class MaxEntModel {
     }
 
     /**
-     * relative abundance of a species (seq) under the MaxEnt model defined by only
-     * overall disaccharide composition constraint (model H&amp;I)
-     * @param seq species sequence
-     * @param bbs disaccharide overall abundances
-     * @return relative abundance of a species (seq) under the MaxEnt model defined
-     * by only overall disaccharide composition constraint (model H&amp;I)
+     * Calculates the relative abundance of a species sequence under a MaxEnt model 
+     * defined only by overall disaccharide composition (H&amp;I model).
+     * @param seq Species sequence string.
+     * @param bbs Disaccharide overall abundances.
+     * @return The relative abundance of the species.
      */
     public static double getP2(String seq, BBSet bbs) {
         double res = 1.;
@@ -348,8 +346,8 @@ public class MaxEntModel {
     }
 
     /**
-     * Main entry point
-     * @param args command line arguments
+     * Main entry point for the MaxEnt uniform length modeling.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input/";

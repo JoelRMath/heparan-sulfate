@@ -3,35 +3,35 @@ package heparansulfate;
 import java.util.Random;
 
 /**
- * linear inequality constraints on a N&amp;I model: nonnegativity, sum to 1 at each position
- * and overall disaccharide abundances
+ * Linear inequality constraints on a Nonhomogeneity and Independence (N&amp;I) model.
+ * Includes constraints for nonnegativity, sum to 1 at each position, and overall 
+ * disaccharide abundances.
  */
 public class NIModelLIC {
     /**
-     * matrix in {@code Ax <= b}
+     * Matrix in the constraint system {@code Ax <= b}.
      */
     double[][] A = null;
     /**
-     * vector in {@code Ax <= b}
+     * Vector in the constraint system {@code Ax <= b}.
      */
     double[] b = null;
     /**
-     * chain length
+     * Chain length.
      */
     int n = 0;
     /**
-     * number of building blocks
+     * Number of building block types.
      */
     int m = 0;
 
     /**
-     * linear inequality constraints on a N&amp;I model:
-     * {@code Ax <= b} including nonnegativity, sum to 1 at each position and
-     * overall disaccharide abundances
-     * @param n chain length in PModel
-     * @param bbs set of disaccharides
-     * @param pos positions with composition fixed by zeta
-     * @param zeta composition at positions in pos
+     * Linear inequality constraints on a N&amp;I model: {@code Ax <= b} including 
+     * nonnegativity, sum to 1 at each position, and overall disaccharide abundances.
+     * @param n Chain length in the model.
+     * @param bbs Set of disaccharides.
+     * @param zeta Composition values at the fixed positions.
+     * @param pos Array of specific positions with composition fixed by {@code zeta}.
      */
     public NIModelLIC(int n, BBSet bbs, double[][] zeta, int[] pos) {
         this.n = n;
@@ -112,11 +112,10 @@ public class NIModelLIC {
     }
 
     /**
-     * linear inequality constraints on a N&amp;I model:
-     * {@code Ax <= b} including nonnegativity, sum to 1 at each position and overall
-     * disaccharide abundances
-     * @param n chain length in PModel
-     * @param bbs set of building blocks (disaccharides)
+     * Linear inequality constraints on a N&amp;I model: {@code Ax <= b} including 
+     * nonnegativity, sum to 1 at each position, and overall disaccharide abundances.
+     * @param n Chain length in the model.
+     * @param bbs Set of building blocks (disaccharides).
      */
     public NIModelLIC(int n, BBSet bbs) {
         this.n = n;
@@ -171,11 +170,11 @@ public class NIModelLIC {
     }
 
     /**
-     * index kk (1 to n*m) in vector gamma corresponding to entry (ii,jj) in matrix Gamma
-     * @param ii row index in matrix Gamma (1 to n)
-     * @param jj column index in matrix Gamma (1 to m)
-     * @return index kk (1 to n*m) in vector gamma corresponding to entry
-     * (ii,jj) in matrix Gamma
+     * Index {@code kk} (1 to {@code n * m}) in vector {@code gamma} corresponding to 
+     * entry {@code (ii, jj)} in matrix {@code Gamma}.
+     * @param ii Row index in matrix {@code Gamma} (1 to {@code n}).
+     * @param jj Column index in matrix {@code Gamma} (1 to {@code m}).
+     * @return Index {@code kk} in the vector representation.
      */
     int getKK(int ii, int jj) {
         int res = ii + (jj - 1) * n;
@@ -183,11 +182,10 @@ public class NIModelLIC {
     }
 
     /**
-     * column index jj (1 to m) in matrix Gamma corresponding to index kk
-     * (1 to n*m) in vector gamma
-     * @param kk index (1 to n*m) in vector gamma
-     * @return column index jj (1 to m) in matrix Gamma corresponding to
-     * index kk (1 to n*m) in vector gamma
+     * Column index {@code jj} (1 to {@code m}) in matrix {@code Gamma} corresponding 
+     * to index {@code kk} (1 to {@code n * m}) in vector {@code gamma}.
+     * @param kk Index in vector {@code gamma}.
+     * @return Column index {@code jj} in matrix {@code Gamma}.
      */
     int getJJ(int kk) {
         int res = 1 + (kk - 1) / n;
@@ -195,11 +193,10 @@ public class NIModelLIC {
     }
 
     /**
-     * row index ii (1 to n) in matrix Gamma corresponding to index kk
-     * (1 to n*m) in vector gamma
-     * @param kk index (1 to n*m) in vector gamma
-     * @return row index ii (1 to n) in matrix Gamma corresponding to
-     * index kk (1 to n*m) in vector gamma
+     * Row index {@code ii} (1 to {@code n}) in matrix {@code Gamma} corresponding 
+     * to index {@code kk} (1 to {@code n * m}) in vector {@code gamma}.
+     * @param kk Index in vector {@code gamma}.
+     * @return Row index {@code ii} in matrix {@code Gamma}.
      */
     int getII(int kk) {
         int res = kk - (getJJ(kk) - 1) * n;
@@ -207,8 +204,8 @@ public class NIModelLIC {
     }
 
     /**
-     * for testing
-     * @param args command line arguments
+     * For testing.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input/";

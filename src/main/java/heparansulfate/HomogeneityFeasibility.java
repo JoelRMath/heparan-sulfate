@@ -4,49 +4,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Feasibility problem (phase I via simplex) to test for the possibility
+ * Feasibility problem solver (Phase I via Simplex) to test for the possibility
  * of homogeneous disaccharide composition along BKHS chains when combined
- * with heparinase digest constraints
+ * with heparinase digest constraints.
  */
 public class HomogeneityFeasibility {
     /**
-     * enumeration of BKHS chain sequences
+     * Enumeration of BKHS chain sequences.
      */
     Species sp = null;
     /**
-     * matrix in constraing Ap = b
+     * Matrix in the constraint {@code Ap = b}.
      */
     double[][] A = null;
     /**
-     * vector in constraint Ap = b
+     * Vector in the constraint {@code Ap = b}.
      */
     double[] b = null;
     /**
-     * convenience wrapper for constraint Ap = b
+     * Convenience wrapper for the linear equality constraint {@code Ap = b}.
      */
     LinEqCons lec = null;
     /**
-     * solution to feasibility problem (phase I) via linear programming
-     * (simplex method)
+     * Solution to the feasibility problem (Phase I) via linear programming
+     * using the Simplex method.
      */
     SimplexPhaseI sp1 = null;
     /**
-     * output of the feasibility problem: close to 0 if homogeneity is feasible
+     * Output of the feasibility problem: a value close to 0 indicates that 
+     * homogeneity is feasible under the given constraints.
      */
     double infeasibility = 0.;
     /**
-     * disaccharide labels
+     * Disaccharide labels.
      */
     String[] lab = null;
 
     /**
-     * Feasibility problem (phase I via simplex) to test for the possibility
-     * of homogeneous disaccharide composition along BKHS chains when combined with
-     * heparinase digest constraints
-     * @param m number of disaccharides
-     * @param n BKHD chain length
-     * @param lab disaccharide labels
-     * @param inDir input directory (ends with "/")
+     * Constructs a feasibility problem to test the compatibility of homogeneous 
+     * disaccharide composition with heparinase digest constraints.
+     * @param m Number of disaccharides.
+     * @param n BKHD chain length.
+     * @param lab Disaccharide labels.
+     * @param inDir Input directory path (must end with "/").
      */
     public HomogeneityFeasibility(int m, int n, String[] lab, String inDir) {
         this.lab = lab;
@@ -76,10 +76,10 @@ public class HomogeneityFeasibility {
     }
 
     /**
-     * computes feasibility of combining homogeneity and heparinase digest constraints
-     * for BKHS chain lengths between 5 and 20
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Computes the feasibility of combining homogeneity and heparinase digest constraints
+     * across a range of BKHS chain lengths (from 5 to 20).
+     * @param inDir Input directory path (must end with "/").
+     * @param outDir Output directory path (must end with "/").
      */
     public static void makeProfile(String inDir, String outDir) {
         String[] lab = new String[2];
@@ -95,8 +95,8 @@ public class HomogeneityFeasibility {
     }
 
     /**
-     * Main entry point
-     * @param args command line arguments
+     * Main entry point for the homogeneity feasibility analysis.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input/";

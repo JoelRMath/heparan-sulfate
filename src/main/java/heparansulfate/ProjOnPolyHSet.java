@@ -3,26 +3,30 @@ package heparansulfate;
 import java.util.Random;
 
 /**
- * projection of a vector y onto a polyhedral set ({@code Ax <= b}) via coordinate
- * descent: minimize w.r.t. x {@code ||x-y||^2} subject to {@code Ax <= b}
+ * Projection of a vector {@code y} onto a polyhedral set ({@code Ax <= b}) via coordinate
+ * descent. Solves the optimization problem: minimize {@code ||x - y||^2} with respect to 
+ * {@code x} subject to the constraints {@code Ax <= b}.
  */
 public class ProjOnPolyHSet {
     /**
-     * certificate (false if coordinate descent was too slow)
+     * Convergence certificate. Set to {@code false} if the coordinate descent 
+     * process failed to converge within the allowed iterations.
      */
     boolean success = false;
     /**
-     * projection of y onto polyhedral set {@code Ax <= b}
+     * The resulting optimal vector {@code x} representing the projection of {@code y} 
+     * onto the polyhedral set {@code Ax <= b}.
      */
     public double[] optimum = null;
 
     /**
-     * projection of a vector y onto a polyhedral set ({@code Ax <= b}) via coordinate
-     * descent: minimize w.r.t. x {@code ||x-y||^2} subject to {@code Ax <= b}
-     * @param y vector to project
-     * @param A matrix in inequality constraints {@code Ax <= b}
-     * @param b vector in inequality constraints {@code Ax <= b}
-     * @param rand used to seed the coordinate descent
+     * Projects vector {@code y} onto a polyhedral set defined by the linear 
+     * inequalities {@code Ax <= b}.
+     * 
+     * @param y The vector to be projected.
+     * @param A The matrix defining the inequality constraints {@code Ax <= b}.
+     * @param b The vector of targets in the inequality constraints {@code Ax <= b}.
+     * @param rand Random number generator used to seed the initial coordinate descent state.
      */
     public ProjOnPolyHSet(double[] y, double[][] A, double[] b, Random rand) {
         double[][] AT = MatrixOp.transpose(A);

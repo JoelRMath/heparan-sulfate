@@ -9,100 +9,110 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * implementation of the Simplex method, but limited to phase I implemented
- * via addition of m artificial variables
- * 
+ * Implementation of the Simplex method, but limited to Phase I.
+ * Phase I is implemented via the addition of {@code m} artificial variables to find 
+ * an initial feasible solution.
  */
 public class SimplexPhaseI {
     /**
-     * contains the linear constraint Ax = b in standard for, that is,
-     * if some elements of b were negative, they are turned positive and the
-     * corresponding row of A is multiplied by -1
+     * Contains the linear constraint {@code Ax = b} in standard form.
+     * Elements of {@code b} are ensured to be positive.
      */
     SFormCons sfc = null;
+
     /**
-     * simplex tableau
-     * 
+     * Simplex tableau.
      */
     Tableau tab = null;
+
     /**
-     * values of certificate are:
-     * -1 for no feasible point, 0 for unbounded below in phase II and 1
-     * for optimum found
+     * Values of certificate are: {@code -1} for no feasible point, {@code 0} for 
+     * unbounded below in Phase II, and {@code 1} for optimum found.
      */
     int certificate = -3;
+
     /**
-     * certificate in words
+     * Certificate description in words.
      */
     public String certificateString = null;
+
     /**
-     * the largest absolute value among artificial variables at the end
-     * of phase I (feasible problem only if absAVmax < epsilon)
+     * The largest absolute value among artificial variables at the end of Phase I.
+     * The problem is feasible only if {@code absAVmax < epsilon}.
      */
     double absAVmax = 0.;
+
     /**
-     * buffer of the tableau
+     * Buffer copy of the tableau.
      */
     double[][] y = null;
+
     /**
-     * basic variables are always kept in the first m columns, this hashtable
-     * maps variable indices to column indices
+     * Maps variable indices to column indices. Basic variables are kept in the first {@code m} columns.
      */
     Map<Integer, Integer> var2col = new HashMap<>();
+
     /**
-     * basic variables are always kept in the first m columns, this hashtable
-     * maps column indices to variable indices
+     * Maps column indices to variable indices. Basic variables are kept in the first {@code m} columns.
      */
     Map<Integer, Integer> col2var = new HashMap<>();
+
     /**
-     * used to keep track of which variables indices are basic,
-     * in order to implement Bland's rule
+     * Keeps track of basic variable indices to implement Bland's rule.
      */
     TreeSet<Integer> basic = new TreeSet<>();
+
     /**
-     * used to keep track of which variables indices are nonbasic,
-     * in order to implement Bland's rule
+     * Keeps track of nonbasic variable indices to implement Bland's rule.
      */
     TreeSet<Integer> nonbasic = new TreeSet<>();
+
     /**
-     * keeps track of indices of the artificial variables
+     * Keeps track of indices of the artificial variables.
      */
     Set<Integer> artificial = new HashSet<>();
+
     /**
-     * the point obtained at the end of phaseI, feasible or not
+     * The point obtained at the end of Phase I, including artificial variables.
      */
     double[] phaseIPoint = null;
+
     /**
-     * same as phaseIpoint but omitting the artificial variables
+     * The feasible point obtained at the end of Phase I, omitting artificial variables.
      */
     public double[] feasiblePoint = null;
+
     /**
-     * inconsistency threshold for phase I
+     * Inconsistency threshold for Phase I.
      */
     double epsilon = 1e-14;
+
     /**
-     * number of constraints
+     * Number of constraints.
      */
     int m = 0;
+
     /**
-     * number of variables in phase II (i.e. n is n+m in phase I)
+     * Number of variables for Phase II.
      */
     public int n = 0;
+
     /**
-     * at the end of phase I an initial tableau for phase II is created;
-     * note that this tableau does not have a last row for relative costs
+     * Initial tableau created for Phase II at the end of Phase I.
      */
     double[][] phaseIITableau = null;
+
     /**
-     * final infeasibility
+     * Final infeasibility value.
      */
     double finalCost = 0.;
 
     /**
-     * implementation of the Simplex method, limited to phase I
-     * implemented via addition of m artificial variables
-     * @param A matrix in constraint Ax = b
-     * @param b vector in constraint Ax = b
+     * Implementation of the Simplex method, limited to Phase I.
+     * Find a feasible starting point via the addition of {@code m} artificial variables.
+     * 
+     * @param A Matrix in constraint {@code Ax = b}.
+     * @param b Vector in constraint {@code Ax = b}.
      */
     public SimplexPhaseI(double[][] A, double[] b) {
         sfc = new SFormCons(A, b);
@@ -151,8 +161,8 @@ public class SimplexPhaseI {
     }
 
     /**
-     * creates an initial tableau for phase II and updates mapping
-     * between variables and columns
+     * Creates an initial tableau for Phase II and updates mappings between 
+     * variables and columns.
      */
     void updateForPhaseII() {
         Map<Integer, Integer> col2varB = new HashMap<>();
@@ -201,8 +211,8 @@ public class SimplexPhaseI {
     }
 
     /**
-     * saves the found feasible point; note that fixDegeneracy() and
-     * makePhaseIPoint() must have been called before
+     * Saves the found feasible point. 
+     * {@code fixDegeneracy()} and {@code makePhaseIPoint()} must be called first.
      */
     void makeFeasiblePoint() {
         certificateString = "feasible";
@@ -213,7 +223,7 @@ public class SimplexPhaseI {
     }
 
     /**
-     * saves the last point of phase I (including artificial variables)
+     * Saves the final point of Phase I, including values for artificial variables.
      */
     void makePhaseIPoint() {
         phaseIPoint = new double[tab.n];
@@ -226,10 +236,8 @@ public class SimplexPhaseI {
     }
 
     /**
-     * in case of degeneracy some of the final basic variables might still be artificial
-     * variables; if so, these basic variables must be swapped with nonbasic variables
-     * that are not artificial variables; this is performed by this method, updating also
-     * mappings between tableau columns and variable indices
+     * Handles degeneracy by swapping any artificial variables remaining in the 
+     * basis with non-artificial nonbasic variables.
      */
     void fixDegeneracy() {
         Set<Integer> toswap = new HashSet<>();
@@ -262,17 +270,17 @@ public class SimplexPhaseI {
     }
 
     /**
-     * the current cost (objective function value)
-     * @return the current cost
+     * Returns the current cost (objective function value).
+     * @return The current cost.
      */
     double getCost() {
         return -tab.y[tab.y.length - 1][tab.y[0].length - 1];
     }
 
     /**
-     * pivoting operation in the tableau
-     * @param p index of the column to leave the basis
-     * @param q index of the column to enter the basis
+     * Performs a pivoting operation in the tableau.
+     * @param p Index of the row (column to leave basis).
+     * @param q Index of the entering column.
      */
     void pivot(int p, int q) {
         for (int i = 0; i < tab.nrows; i++) {
@@ -290,10 +298,9 @@ public class SimplexPhaseI {
     }
 
     /**
-     * swaps columns p and q in the tableau and updates mappings
-     * between column and variable indices
-     * @param p index of the column to leave the basis
-     * @param q index of the column to enter the basis
+     * Swaps columns {@code p} and {@code q} in the tableau and updates mappings.
+     * @param p Index of the column to leave the basis.
+     * @param q Index of the column to enter the basis.
      */
     void swapColumns(int p, int q) {
         double[] buf = new double[tab.y.length];
@@ -319,11 +326,9 @@ public class SimplexPhaseI {
     }
 
     /**
-     * Given the index q of the column to enter next the basic set, finds the
-     * index q of the column to leave the basic set, or -1 if the linear
-     * problem is unbounded below. This method also implements Bland's rule
-     * @param q index of the column to enter the basic set
-     * @return index of the column to leave the basis
+     * Finds the index of the row/column to leave the basis using Bland's rule.
+     * @param q Index of the column entering the basic set.
+     * @return Index of the column to leave the basis, or {@code -1} if unbounded.
      */
     int getP(int q) {
         int res = -1;
@@ -350,10 +355,8 @@ public class SimplexPhaseI {
     }
 
     /**
-     * returns the index q of the column to enter the basic set in
-     * order to lower the cost, or -1 if the current set of basic
-     * variables is optimal.
-     * @return the index q of the column to enter the basis
+     * Returns the index of the column to enter the basic set.
+     * @return The index {@code q} of the entering column, or {@code -1} if optimal.
      */
     int getQ() {
         int res = -1;
@@ -371,7 +374,7 @@ public class SimplexPhaseI {
     }
 
     /**
-     * buffers the current tableau
+     * Buffers the current tableau.
      */
     void saveTab() {
         for (int i = 0; i < tab.nrows; i++) {
@@ -382,8 +385,8 @@ public class SimplexPhaseI {
     }
 
     /**
-     * for testing
-     * @param args command line arguments
+     * For testing.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         int n = 100;

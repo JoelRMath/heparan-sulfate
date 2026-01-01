@@ -10,21 +10,23 @@ import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
- * general methods (mostly I/O) used by several classes
+ * General utility methods, primarily handling I/O operations and basic statistics, 
+ * used across several classes in the package.
  */
 public class Utils {
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     public Utils() {
     }
 
     /**
-     * random selection of index i in F based on probabilities F[i+1]-F[i]
-     * @param F cumulative probabilities
-     * @param rand random number generator
-     * @return random index i in F based on probabilities F[i+1]-F[i]
+     * Performs a random selection of an index based on cumulative probabilities.
+     * @param F Array of cumulative probabilities.
+     * @param rand Random number generator.
+     * @return A random index {@code i} such that the selection is based on the 
+     * interval probabilities defined by {@code F}.
      */
     public static int getRandIndexInF(double[] F, Random rand) {
         double d = rand.nextDouble() * 0.99999999;
@@ -40,9 +42,9 @@ public class Utils {
     }
 
     /**
-     * minimum
-     * @param x array of values
-     * @return min of x
+     * Finds the minimum value in an array.
+     * @param x Array of double values.
+     * @return The minimum value in {@code x}.
      */
     public static double getMin(double[] x) {
         double res = x[0];
@@ -55,9 +57,9 @@ public class Utils {
     }
 
     /**
-     * maximum
-     * @param x array of values
-     * @return max of x
+     * Finds the maximum value in an array.
+     * @param x Array of double values.
+     * @return The maximum value in {@code x}.
      */
     public static double getMax(double[] x) {
         double res = x[0];
@@ -70,9 +72,9 @@ public class Utils {
     }
 
     /**
-     * average
-     * @param x array of values
-     * @return average of x
+     * Calculates the arithmetic average of an array.
+     * @param x Array of double values.
+     * @return The average of the values in {@code x}.
      */
     public static double getAverage(double[] x) {
         double res = 0.;
@@ -84,9 +86,9 @@ public class Utils {
     }
 
     /**
-     * standard deviation
-     * @param x array of values
-     * @return standard deviation of x
+     * Calculates the sample standard deviation of an array.
+     * @param x Array of double values.
+     * @return The standard deviation of the values in {@code x}.
      */
     public static double getSD(double[] x) {
         double res = 0.;
@@ -100,9 +102,9 @@ public class Utils {
     }
 
     /**
-     * loads an ASCII file into a vector, line by line
-     * @param file ASCII file, tab-delimited
-     * @return Vector representation (one line in each element) of file
+     * Loads a tab-delimited ASCII file into a list of strings, skipping the header.
+     * @param file Path to the tab-delimited ASCII file.
+     * @return A {@code List} of strings, where each element represents a line from the file.
      */
     public static List<String> loadFileNoheader(String file) {
         List<String> res = new ArrayList<>();
@@ -125,9 +127,9 @@ public class Utils {
     }
 
     /**
-     * saves each element of Vector v into a line of ASCII file ’file’
-     * @param v contains file lines, each one being tab-delimited
-     * @param file output file
+     * Saves each element of a list into a line of an ASCII file.
+     * @param v List containing the lines to be saved.
+     * @param file Path to the output file.
      */
     public static void saveFile(List<String> v, String file) {
         try {

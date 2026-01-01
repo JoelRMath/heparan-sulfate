@@ -5,55 +5,38 @@ import java.util.List;
 import java.util.Random;
 
 /**
-* species (enumeration of sequences) with specified chain length distribution;
-* the model of chain length distribution is obtained by projection
-*/
+ * Enumeration of sequences (species) with a specified chain length distribution.
+ * The model of the chain length distribution is obtained by projection.
+ */
 public class MixSpecies {
-    /**
-    * number of disaccharides
-    */
+    /** Number of disaccharides. */
     int m = 2;
-    /**
-    * smallest chain length
-    */
+    /** Smallest chain length. */
     int lmin = 0;
-    /**
-    * longest chain length
-    */
+    /** Longest chain length. */
     int lmax = 0;
-    /**
-    * number of chain lengths
-    */
+    /** Number of unique chain lengths. */
     int nc = 0;
-    /**
-    * chain lengths
-    */
+    /** Array of chain lengths. */
     int[] len = null;
-    /**
-    * chain length distribution
-    */
+    /** Chain length distribution (weights). */
     double[] w = null;
-    /**
-    * number of species
-    */
+    /** Total number of species across all lengths. */
     int N = 0;
-    /**
-    * sequences: seq[i] = sequence # i
-    */
+    /** Enumerated sequences: {@code seq[i]} represents sequence index {@code i}. */
     int[][] seq = null;
-    /**
-    * based on this.w, lengthAtLeast[l] is the proportion of chains having
-    * length at least l+1
-    */
+    /** * Based on {@code w}, {@code lengthAtLeast[l]} is the proportion of chains 
+     * having length at least {@code l+1}. 
+     */
     double[] lengthAtLeast = null;
-    
+
     /**
-    * mixture model of BKHS chain lengths; sequence enumeration
-    * @param lmin smallest chain length
-    * @param lmax largest chain length
-    * @param sigma spread of chain lengths
-    * @param mu average chain length
-    */
+     * Mixture model of BKHS chain lengths and sequence enumeration.
+     * @param lmin Smallest chain length.
+     * @param lmax Largest chain length.
+     * @param sigma Spread (standard deviation) of chain lengths.
+     * @param mu Average chain length.
+     */
     public MixSpecies(int lmin, int lmax, double sigma, double mu) {
         this.lmin = lmin;
         this.lmax = lmax;
@@ -98,16 +81,15 @@ public class MixSpecies {
         }
         MatrixOp.printVec(w);
     }
-    
+
     /**
-    * combines constraints on vector of species abundances: normalization, composition
-    * and fragment length distributions (fragFile[]) after digestion (csFile[])
-    * @param bbs disaccharide set, with composition in bbs.rho
-    * @param csFile files containing cleavage specificities
-    * @param fragFile files containing distributions of fragment lengths
-    * @return combined constraints on vector of species abundances: normalization,
-    * composition and fragment length distributions (fragFile[]) after digestion (csFile[])
-    */
+     * Combines constraints on the vector of species abundances: normalization, 
+     * composition, and fragment length distributions after digestion.
+     * @param bbs Disaccharide set with composition in {@code bbs.rho}.
+     * @param csFile Files containing cleavage specificities.
+     * @param fragFile Files containing distributions of fragment lengths.
+     * @return Combined linear equality constraints.
+     */
     LinEqCons getCompleteLEC(BBSet bbs, String[] csFile, String[] fragFile) {
         List<LinEqCons> v = new ArrayList<>();
         v.add(getNormLEC());
@@ -120,16 +102,15 @@ public class MixSpecies {
         v.add(LinEqCons.removeLastRow(getWLEC()));
         return new LinEqCons(v);
     }
-    
+
     /**
-    * constraint for homogeneity of composition with chain length combined to
-    * digest constraints
-    * @param bbs disaccharide set
-    * @param csFile files containing cleavage specificities
-    * @param fragFile files containing distributions of fragment lengths
-    * @return constraint for homogeneity of composition with chain length
-    * combined to digest constraints
-    */
+     * Constraint for homogeneity of composition with chain length combined 
+     * with digest constraints.
+     * @param bbs Disaccharide set.
+     * @param csFile Files containing cleavage specificities.
+     * @param fragFile Files containing distributions of fragment lengths.
+     * @return Combined linear equality constraints for homogeneity feasibility.
+     */
     LinEqCons getRhoLHomFeasLEC(BBSet bbs, String[] csFile, String[] fragFile) {
         List<LinEqCons> v = new ArrayList<>();
         v.add(getNormLEC());
@@ -142,12 +123,12 @@ public class MixSpecies {
         v.add(getRhoLHomLEC(bbs));
         return new LinEqCons(v);
     }
-    
+
     /**
-    * constraint for homogeneity of composition with chain length
-    * @param bbs disaccharide set
-    * @return constraint for homogeneity of composition with chain length
-    */
+     * Constraint for homogeneity of composition with chain length.
+     * @param bbs Disaccharide set.
+     * @return Linear equality constraint for homogeneity.
+     */
     LinEqCons getRhoLHomLEC(BBSet bbs) {
         double[][] A = new double[nc][N];
         double[] b = new double[nc];
@@ -168,12 +149,11 @@ public class MixSpecies {
         }
         return new LinEqCons(A, b, tp);
     }
-    
+
     /**
-    * linear equality constraint on species abundances for chain length distribution
-    * @return linear equality constraint on species abundances for
-    * chain length distribution
-    */
+     * Linear equality constraint on species abundances for chain length distribution.
+     * @return Linear equality constraint for the distribution {@code w}.
+     */
     LinEqCons getWLEC() {
         double[][] A = new double[nc][N];
         double[] b = new double[nc];
@@ -189,11 +169,11 @@ public class MixSpecies {
         }
         return new LinEqCons(A, b, tp);
     }
-    
+
     /**
-    * sum-to-1 constraint on vector of species abundances
-    * @return sum-to-1 constraint on vector of species abundances
-    */
+     * Sum-to-1 (normalization) constraint on the vector of species abundances.
+     * @return Normalization linear equality constraint.
+     */
     LinEqCons getNormLEC() {
         double[][] A = new double[1][N];
         double[] b = new double[1];
@@ -205,17 +185,15 @@ public class MixSpecies {
         }
         return new LinEqCons(A, b, lab);
     }
-    
+
     /**
-    * linear equality constraint on the vector of species abundances for distribution
-    * f of fragment length after digestion by enzyme (cleavage specificities in cs.c)
-    * @param f distribution of fragment length
-    * @param cs cleavage specificities
-    * @param bbs disaccharide set (composition in bbs.rho)
-    * @return linear equality constraint on the vector of species abundances for
-    * distribution f of fragment length after digestion by enzyme
-    * (cleavage specificities in cs.c)
-    */
+     * Linear equality constraint for the distribution {@code f} of fragment lengths 
+     * after digestion by an enzyme.
+     * @param f Distribution of fragment lengths.
+     * @param cs Cleavage specificities.
+     * @param bbs Disaccharide set (composition in {@code bbs.rho}).
+     * @return Linear equality constraint for fragment distribution.
+     */
     LinEqCons getFragLEC(double[] f, CSpec cs, BBSet bbs) {
         double[][] A = new double[f.length][N];
         double[] b = new double[f.length];
@@ -253,16 +231,15 @@ public class MixSpecies {
         }
         return new LinEqCons(A, b, lab);
     }
-    
+
     /**
-    * contribution of species s to expected number of fragments of length
-    * ll after digestion by enzyme with cleavage specificities given by cs.c
-    * @param s species index
-    * @param ll fragment length
-    * @param cs cleavage specificities
-    * @return contribution of species s to expected number of fragments of length
-    * ll after digestion by enzyme with cleavage specificities given by cs.c
-    */
+     * Contribution of species {@code s} to the expected number of fragments of 
+     * length {@code ll} after digestion.
+     * @param s Species index.
+     * @param ll Fragment length.
+     * @param cs Cleavage specificities.
+     * @return Expected fragment contribution.
+     */
     double getFragContrib(int s, int ll, CSpec cs) {
         int n = seq[s].length;
         double res = 0.;
@@ -284,14 +261,13 @@ public class MixSpecies {
         res += t;
         return res;
     }
-    
+
     /**
-    * linear equality constraint on species abundances for overall disaccharide
-    * composition between positions 2 and n
-    * @param bbs set of disaccharides with composition in bbs.rho
-    * @return linear equality constraint on species abundances for overall
-    * disaccharide composition between positions 2 and n
-    */
+     * Linear equality constraint on species abundances for overall disaccharide 
+     * composition between positions 2 and {@code n}.
+     * @param bbs Set of disaccharides with composition in {@code bbs.rho}.
+     * @return Composition linear equality constraint.
+     */
     LinEqCons getRhoLEC(BBSet bbs) {
         double[][] A = new double[m][N];
         double[] b = new double[m];
@@ -314,13 +290,13 @@ public class MixSpecies {
         }
         return new LinEqCons(A, b, tp);
     }
-    
+
     /**
-    * testing that homogeneity of composition across chain lengths is
-    * feasible after incorporating digest constraints;
-    * Note: requires large memory (-Xmx8000M)
-    * @param inDir input directory (ends with "/")
-    */
+     * Tests that homogeneity of composition across chain lengths is feasible 
+     * after incorporating digest constraints.
+     * <p>Note: Requires large memory (e.g., {@code -Xmx8000M}).</p>
+     * @param inDir Input directory.
+     */
     public static void testRhoLHomFeas(String inDir) {
         int lmin = 10;
         int lmax = 20;
@@ -338,17 +314,17 @@ public class MixSpecies {
         SimplexPhaseI sp1 = new SimplexPhaseI(lec.A, lec.b);
         System.err.println(sp1.finalCost);
     }
-    
+
     /**
-    * computes chain length distribution. First a Gaussian (mu, sigma) restricted
-    * between lmin and lmax is utilized as approximation. Then, projection on the
-    * probability simplex with constraint to preserve mu is performed.
-    * @param lmin smallest chain length
-    * @param lmax longest chain length
-    * @param sigma standard deviation of Gaussian approximation
-    * @param mu desired average chain length
-    * @return chain length distribution: between lmin and lmax with mean mu
-    */
+     * Computes the chain length distribution. A Gaussian ({@code mu}, {@code sigma}) 
+     * restricted between {@code lmin} and {@code lmax} is used as an approximation, 
+     * followed by projection on the probability simplex to preserve {@code mu}.
+     * @param lmin Smallest chain length.
+     * @param lmax Longest chain length.
+     * @param sigma Standard deviation of Gaussian approximation.
+     * @param mu Desired average chain length.
+     * @return Chain length distribution between {@code lmin} and {@code lmax} with mean {@code mu}.
+     */
     public static double[] getW(int lmin, int lmax, double sigma, double mu) {
         int nc = lmax - lmin + 1;
         double[] res = new double[nc];
@@ -417,15 +393,15 @@ public class MixSpecies {
         System.err.println(av);
         return res;
     }
-    
+
     /**
-    * Saves a distribution of chain lengths of to a file.
-    * @param lmin smallest length
-    * @param lmax largest lenght
-    * @param sigma spread parameter
-    * @param mu mean
-    * @param filepath file to save
-    */
+     * Saves a distribution of chain lengths to a file.
+     * @param lmin Smallest length.
+     * @param lmax Largest length.
+     * @param sigma Spread parameter.
+     * @param mu Mean length.
+     * @param filePath Path to the output file.
+     */
     public void saveFullDistribution(int lmin, int lmax, double sigma, double mu, String filePath) {
         List<String> lines = new ArrayList<>();
         lines.add("l\tw");
@@ -435,24 +411,24 @@ public class MixSpecies {
         }
         Utils.saveFile(lines, filePath);
     }
-    
+
     /**
-    * Static wrapper to save distribution from jcall
-    * @param lmin smallest length
-    * @param lmax largest length
-    * @param sigma spread parameter
-    * @param mu mean
-    * @param filepath file to save
-    */
+     * Static wrapper to compute and save chain length distribution.
+     * @param lmin Smallest length.
+     * @param lmax Largest length.
+     * @param sigma Spread parameter.
+     * @param mu Mean length.
+     * @param filePath Path to the output file.
+     */
     public static void saveDistribution(int lmin, int lmax, double sigma, double mu, String filePath) {
         MixSpecies msp = new MixSpecies(lmin, lmax, sigma, mu);
         msp.saveFullDistribution(lmin, lmax, sigma, mu, filePath);
     }
-    
+
     /**
-    * Main entry point
-    * @param args command line arguments
-    */
+     * Main entry point for testing feasibility.
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
         String inDir = "input/";
         testRhoLHomFeas(inDir);

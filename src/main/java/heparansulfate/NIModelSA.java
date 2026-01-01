@@ -10,83 +10,82 @@ import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
- * Fitting of N&amp;I model parameters with heparinase digest constraints via simulated annealing
+ * Fits parameters of the N&amp;I model using heparinase digest constraints via simulated annealing.
  */
 public class NIModelSA {
     /**
-     * position models (e.g. one for hepI and one for hepIII)
+     * Position models (e.g., one for HepI and one for HepIII).
      */
     NIModel[] pm = null;
     /**
-     * f[i][] is the distribution of fragment length (experimental data) for digest model i
+     * Experimental fragment length distribution {@code f[i][]} for digest model {@code i}.
      */
     double[][] f = null;
     /**
-     * for perturbations
+     * Random number generator for perturbations.
      */
     Random rand = null;
     /**
-     * chain length
+     * BKHS chain length.
      */
     int n = 0;
     /**
-     * number of building blocks
+     * Number of building block types.
      */
     int m = 0;
     /**
-     * number of digests
+     * Number of enzymatic digests.
      */
     int nd = 0;
     /**
-     * enzyme specificities/yields
+     * Enzyme specificities and yields.
      */
     CSpec[] cs = null;
     /**
-     * set of building blocks
+     * Set of building blocks.
      */
     BBSet bbs = null;
     /**
-     * position model parameters
+     * Position model parameters (Gamma matrix).
      */
     double[][] gamma = null;
     /**
-     * best encountered model
+     * Best model encountered during the annealing process.
      */
     double[][] gamBest = null;
     /**
-     * buffer for this.gamma
+     * Buffer for storing {@code this.gamma}.
      */
     double[][] gamBuff = null;
     /**
-     * linear inequality constraints provided by overall building block proportions,
-     * sum to 1 at each position and nonnegativity
+     * Linear inequality constraints including building block proportions, sum-to-1, and nonnegativity.
      */
     NIModelLIC plic = null;
     /**
-     * number of perturbations at each temperature
+     * Number of perturbations performed at each temperature step.
      */
     int nPert = 100;
     /**
-     * annealing schedule (geometric temperature decrease)
+     * Annealing schedule factor for geometric temperature decrease.
      */
     double alpha = 0.99;
     /**
-     * best encountered value of the objective function
+     * Best encountered value of the objective function (energy).
      */
     double bestE = 0.;
 
     /**
-     * Fitting of N&amp;I model parameters with heparinase digest constraints via simulated annealing;
-     * special constructor which adds constraints
-     * @param n BKHS chain length
-     * @param bbs disachharides and their overall proportions
-     * @param specFile cleavage specificities/yields
-     * @param consFile constraints (experimental fragment length distributions)
-     * @param outFile output file for modeled fragment length distributions
-     * @param modFile output file for optimized matrix Gamma of N&amp;I model
-     * @param zeta specified compositions at positions in pos (additional constraints)
-     * @param pos positions at which composition is further specified (additional constraints)
-     * @param rand random number generator
+     * Fits parameters of the N&amp;I model using simulated annealing with additional constraints.
+     * 
+     * @param n BKHS chain length.
+     * @param bbs Disaccharides and their overall proportions.
+     * @param specFile Files containing cleavage specificities.
+     * @param consFile Files containing experimental fragment length distributions.
+     * @param outFile Output files for modeled distributions.
+     * @param modFile Output file for the optimized Gamma matrix.
+     * @param zeta Specified compositions at specific positions (additional constraints).
+     * @param pos Indices of positions with specified compositions.
+     * @param rand Random number generator.
      */
     public NIModelSA(int n, BBSet bbs, String[] specFile, String[] consFile, String[] outFile,
                      String modFile, double[][] zeta, int[] pos, Random rand) {
@@ -149,10 +148,9 @@ public class NIModelSA {
     }
 
     /**
-     * initialization when additional constraints
-     * (specified compositions zeta in positions pos) are given
-     * @param zeta disaccharide composition
-     * @param pos position in chains
+     * Initializes the model when additional positional constraints are provided.
+     * @param zeta Positional disaccharide compositions.
+     * @param pos Indices of the specified positions.
      */
     void initModel(double[][] zeta, int[] pos) {
         gamma = new double[n][m];
@@ -177,15 +175,14 @@ public class NIModelSA {
     }
 
     /**
-     * Fitting of parameters of a N&amp;I model with heparinase digest constraints
-     * via simulated annealing
-     * @param n BKHS chain length
-     * @param bbs disachharides and their overall proportions
-     * @param specFile cleavage specificities/yields
-     * @param consFile constraints (experimental fragment length distributions)
-     * @param outFile output file for modeled fragment length distributions
-     * @param modFile output file for optimized matrix Gamma of N&amp;I model
-     * @param rand random number generator
+     * Fits parameters of a N&amp;I model using simulated annealing.
+     * @param n BKHS chain length.
+     * @param bbs Disaccharides and their overall proportions.
+     * @param specFile Cleavage specificity files.
+     * @param consFile Experimental constraint files.
+     * @param outFile Output files for fit results.
+     * @param modFile Output file for the optimized Gamma matrix.
+     * @param rand Random number generator.
      */
     public NIModelSA(int n, BBSet bbs, String[] specFile, String[] consFile,
                      String[] outFile, String modFile, Random rand) {
@@ -244,8 +241,8 @@ public class NIModelSA {
     }
 
     /**
-     * saves matrix Gamma of the optimized N&amp;I model
-     * @param file output file
+     * Saves the optimized Gamma matrix of the N&amp;I model to a file.
+     * @param file Output file path.
      */
     void savePM(String file) {
         try {
@@ -271,10 +268,9 @@ public class NIModelSA {
     }
 
     /**
-     * saves experimental and modeled (optimized) distribution of fragment length
-     * after digestion by heparinase i
-     * @param file output file
-     * @param i heparinase number
+     * Saves experimental and modeled fragment length distributions for a heparinase index.
+     * @param file Output file path.
+     * @param i Heparinase index.
      */
     void saveFit(String file, int i) {
         try {
@@ -294,7 +290,7 @@ public class NIModelSA {
     }
 
     /**
-     * buffers gamma into gamBest
+     * Buffers the current {@code gamma} matrix into {@code gamBest}.
      */
     void saveGamma() {
         gamBest = new double[n][m];
@@ -306,8 +302,8 @@ public class NIModelSA {
     }
 
     /**
-     * estimates initial temperature (pr(upward move) = 0.5)
-     * @return initial temperature
+     * Estimates initial temperature for annealing (based on a 0.5 upward move probability).
+     * @return The estimated initial temperature.
      */
     double initT() {
         double res = 0.;
@@ -325,8 +321,7 @@ public class NIModelSA {
     }
 
     /**
-     * one random perturbation of one gamma entry and projection,
-     * after buffering current gamma
+     * Performs a random perturbation of one {@code gamma} entry followed by a projection.
      */
     void perturb() {
         for (int i = 0; i < n; i++) {
@@ -344,7 +339,7 @@ public class NIModelSA {
     }
 
     /**
-     * restores previous gamma when a perturbation was not accepted
+     * Restores the previous {@code gamma} matrix when a perturbation is rejected.
      */
     void restore() {
         for (int i = 0; i < n; i++) {
@@ -359,7 +354,7 @@ public class NIModelSA {
     }
 
     /**
-     * initialization of variables; gamma is set to a random matrix and projected
+     * Initializes variables and sets {@code gamma} to a projected random matrix.
      */
     void initModel() {
         gamma = new double[n][m];
@@ -384,10 +379,8 @@ public class NIModelSA {
     }
 
     /**
-     * returns the objective function: L1 distance between experimental
-     * and modeled fragment length distributions
-     * @return L1 distance between experimental and modeled fragment
-     * length distributions
+     * Computes the objective function: the L1 distance between experimental and modeled distributions.
+     * @return The total L1 error value.
      */
     double getE() {
         double res = 0.;
@@ -402,8 +395,8 @@ public class NIModelSA {
     }
 
     /**
-     * loads experimental fragment length distributions
-     * @param file input file
+     * Loads experimental fragment length distributions from files.
+     * @param file Array of input file paths.
      */
     void loadConstraints(String[] file) {
         f = new double[nd][];
@@ -436,10 +429,9 @@ public class NIModelSA {
     }
 
     /**
-     * fits N&amp;I model without added constraint at the reducing end;
-     * for supplementary material
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Fits N&amp;I model without added constraint at the reducing end.
+     * @param inDir Input directory.
+     * @param outDir Output directory.
      */
     public static void withoutREC(String inDir, String outDir) {
         Random rand = new Random(1);
@@ -463,10 +455,9 @@ public class NIModelSA {
     }
 
     /**
-     * fits N&amp;I model without added constraint at the reducing end
-     * and for different values of BKHS chain length n; for supplementary material
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Fits N&amp;I model without reducing end constraints for different chain lengths.
+     * @param inDir Input directory.
+     * @param outDir Output directory.
      */
     public static void withoutRECandN(String inDir, String outDir) {
         Random rand = new Random(1);
@@ -490,10 +481,9 @@ public class NIModelSA {
     }
 
     /**
-     * fits N&amp;I model with added constraint at the reducing end
-     * and for different values of BKHS chain length n; for supplementary material
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Fits N&amp;I model with added reducing end constraints.
+     * @param inDir Input directory.
+     * @param outDir Output directory.
      */
     public static void withREC(String inDir, String outDir) {
         Random rand = new Random(1);
@@ -522,14 +512,12 @@ public class NIModelSA {
     }
 
     /**
-     * Main entry point
-     * @param args command line arguments
+     * Main entry point for simulated annealing optimization.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input/";
         String outDir = "output/NI/";
         withoutREC(inDir, outDir);
-     /* withoutRECandN(inDir, outDir);
-        withREC(inDir, outDir); */
     }
 }

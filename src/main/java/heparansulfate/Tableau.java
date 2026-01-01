@@ -1,38 +1,42 @@
 package heparansulfate;
 
 /**
- * simplex tableau
+ * Simplex tableau used for representing linear programming problems.
+ * <p>
+ * The tableau stores constraints and cost coefficients, facilitating pivot operations
+ * used in both Phase I and Phase II of the simplex method.
  */
 public class Tableau {
     /**
-     * number of columns in the tableau: n+1
+     * Number of columns in the tableau: {@code n + 1}.
      */
     int ncols = 0;
     /**
-     * number of variables
+     * Number of variables.
      */
     int n = 0;
     /**
-     * number of rows in the tableau: m+1
+     * Number of rows in the tableau: {@code m + 1}.
      */
     int nrows = 0;
     /**
-     * number of constraints
+     * Number of constraints.
      */
     int m = 0;
     /**
-     * simplex tableau
+     * Simplex tableau matrix data.
      */
     double[][] y = null;
     /**
-     * cost coefficients (the objective function)
+     * Cost coefficients for the objective function.
      */
     double[] c = null;
 
     /**
-     * constructor for phase I: creates a simplex tableau based on a constraint in
-     * canonical form (linear constraint in standard form with added artificial variables)
-     * @param avsfc linear constraint in standard form with added artificial variables
+     * Constructor for Phase I: creates a simplex tableau based on a constraint in
+     * canonical form (linear constraint in standard form with added artificial variables).
+     * 
+     * @param avsfc Linear constraint in standard form with added artificial variables.
      */
     public Tableau(AVSFormCons avsfc) {
         m = avsfc.m;
@@ -56,9 +60,9 @@ public class Tableau {
     }
 
     /**
-     * constructor for phase II based on the results of phase I
-     * @param sp1 phase I tableau
-     * @param coef cost coefficients for phase II
+     * Constructor for Phase II based on the results of Phase I.
+     * @param sp1 Phase I solver results containing the feasible tableau.
+     * @param coef Cost coefficients for the Phase II objective function.
      */
     public Tableau(SimplexPhaseI sp1, double[] coef) {
         m = sp1.m;
@@ -82,10 +86,9 @@ public class Tableau {
     }
 
     /**
-     * constructor for phase II based on an array-tableau
-     * already in canonical form, at the exception of the last row
-     * (cost coefficients) which is reduced at the end of this constructor
-     * @param t array-tableau in canonical form
+     * Constructor for Phase II based on an array-tableau already in canonical form, 
+     * with the exception of the last row (cost coefficients) which is reduced here.
+     * @param t Array-tableau in canonical form.
      */
     public Tableau(double[][] t) {
         m = t.length - 1;
@@ -106,8 +109,8 @@ public class Tableau {
     }
 
     /**
-     * pivot operations to reduce the last row of the tableau, so that
-     * coefficients of the basic variables are all equal to 0
+     * Performs pivot operations to reduce the last row of the tableau, ensuring 
+     * that coefficients of the basic variables are equal to 0.
      */
     void reduce() {
         for (int i = 0; i < m; i++) {
@@ -119,7 +122,7 @@ public class Tableau {
     }
 
     /**
-     * prints out the tableau
+     * Prints the tableau to the console.
      */
     void print() {
         for (int i = 0; i < nrows; i++) {
@@ -138,8 +141,8 @@ public class Tableau {
     }
 
     /**
-     * for testing
-     * @param args command line arguments
+     * Main entry point for testing.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         double[][] A = new double[2][3];

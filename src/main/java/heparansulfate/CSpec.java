@@ -7,24 +7,24 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
- * cleavage specificities, based on a BBSet object (set of building blocks)
- * and a file giving specificity for each building block name
+ * Cleavage specificities, based on a {@code BBSet} object (set of building blocks)
+ * and a file giving specificity for each building block name.
  */
 public class CSpec {
     /**
-     * number of building blocks
+     * Number of building blocks.
      */
     int m = 0;
     /**
-     * cleavage specificities
+     * Cleavage specificities.
      */
     double[] c = null;
 
     /**
-     * Creates cleavage specificities, based on a BBSet object (set of building blocks) and
-     * a file giving specificity for each building block name
-     * @param file ascii tab-delimited file with one header row: name \t specificity
-     * @param bbset set of building blocks
+     * Creates cleavage specificities, based on a {@code BBSet} object (set of building blocks) and
+     * a file giving specificity for each building block name.
+     * @param file ASCII tab-delimited file with one header row: {@code name \t specificity}.
+     * @param bbset Set of building blocks.
      */
     public CSpec(String file, BBSet bbset) {
         List<String> v = new ArrayList<>();
@@ -55,8 +55,8 @@ public class CSpec {
     }
 
     /**
-     * for testing
-     * @param args command line arguments
+     * For testing.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input\\";

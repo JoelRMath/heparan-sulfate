@@ -7,54 +7,53 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * homogeneity and independence: species abundances are defined by
- * overall disaccharide composition
+ * Homogeneity and Independence (H&amp;I) model: species abundances are defined by
+ * the overall disaccharide composition.
  */
 public class HIModel {
     /**
-     * number of building blocks
+     * Number of building blocks.
      */
     int m = 0;
     /**
-     * chain length
+     * Chain length.
      */
     int n = 0;
     /**
-     * overall cleavage probability
+     * Overall cleavage probability.
      */
     double c = 0;
     /**
-     * set of building blocks
+     * Set of building blocks.
      */
     BBSet bbs = null;
     /**
-     * cleavage specificities
+     * Cleavage specificities.
      */
     CSpec cs = null;
     /**
-     * distribution of fragment length
+     * Distribution of fragment length.
      */
     double[] g = null;
     /**
-     * distribution of fragment length with upper bound lm
+     * Distribution of fragment length with upper bound {@code lm}.
      */
     double[] h = null;
     /**
-     * upper bound for fragment length
+     * Upper bound for fragment length.
      */
     int lm = 0;
     /**
-     * cumulative version of overall building-block proportions,
-     * utilized for MC simulation
+     * Cumulative version of overall building-block proportions, utilized for MC simulation.
      */
     double[] rhoF = null;
 
     /**
-     * Computes heparinase fragment length distribution under H&amp;I (this.g)
-     * @param n BKHS chain length
-     * @param bbs set of building blocks (disaccharides and their overall proportions)
-     * @param cs cleavage specificity/yield (one heparinase only)
-     * @param lm maximum fragment length (cumulative for h(l) when {@code l+1 >= lm})
+     * Computes heparinase fragment length distribution under H&amp;I ({@code this.g}).
+     * @param n BKHS chain length.
+     * @param bbs Set of building blocks (disaccharides and their overall proportions).
+     * @param cs Cleavage specificity/yield (one heparinase only).
+     * @param lm Maximum fragment length (cumulative for {@code h(l)} when {@code l+1 >= lm}).
      */
     public HIModel(int n, BBSet bbs, CSpec cs, int lm) {
         this.lm = lm;
@@ -73,9 +72,9 @@ public class HIModel {
     }
 
     /**
-     * numerical check via simulations
-     * @param rand random number generator
-     * @param file output file
+     * Numerical check via simulations.
+     * @param rand Random number generator.
+     * @param file Output file.
      */
     void checkGL(Random rand, String file) {
         int nsim = 10000000;
@@ -114,9 +113,9 @@ public class HIModel {
     }
 
     /**
-     * returns a random chain sequence before cleavage
-     * @param rand random number generator
-     * @return a random chain sequence before cleavage
+     * Returns a random chain sequence before cleavage.
+     * @param rand Random number generator.
+     * @return A random chain sequence before cleavage.
      */
     int[] getSequence(Random rand) {
         int[] res = new int[n];
@@ -127,12 +126,12 @@ public class HIModel {
     }
 
     /**
-     * generates a random set of cleavage positions in sequence seq based
-     * on cleavage specificities (always a cut at position n)
-     * @param seq BKHS sequence
-     * @param rand random number generator
-     * @return a random set of cleavage positions in sequence seq based on
-     * cleavage specificities
+     * Generates a random set of cleavage positions in sequence {@code seq} based
+     * on cleavage specificities (always a cut at position {@code n}).
+     * @param seq BKHS sequence.
+     * @param rand Random number generator.
+     * @return A random set of cleavage positions in sequence {@code seq} based on
+     * cleavage specificities.
      */
     int[] getCuts(int[] seq, Random rand) {
         List<Integer> cuts = new ArrayList<>();
@@ -151,12 +150,12 @@ public class HIModel {
     }
 
     /**
-     * generates a random CleavedSequence (generates a BKHS chain and randomly
-     * cleaves it based on cleavage specificities); see methods getFragments()
-     * of class CleavedSequence to access resulting fragments
-     * @param rand random number generator
-     * @return a random CleavedSequence (generates a BKHS chain and randomly cleaves
-     * it based on cleavage specificities)
+     * Generates a random {@code CleavedSequence} (generates a BKHS chain and randomly
+     * cleaves it based on cleavage specificities). See methods {@code getFragments()}
+     * of class {@code CleavedSequence} to access resulting fragments.
+     * @param rand Random number generator.
+     * @return A random {@code CleavedSequence} (generates a BKHS chain and randomly cleaves
+     * it based on cleavage specificities).
      */
     CleavedSequence getCleavedSequence(Random rand) {
         int[] seq = null;
@@ -169,8 +168,8 @@ public class HIModel {
     }
 
     /**
-     * version this.h of this.g (fragment length distribution):
-     * abundances for {@code ll >= lm} are summed
+     * Computes version {@code this.h} of {@code this.g} (fragment length distribution).
+     * Abundances for {@code ll >= lm} are summed.
      */
     void makeH() {
         h = new double[n];
@@ -183,7 +182,7 @@ public class HIModel {
     }
 
     /**
-     * distribution of fragment length (this.g) expected under H&amp;I
+     * Computes the distribution of fragment length ({@code this.g}) expected under H&amp;I.
      */
     void makeG() {
         g = new double[n];
@@ -196,7 +195,7 @@ public class HIModel {
     }
 
     /**
-     * computes parameter this.c used to compute this.g
+     * Computes parameter {@code this.c} used to compute {@code this.g}.
      */
     void makeC() {
         c = 0.;
@@ -206,8 +205,8 @@ public class HIModel {
     }
 
     /**
-     * saves this.h
-     * @param file output file
+     * Saves {@code this.h} to a file.
+     * @param file Output file.
      */
     void saveH(String file) {
         try {
@@ -227,10 +226,10 @@ public class HIModel {
     }
 
     /**
-     * saves fragment length distribution expected under H&amp;I for hepI
-     * and performs numerical check
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Saves fragment length distribution expected under H&amp;I for HepI
+     * and performs numerical check.
+     * @param inDir Input directory (ends with "/").
+     * @param outDir Output directory (ends with "/").
      */
     public static void hepI(String inDir, String outDir) {
         Random rand = new Random();
@@ -245,10 +244,10 @@ public class HIModel {
     }
 
     /**
-     * saves fragment length distribution expected under H&amp;I for hepIII
-     * and performs numerical check
-     * @param inDir input directory (ends with "/")
-     * @param outDir output directory (ends with "/")
+     * Saves fragment length distribution expected under H&amp;I for HepIII
+     * and performs numerical check.
+     * @param inDir Input directory (ends with "/").
+     * @param outDir Output directory (ends with "/").
      */
     public static void hepIII(String inDir, String outDir) {
         Random rand = new Random();
@@ -263,8 +262,8 @@ public class HIModel {
     }
 
     /**
-     * Main entry point
-     * @param args command line arguments
+     * Main entry point.
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         String inDir = "input/";

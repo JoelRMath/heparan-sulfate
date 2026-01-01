@@ -3,42 +3,41 @@ package heparansulfate;
 import java.util.Random;
 
 /**
- * creates an affine constraint in standard form ({@code Ax = b}, with {@code rank(A) < dim(b)}
- * and {@code b >= 0})and with artificial variables
- * (for phase I of the simplex)
+ * Creates an affine constraint in standard form ({@code Ax = b}, with {@code rank(A) < dim(b)} and {@code b >= 0})and with artificial variables (for phase I of the simplex).
+ * <p>
+ * This class is used to prepare the linear system for Phase I of the Simplex algorithm to find an initial basic feasible solution.
  */
 public class AVSFormCons {
 
     /**
-     * affine constraint in standard form, before adding artificial variables
+     * Affine constraint in standard form, before adding artificial variables
      */
     SFormCons sfc = null;
 
     /**
-     * number of variables, after adding artificial ones
+     * Number of variables, after adding artificial ones
      */
     int n = 0;
 
     /**
-     * number of equality constraints
+     * Number of equality constraints
      */
     int m = 0;
 
     /**
-     * matrix for the constraints, after adding artificial variables
+     * Matrix for the constraints, after adding artificial variables
      */
     double[][] A = null;
 
     /**
-     * vector of constraints, in standard form
+     * Vector of constraints, in standard form
      */
     double[] b = null;
 
     /**
-     * creates an affine constraint in standard canonical form (with added artificial
-     * variables) for phase I of the simplex: {@code [I A] x = b}, with {@code b >= 0}
-     * @param mA constraint matrix
-     * @param mb constraint values
+     * Creates an affine constraint in standard canonical form (with added artificial variables) for phase I of the simplex: {@code [I A] x = b}, with {@code b >= 0} and where {@code I} is the * m x m identity matrix representing the artificial variables.
+     * @param mA The original constraint matrix.
+     * @param mb The constraint values.
      */
     public AVSFormCons(double[][] mA, double[] mb) {
         sfc = new SFormCons(mA, mb);
@@ -58,7 +57,7 @@ public class AVSFormCons {
     }
 
     /**
-     * prints out the constraint
+     * Prints out the constraint
      */
     void print() {
         for (int i = 0; i < m; i++) {
@@ -70,7 +69,7 @@ public class AVSFormCons {
     }
 
     /**
-     * for testing
+     * For testing
      * @param args command line arguments
      */
     public static void main(String[] args) {
