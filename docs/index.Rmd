@@ -1,0 +1,22 @@
+---
+title: "Java Code for Heparan Sulfate Characterization"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+This is the home page for the documentation of the `heparansulfate` Java package. 
+
+This project implements the mathematical models and optimization methods described in the 2016 *Scientific Reports* [publication](https://www.nature.com/articles/srep24829){target="_blank"}:
+
+> **"Combining measurements to estimate properties and characterization extent of complex biochemical mixtures; applications to Heparan Sulfate."**
+
+### Available documents
+* **[Technical Overview](overview.html):** A detailed breakdown of the model hierarchy (H&I, H&C, N&I, MaxEnt) and the Java class architecture.
+* **[Figure Examples](figure_examples.html):** RMarkdown examples demonstrating how to call the Java computational engine to recreate the paper's figures.
+* **[API Javadoc](api/index.html):** Direct technical documentation for the Java source code.
+
+---
+
+[Back to Main Portfolio](https://joelrmath.github.io/) | [GitHub Repository](https://github.com/JoelRMath/heparan-sulfate)

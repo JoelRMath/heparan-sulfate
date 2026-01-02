@@ -6,14 +6,14 @@
 --release
 21
 -sourcepath
-'/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/src/main/java'
+'/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/src/main/java:/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/generated-sources/annotations'
 -author
 -bottom
-'Copyright &#169; 2025. All rights reserved.'
+'Copyright &#169; 2026. All rights reserved.'
 -charset
 'UTF-8'
 -d
-'/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs'
+'/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api'
 -docencoding
 'UTF-8'
 -doctitle
@@ -25,16 +25,16 @@
 'heparan-sulfate 1.0-SNAPSHOT API'
 heparansulfate
 /Users/joelpradines/Desktop/Root/HS/heparan-sulfate/src/main/java = 1766293357256
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/tag-search-index.js = 1767224370612
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/overview-tree.html = 1767224370604
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/module-search-index.js = 1767224370611
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/index.html = 1767224370623
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/package-search-index.js = 1767224370611
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/index-all.html = 1767224370621
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/allpackages-index.html = 1767224370611
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/member-search-index.js = 1767224370612
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/help-doc.html = 1767223609253
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/element-list = 1767224370549
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/search.html = 1767224370622
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/allclasses-index.html = 1767224370610
-/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/site/apidocs/type-search-index.js = 1767224370612
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/target/generated-sources/annotations = 1767375471905
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/tag-search-index.js = 1767375474338
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/overview-tree.html = 1767375474328
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/module-search-index.js = 1767375474336
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/index.html = 1767375474355
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/package-search-index.js = 1767375474337
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/index-all.html = 1767375474352
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/allpackages-index.html = 1767375474336
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/member-search-index.js = 1767375474337
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/element-list = 1767375474278
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/search.html = 1767375474354
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/allclasses-index.html = 1767375474335
+/Users/joelpradines/Desktop/Root/HS/heparan-sulfate/api/type-search-index.js = 1767375474337

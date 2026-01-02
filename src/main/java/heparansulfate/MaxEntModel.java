@@ -352,6 +352,12 @@ public class MaxEntModel {
     public static void main(String[] args) {
         String inDir = "input/";
         String outDir = "output/ME/";
+        if (args.length >= 1){
+            inDir = args[0];
+        }
+        if (args.length >= 2){
+            outDir = args[1];
+        }
         defaultModel(inDir, outDir);
         defaultModelAndN(inDir, outDir);
         defaultModelSpecies(inDir, outDir);

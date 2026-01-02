@@ -89,6 +89,12 @@ public class ProfileFeasibility {
     public static void main(String[] args) {
         String inDir = "input/";
         String outDir = "output/LP/";
+        if (args.length >= 1){
+            inDir = args[0];
+        }
+        if (args.length >= 2){
+            outDir = args[1];
+        }
         makeProfile(inDir, outDir);
     }
 }

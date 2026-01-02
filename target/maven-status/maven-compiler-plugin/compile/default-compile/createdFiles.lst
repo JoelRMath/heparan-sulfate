@@ -6,7 +6,6 @@ heparansulfate/MaxEntModelW.class
 heparansulfate/MatrixOp.class
 heparansulfate/LinEqCons.class
 heparansulfate/Species.class
-heparansulfate/PrototypeFilter.class
 heparansulfate/MaxEntOptim.class
 heparansulfate/HomogeneityFeasibility.class
 heparansulfate/CSpec.class
@@ -21,9 +20,7 @@ heparansulfate/ProfileFeasibility.class
 heparansulfate/MaxEntModel.class
 heparansulfate/HCModelLIC.class
 heparansulfate/MaxEntModelW$SpeciesEntry.class
-heparansulfate/PrototypeFilter$Entry.class
 heparansulfate/HIModel.class
-heparansulfate/temp.class
 heparansulfate/Tableau.class
 heparansulfate/HCModelSA.class
 heparansulfate/CleavedSequence.class

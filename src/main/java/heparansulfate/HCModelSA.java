@@ -10,355 +10,393 @@ import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
- * Optimization of a homogeneous Markov model (model H&amp;C) via simulated
- * annealing to fit two heparinase digest constraint sets.
- */
+* Optimization of a homogeneous Markov model (model H&amp;C) via simulated
+* annealing to fit two heparinase digest constraint sets.
+*/
 public class HCModelSA {
     /**
-     * Markov models (e.g., one for HepI and one for HepIII).
-     */
+    * Markov models (e.g., one for HepI and one for HepIII).
+    */
     HCModel[] mm = null;
-
+    
     /**
-     * {@code f[i][]} is the distribution of fragment length (experimental data)
-     * for digest model {@code i}.
-     */
+    * {@code f[i][]} is the distribution of fragment length (experimental data)
+    * for digest model {@code i}.
+    */
     double[][] f = null;
-
+    
     /**
-     * Random number generator for perturbations.
-     */
+    * Random number generator for perturbations.
+    */
     Random rand = null;
-
+    
     /**
-     * Chain length.
-     */
+    * Chain length.
+    */
     int n = 0;
-
+    
     /**
-     * Number of building blocks.
-     */
+    * Number of building blocks.
+    */
     int m = 0;
-
+    
     /**
-     * Number of digests.
-     */
+    * Number of digests.
+    */
     int nd = 0;
-
+    
     /**
-     * Enzyme specificities.
-     */
+    * Enzyme specificities.
+    */
     CSpec[] cs = null;
-
+    
     /**
-     * Set of building blocks.
-     */
+    * Set of building blocks.
+    */
     BBSet bbs = null;
-
+    
     /**
-     * Markov model parameters (transition matrix).
-     */
+    * Markov model parameters (transition matrix).
+    */
     double[][] P = null;
-
+    
     /**
-     * Best transition matrix encountered during optimization.
-     */
+    * Best transition matrix encountered during optimization.
+    */
     double[][] bestP = null;
-
+    
     /**
-     * Buffer for {@code this.P}.
-     */
+    * Buffer for {@code this.P}.
+    */
     double[][] buffP = null;
-
+    
     /**
-     * Linear inequality constraints (nonnegativity, sum to 1, and balance equations).
-     */
+    * Linear inequality constraints (nonnegativity, sum to 1, and balance equations).
+    */
     HCModelLIC mlic = null;
-
+    
     /**
-     * Number of perturbations performed at each temperature.
-     */
+    * Number of perturbations performed at each temperature.
+    */
     int nPert = 200;
-
+    
     /**
-     * Annealing schedule: temperature is multiplied by {@code alpha} when decreased.
-     */
+    * Annealing schedule: temperature is multiplied by {@code alpha} when decreased.
+    */
     double alpha = 0.999;
-
+    
     /**
-     * Best objective function value (energy) found.
-     */
+    * Best objective function value (energy) found.
+    */
     double bestE = 0.;
-
+    
     /**
-     * Constructs and optimizes a homogeneous Markov model (model H&amp;C) via simulated annealing.
-     * @param n BKHS chain length.
-     * @param bbs Disaccharides and their overall proportions.
-     * @param specFile Files containing cleavage specificities.
-     * @param consFile Files containing experimental constraints (fragment length distributions).
-     * @param outFile Output files for modeled fragment length distributions.
-     * @param modFile Output file for the optimized transition matrix {@code P}.
-     * @param rand Random number generator.
-     */
+    * Constructs and optimizes a homogeneous Markov model (model H&amp;C) via simulated annealing.
+    * @param n BKHS chain length.
+    * @param bbs Disaccharides and their overall proportions.
+    * @param specFile Files containing cleavage specificities.
+    * @param consFile Files containing experimental constraints (fragment length distributions).
+    * @param outFile Output files for modeled fragment length distributions.
+    * @param modFile Output file for the optimized transition matrix {@code P}.
+    * @param rand Random number generator.
+    */
     public HCModelSA(int n, BBSet bbs, String[] specFile, String[] consFile,
-                     String[] outFile, String modFile, Random rand) {
-        this.bbs = bbs;
-        m = bbs.m;
-        this.n = n;
-        this.rand = rand;
-        nd = specFile.length;
-        cs = new CSpec[nd];
-        for (int i = 0; i < nd; i++) {
-            cs[i] = new CSpec(specFile[i], bbs);
-        }
-        loadConstraints(consFile);
-        initModel();
-        double t = initT();
-        int nup = 1;
-        double E = bestE;
-        while (nup > 0) {
-            t *= alpha;
-            nup = 0;
-            for (int i = 0; i < nPert; i++) {
-                perturb();
-                double E2 = getE();
-                boolean accept = false;
-                if (E2 < E) {
-                    accept = true;
-                } else {
-                    double p = Math.exp(-Math.abs(E2 - E) / t);
-                    if (rand.nextDouble() < p) {
+        String[] outFile, String modFile, Random rand) {
+            this.bbs = bbs;
+            m = bbs.m;
+            this.n = n;
+            this.rand = rand;
+            nd = specFile.length;
+            cs = new CSpec[nd];
+            for (int i = 0; i < nd; i++) {
+                cs[i] = new CSpec(specFile[i], bbs);
+            }
+            loadConstraints(consFile);
+            initModel();
+            double t = initT();
+            int nup = 1;
+            double E = bestE;
+            while (nup > 0) {
+                t *= alpha;
+                nup = 0;
+                for (int i = 0; i < nPert; i++) {
+                    perturb();
+                    double E2 = getE();
+                    boolean accept = false;
+                    if (E2 < E) {
                         accept = true;
-                        nup++;
+                    } else {
+                        double p = Math.exp(-Math.abs(E2 - E) / t);
+                        if (rand.nextDouble() < p) {
+                            accept = true;
+                            nup++;
+                        }
+                    }
+                    if (accept) {
+                        E = E2;
+                        if (E < bestE) {
+                            bestE = E;
+                            saveP();
+                        }
+                    } else {
+                        restore();
                     }
                 }
-                if (accept) {
-                    E = E2;
-                    if (E < bestE) {
-                        bestE = E;
-                        saveP();
-                    }
-                } else {
-                    restore();
-                }
             }
-        }
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < m; j++) {
-                P[i][j] = bestP[i][j];
-            }
-        }
-        mm = new HCModel[nd];
-        for (int i = 0; i < nd; i++) {
-            mm[i] = new HCModel(n, bbs, cs[i], P, f[i].length);
-            saveFit(outFile[i], i);
-        }
-        saveMM(modFile);
-    }
-
-    /**
-     * Saves the optimized transition probability matrix.
-     * * @param file Output file path for the matrix.
-     */
-    void saveMM(String file) {
-        try {
-            FileWriter fw = new FileWriter(file);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write("prev\tnext\tp");
-            bw.newLine();
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < m; j++) {
-                    bw.write(bbs.name[i] + "\t" + bbs.name[j] + "\t" + P[i][j]);
-                    bw.newLine();
+                    P[i][j] = bestP[i][j];
                 }
             }
-            bw.close();
-            fw.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    /**
-     * Saves experimental digest data and modeled digest data for comparison.
-     * * @param file Output file path.
-     * @param i Digest index (e.g., heparinase type index).
-     */
-    void saveFit(String file, int i) {
-        try {
-            FileWriter fw = new FileWriter(file);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write("l\tfexp\thmod");
-            bw.newLine();
-            for (int l = 0; l < mm[i].lm; l++) {
-                bw.write((l + 1) + "\t" + f[i][l] + "\t" + mm[i].h[l]);
-                bw.newLine();
+            mm = new HCModel[nd];
+            for (int i = 0; i < nd; i++) {
+                mm[i] = new HCModel(n, bbs, cs[i], P, f[i].length);
+                saveFit(outFile[i], i);
             }
-            bw.close();
-            fw.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            saveMM(modFile);
         }
-    }
-
-    /**
-     * Buffers the best encountered transition matrix {@code P}.
-     */
-    void saveP() {
-        bestP = new double[m][m];
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < m; j++) {
-                bestP[i][j] = P[i][j];
-            }
-        }
-    }
-
-    /**
-     * Estimates initial temperature for the annealing schedule (based on {@code pr(upward jump) = 0.6}).
-     * * @return Initial temperature estimation.
-     */
-    double initT() {
-        double res = 0.;
-        bestE = getE();
-        saveP();
-        double dE = 0.;
-        for (int i = 0; i < nPert; i++) {
-            perturb();
-            dE += Math.abs(bestE - getE());
-            restore();
-        }
-        dE /= (double) nPert;
-        res = -dE / Math.log(0.6);
-        return res;
-    }
-
-    /**
-     * Perturbs the transition probability matrix {@code P}.
-     * Randomly modifies one entry and projects the matrix onto the constraint polytope.
-     */
-    void perturb() {
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < m; j++) {
-                buffP[i][j] = P[i][j];
-            }
-        }
-        P[rand.nextInt(m)][rand.nextInt(m)] = rand.nextDouble();
-        ProjOnPolyHSet proj = new ProjOnPolyHSet(HCModel.toVector(P), mlic.A, mlic.b, rand);
-        P = HCModel.toMatrix(m, proj.optimum);
-        mm = new HCModel[nd];
-        for (int i = 0; i < nd; i++) {
-            mm[i] = new HCModel(n, bbs, cs[i], P, f[i].length);
-        }
-    }
-
-    /**
-     * Restores the previous matrix {@code P} if a perturbation was rejected.
-     */
-    void restore() {
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < m; j++) {
-                P[i][j] = buffP[i][j];
-            }
-        }
-        mm = new HCModel[nd];
-        for (int i = 0; i < nd; i++) {
-            mm[i] = new HCModel(n, bbs, cs[i], P, f[i].length);
-        }
-    }
-
-    /**
-     * Initializes global variables and performs random initialization of the transition matrix {@code P}.
-     */
-    void initModel() {
-        P = new double[m][m];
-        buffP = new double[m][m];
-        mlic = new HCModelLIC(bbs);
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < m; j++) {
-                P[i][j] = rand.nextDouble();
-            }
-        }
-        ProjOnPolyHSet proj = new ProjOnPolyHSet(HCModel.toVector(P), mlic.A, mlic.b, rand);
-        P = HCModel.toMatrix(m, proj.optimum);
-        mm = new HCModel[nd];
-        for (int i = 0; i < nd; i++) {
-            mm[i] = new HCModel(n, bbs, cs[i], P, f[i].length);
-        }
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < m; j++) {
-                buffP[i][j] = P[i][j];
-            }
-        }
-    }
-
-    /**
-     * Computes the objective function (L1 distance between modeled and experimental distributions).
-     * * @return Calculated objective function value.
-     */
-    double getE() {
-        double res = 0.;
-        for (int i = 0; i < nd; i++) {
-            double d = 0.;
-            for (int j = 0; j < mm[i].lm; j++) {
-                d += Math.abs(mm[i].h[j] - f[i][j]);
-            }
-            res += d;
-        }
-        return res;
-    }
-
-    /**
-     * Reads experimental fragment length distributions from input files.
-     * * @param file Array of digest constraint file paths.
-     */
-    void loadConstraints(String[] file) {
-        f = new double[nd][];
-        for (int i = 0; i < nd; i++) {
-            List<String> v = new ArrayList<>();
+        
+        /**
+        * Saves the optimized transition probability matrix.
+        * * @param file Output file path for the matrix.
+        */
+        void saveMM(String file) {
             try {
-                FileReader fr = new FileReader(file[i]);
-                BufferedReader br = new BufferedReader(fr);
-                String line = br.readLine();
-                while ((line = br.readLine()) != null) {
-                    StringTokenizer st = new StringTokenizer(line, "\t");
-                    if (st.countTokens() == 2) {
-                        v.add(line);
+                FileWriter fw = new FileWriter(file);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write("prev\tnext\tp");
+                bw.newLine();
+                for (int i = 0; i < m; i++) {
+                    for (int j = 0; j < m; j++) {
+                        bw.write(bbs.name[i] + "\t" + bbs.name[j] + "\t" + P[i][j]);
+                        bw.newLine();
                     }
                 }
-                br.close();
-                fr.close();
+                bw.close();
+                fw.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            f[i] = new double[v.size()];
-            for (int j = 0; j < v.size(); j++) {
-                String line = v.get(j);
-                StringTokenizer st = new StringTokenizer(line, "\t");
-                int L = Integer.parseInt(st.nextToken());
-                double D = Double.parseDouble(st.nextToken());
-                f[i][L - 1] = D;
+        }
+        
+        /**
+        * Saves experimental digest data and modeled digest data for comparison.
+        * * @param file Output file path.
+        * @param i Digest index (e.g., heparinase type index).
+        */
+        void saveFit(String file, int i) {
+            try {
+                FileWriter fw = new FileWriter(file);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write("l\tfexp\thmod");
+                bw.newLine();
+                for (int l = 0; l < mm[i].lm; l++) {
+                    bw.write((l + 1) + "\t" + f[i][l] + "\t" + mm[i].h[l]);
+                    bw.newLine();
+                }
+                bw.close();
+                fw.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
-    }
-
-    /**
-     * Generates data for varying chain lengths {@code n}.
-     * @param inDir Input directory.
-     * @param outDir Output directory.
-     */
-    public static void varyingN(String inDir, String outDir) {
-        Random rand = new Random(1);
-        int ns = 10;
-        List<String> v = new ArrayList<>();
-        v.add("N\tminE\tavE\tmaxE");
-        BBSet bbs = new BBSet(inDir + "US.ab.txt");
-        for (int n = 12; n <= 20; n++) {
-            System.out.println(n);
-            double avE = 0.;
-            double minE = 10.;
-            double maxE = 0.;
-            for (int s = 1; s <= ns; s++) {
-                String pref = "N" + n + "s" + s;
+        
+        /**
+        * Buffers the best encountered transition matrix {@code P}.
+        */
+        void saveP() {
+            bestP = new double[m][m];
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < m; j++) {
+                    bestP[i][j] = P[i][j];
+                }
+            }
+        }
+        
+        /**
+        * Estimates initial temperature for the annealing schedule (based on {@code pr(upward jump) = 0.6}).
+        * * @return Initial temperature estimation.
+        */
+        double initT() {
+            double res = 0.;
+            bestE = getE();
+            saveP();
+            double dE = 0.;
+            for (int i = 0; i < nPert; i++) {
+                perturb();
+                dE += Math.abs(bestE - getE());
+                restore();
+            }
+            dE /= (double) nPert;
+            res = -dE / Math.log(0.6);
+            return res;
+        }
+        
+        /**
+        * Perturbs the transition probability matrix {@code P}.
+        * Randomly modifies one entry and projects the matrix onto the constraint polytope.
+        */
+        void perturb() {
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < m; j++) {
+                    buffP[i][j] = P[i][j];
+                }
+            }
+            P[rand.nextInt(m)][rand.nextInt(m)] = rand.nextDouble();
+            ProjOnPolyHSet proj = new ProjOnPolyHSet(HCModel.toVector(P), mlic.A, mlic.b, rand);
+            P = HCModel.toMatrix(m, proj.optimum);
+            mm = new HCModel[nd];
+            for (int i = 0; i < nd; i++) {
+                mm[i] = new HCModel(n, bbs, cs[i], P, f[i].length);
+            }
+        }
+        
+        /**
+        * Restores the previous matrix {@code P} if a perturbation was rejected.
+        */
+        void restore() {
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < m; j++) {
+                    P[i][j] = buffP[i][j];
+                }
+            }
+            mm = new HCModel[nd];
+            for (int i = 0; i < nd; i++) {
+                mm[i] = new HCModel(n, bbs, cs[i], P, f[i].length);
+            }
+        }
+        
+        /**
+        * Initializes global variables and performs random initialization of the transition matrix {@code P}.
+        */
+        void initModel() {
+            P = new double[m][m];
+            buffP = new double[m][m];
+            mlic = new HCModelLIC(bbs);
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < m; j++) {
+                    P[i][j] = rand.nextDouble();
+                }
+            }
+            ProjOnPolyHSet proj = new ProjOnPolyHSet(HCModel.toVector(P), mlic.A, mlic.b, rand);
+            P = HCModel.toMatrix(m, proj.optimum);
+            mm = new HCModel[nd];
+            for (int i = 0; i < nd; i++) {
+                mm[i] = new HCModel(n, bbs, cs[i], P, f[i].length);
+            }
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < m; j++) {
+                    buffP[i][j] = P[i][j];
+                }
+            }
+        }
+        
+        /**
+        * Computes the objective function (L1 distance between modeled and experimental distributions).
+        * * @return Calculated objective function value.
+        */
+        double getE() {
+            double res = 0.;
+            for (int i = 0; i < nd; i++) {
+                double d = 0.;
+                for (int j = 0; j < mm[i].lm; j++) {
+                    d += Math.abs(mm[i].h[j] - f[i][j]);
+                }
+                res += d;
+            }
+            return res;
+        }
+        
+        /**
+        * Reads experimental fragment length distributions from input files.
+        * * @param file Array of digest constraint file paths.
+        */
+        void loadConstraints(String[] file) {
+            f = new double[nd][];
+            for (int i = 0; i < nd; i++) {
+                List<String> v = new ArrayList<>();
+                try {
+                    FileReader fr = new FileReader(file[i]);
+                    BufferedReader br = new BufferedReader(fr);
+                    String line = br.readLine();
+                    while ((line = br.readLine()) != null) {
+                        StringTokenizer st = new StringTokenizer(line, "\t");
+                        if (st.countTokens() == 2) {
+                            v.add(line);
+                        }
+                    }
+                    br.close();
+                    fr.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                f[i] = new double[v.size()];
+                for (int j = 0; j < v.size(); j++) {
+                    String line = v.get(j);
+                    StringTokenizer st = new StringTokenizer(line, "\t");
+                    int L = Integer.parseInt(st.nextToken());
+                    double D = Double.parseDouble(st.nextToken());
+                    f[i][L - 1] = D;
+                }
+            }
+        }
+        
+        /**
+        * Generates data for varying chain lengths {@code n}.
+        * @param inDir Input directory.
+        * @param outDir Output directory.
+        */
+        public static void varyingN(String inDir, String outDir) {
+            Random rand = new Random(1);
+            int ns = 10;
+            List<String> v = new ArrayList<>();
+            v.add("N\tminE\tavE\tmaxE");
+            BBSet bbs = new BBSet(inDir + "US.ab.txt");
+            for (int n = 12; n <= 20; n++) {
+                System.out.println(n);
+                double avE = 0.;
+                double minE = 10.;
+                double maxE = 0.;
+                for (int s = 1; s <= ns; s++) {
+                    String pref = "N" + n + "s" + s;
+                    String[] specFile = new String[2];
+                    specFile[0] = inDir + "US.hepI.txt";
+                    specFile[1] = inDir + "US.hepIII.txt";
+                    String[] consFile = new String[2];
+                    consFile[0] = inDir + "hepI.f.txt";
+                    consFile[1] = inDir + "hepIII.f.txt";
+                    String[] outFile = new String[2];
+                    outFile[0] = outDir + "MM." + pref + ".hepI.fit.res";
+                    outFile[1] = outDir + "MM." + pref + ".hepIII.fit.res";
+                    String modFile = outDir + "MM." + pref + ".P.res";
+                    HCModelSA sa = new HCModelSA(n, bbs, specFile, consFile, outFile, modFile, rand);
+                    avE += sa.bestE;
+                    if (sa.bestE < minE) {
+                        minE = sa.bestE;
+                    }
+                    if (sa.bestE > maxE) {
+                        maxE = sa.bestE;
+                    }
+                }
+                avE /= (double) ns;
+                String t = n + "\t" + minE + "\t" + avE + "\t" + maxE;
+                v.add(t);
+            }
+            Utils.saveFile(v, outDir + "HCMandN.res");
+        }
+        
+        /**
+        * Generates default data used for H&amp;C fit figures.
+        * @param inDir Input directory.
+        * @param outDir Output directory.
+        */
+        public static void defaultN(String inDir, String outDir) {
+            Random rand = new Random(1);
+            BBSet bbs = new BBSet(inDir + "US.ab.txt");
+            int n = 16;
+            for (int s = 1; s <= 100; s++) {
+                System.out.println(s);
+                String pref = "s" + s;
                 String[] specFile = new String[2];
                 specFile[0] = inDir + "US.hepI.txt";
                 specFile[1] = inDir + "US.hepIII.txt";
@@ -366,58 +404,26 @@ public class HCModelSA {
                 consFile[0] = inDir + "hepI.f.txt";
                 consFile[1] = inDir + "hepIII.f.txt";
                 String[] outFile = new String[2];
-                outFile[0] = outDir + "MM." + pref + ".hepI.fit.res";
-                outFile[1] = outDir + "MM." + pref + ".hepIII.fit.res";
+                outFile[0] = outDir + "HC." + pref + ".hepI.fit.res";
+                outFile[1] = outDir + "HC." + pref + ".hepIII.fit.res";
                 String modFile = outDir + "MM." + pref + ".P.res";
-                HCModelSA sa = new HCModelSA(n, bbs, specFile, consFile, outFile, modFile, rand);
-                avE += sa.bestE;
-                if (sa.bestE < minE) {
-                    minE = sa.bestE;
-                }
-                if (sa.bestE > maxE) {
-                    maxE = sa.bestE;
-                }
+                new HCModelSA(n, bbs, specFile, consFile, outFile, modFile, rand);
             }
-            avE /= (double) ns;
-            String t = n + "\t" + minE + "\t" + avE + "\t" + maxE;
-            v.add(t);
         }
-        Utils.saveFile(v, outDir + "HCMandN.res");
-    }
-
-    /**
-     * Generates default data used for H&amp;C fit figures.
-     * @param inDir Input directory.
-     * @param outDir Output directory.
-     */
-    public static void defaultN(String inDir, String outDir) {
-        Random rand = new Random(1);
-        BBSet bbs = new BBSet(inDir + "US.ab.txt");
-        int n = 16;
-        for (int s = 1; s <= 100; s++) {
-            System.out.println(s);
-            String pref = "s" + s;
-            String[] specFile = new String[2];
-            specFile[0] = inDir + "US.hepI.txt";
-            specFile[1] = inDir + "US.hepIII.txt";
-            String[] consFile = new String[2];
-            consFile[0] = inDir + "hepI.f.txt";
-            consFile[1] = inDir + "hepIII.f.txt";
-            String[] outFile = new String[2];
-            outFile[0] = outDir + "HC." + pref + ".hepI.fit.res";
-            outFile[1] = outDir + "HC." + pref + ".hepIII.fit.res";
-            String modFile = outDir + "MM." + pref + ".P.res";
-            new HCModelSA(n, bbs, specFile, consFile, outFile, modFile, rand);
+        
+        /**
+        * Main entry point for the simulated annealing optimization.
+        * @param args Command line arguments.
+        */
+        public static void main(String[] args) {
+            String inDir = "input/";
+            String outDir = "output/HC/";
+            if (args.length >= 1) {
+                inDir = args[0];
+            }
+            if (args.length >= 2) {
+                outDir = args[1];
+            }
+            defaultN(inDir, outDir);
         }
     }
-
-    /**
-     * Main entry point for the simulated annealing optimization.
-     * @param args Command line arguments.
-     */
-    public static void main(String[] args) {
-        String inDir = "input/";
-        String outDir = "output/HC/";
-        defaultN(inDir, outDir);
-    }
-}

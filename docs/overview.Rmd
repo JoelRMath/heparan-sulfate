@@ -1,0 +1,167 @@
+---
+title: "`heparansulfate` Java package"
+author: "Joel R. Pradines"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    css: style.css
+---
+
+## Introduction
+
+This project provides a Java implementation for estimating properties of complex biochemical mixtures that consist of linear chains made of a small set of building blocs. This package originated with a publication on the characterization of Heparan Sulfate (HS). 
+
+"Combining measurements to estimate properties and characterization extent of complex biochemical mixtures; applications to Heparan Sulfate". 
+J.R. Pradines, D. Beccati, M. Lech, J. Ozug, V. Farutin, Y. Huang, N.S. Gunay & I. Capila. Scientific Reports volume 6, Article number: 24829 (2016) [[full text]](https://www.nature.com/articles/srep24829){target="_blank"}.
+
+Bovine Kidney Heparan sulfate consists of oriented linear chains, from non-reducing to reducing end, that are made of at least 13 building blocs. In the above referenced publication, building blocks are divided in two categories depending on their sulfation status: sulfated (S) and unsulfated (U). 
+
+Two questions are answered in the paper:
+
+- Is the average prortion of S the same at each position from the non-reducing end?
+  - If yes, this is called Homogeneity (H).
+  - If no, this is called Nonhomogeneity (N).
+- Is the S/U identity of a block at position $i$ influencing the identity at position $i+1$?
+  - If yes, this is called Correlation (C).
+  - If no, this is called Independence (I).
+
+Therefore, there are four possible ways to model the mixture of chains.
+
+| Model | Name | Main Class |
+|:---|:---|:---|
+| **H&I** | Homogeneity & Independence | [HIModel](api/heparansulfate/HIModel.html){target="_blank"} |
+| **H&C** | Homogeneity & Correlation | [HCModel](api/heparansulfate/HCModel.html){target="_blank"} |
+| **N&I** | Non-homogeneity & Independence | [NIModel](api/heparansulfate/NIModel.html){target="_blank"} |
+| **N&C** | Nonhomogeneity & Correlation| [MaxEntModel](api/heparansulfate/MaxEntModel.html){target="_blank"} |
+
+It is shown that the first 3 models cannot reproduce experimental data on the mixture, therefore maximum-entropy modeling (least-assumption modeling) is used to estimate Nonhomogeneity and Correlation.
+
+## Mathematical overview
+
+### Optimization methods.
+
+Models are tested for their fit to experimental constraints with a few different optimization techniques.
+
+- **Linear Programming  (LP) with the Simplex Method** 
+  - Feasibility analysis is used for testing a model fit given experimental measurements formulated as linear constraints.
+  - Upper and lower possible bounds for some mixture properties are estimated with LP while preserving the experimental constraints.
+  - See classes [AVSFormCons](api/heparansulfate/AVSFormCons.html){target="_blank"}, [HCModelLIC](api/heparansulfate/HCModelLIC.html){target="_blank"}, [LineqCons](api/heparansulfate/LineqCons.html){target="_blank"}, [NIModelLIC](api/heparansulfate/NIModelLIC.html){target="_blank"} and [SFormCons](api/heparansulfate/SFormCons.html){target="_blank"} for the representation of linear constraints.
+  - LP is implemented with the combination of classes [Simplex](api/heparansulfate/Simplex.html){target="_blank"}, [SimplexPhaseI](api/heparansulfate/SimplexPhaseI.html){target="_blank"} and [Tableau](api/heparansulfate/Tableau.html){target="_blank"}.
+  - See class [GradientWidth](api/heparansulfate/GradientWidth.html){target="_blank"} for the derivation of bounds.
+- **Non Negative Quadratic Programming (NNQP)**
+  - Coodinate descent is utilized to perform projection onto a polyhedral set. This enables the utilization of simulated annealing to optimize a problem with non-convex objective function while preserving linear constraints that represent a Markov model (H&C) or a profile of independent proportions (N&I).
+  - See classes [ProjOnPolyHSet](api/heparansulfate/ProjOnPolyHSet.html){target="_blank"} and [CoordDescNNQP](api/heparansulfate/CoordDescNNQP.html){target="_blank"}.
+* **Maximum Entropy Modeling (MaxEnt)** 
+  - MaxEnt modeling is solved via its dual problem, which is here an unconstrained geometric program in convex form. This geometric program is solved with Newton's method.
+  - See classes [MaxEntModel](api/heparansulfate/MaxEntModel.html){target="_blank"}, [MaxEntOptim](api/heparansulfate/MaxEntOptim.html){target="_blank"} and [MaxEntModelW](api/heparansulfate/MaxEntModelW.html){target="_blank"}.
+* **Simulated Annealing:** 
+  - Simulated annealing is used as a heuristic to minimize non-convex objective functions subject to linear constraints. Constraints are enforced at each perturbation via projection (NNQP).
+  - Relevant classes are [HCModelSA](api/heparansulfate/HCModelSA.html){target="_blank"} and [NIModelSA](api/heparansulfate/NIModelSA.html){target="_blank"}.
+
+### Derivation of constraints
+
+Mathematical work that yields expression of constraints and formulation of the optimization problem is contained in the publication  [supplementary material](sup.pdf#page=1){target="_blank"}. This work relies on probability calculus to obtain expressions of constraints. Below are links to pages of the supplementary material for each model.
+
+- H&I: [constraints](sup.pdf#page=7){target="_blank"}, [optimization](sup.pdf#page=8){target="_blank"}.
+- H&C: [constraints](sup.pdf#page=10){target="_blank"}, [optimization](sup.pdf#page=13){target="_blank"}
+- N&I: [constraints](sup.pdf#page=16){target="_blank"}, [optimization](sup.pdf#page=19){target="_blank"}
+- N&C: 
+  - all chains having same length: [constraints](sup.pdf#page=21){target="_blank"}, [optimization](sup.pdf#page=23){target="_blank"}
+  - chains of varying lengths: [constraints](sup.pdf#page=22){target="_blank"}, [optimization](sup.pdf#page=23){target="_blank"}
+
+
+## Summary table
+
+The following table lists Java classes, their corresponding model, their main role, links to their javadoc and links to their page in the supplementary material. Note that the table is interactive: rows can be sorted by column values and the search box acts as a filter.
+
+
+```{r datatable, echo=FALSE}
+library(DT)
+raw_data <- data.frame(
+  Class = c(
+    "AVSFormCons", "BBSet", "CSpec", "CleavedSequence", "CoordDescNNQP", 
+    "GradientWidth", "HCModel", "HCModelLIC", "HCModelSA", "HIModel", 
+    "HomogeneityFeasibility", "LinEqCons", "MatrixOp", "MaxEntModel", 
+    "MaxEntModelW", "MaxEntOptim", "MixSpecies", "NIModel", "NIModelLIC", 
+    "NIModelSA", "ProfileFeasibility", "ProjOnPolyHSet", "SFormCons", 
+    "SandVal", "Simplex", "SimplexPhaseI", "Species", "Tableau", "Utils"
+  ),
+  Page = c(
+    "23", "6", "3", "7", "14",
+    "23", "10", "13", "13", "7",
+    "19", "23", "6", "23",
+    "24", "23", "24", "16", "19",
+    "19", "23", "14", "23",
+    "1", "23", "23", "3", "23", "1"
+    ),
+  Model = c(
+    "LP", "General", "General", "General", "NNQP", 
+    "LP", "H&C", "H&C", "H&C", "H&I", 
+    "H&I/H&C", "LP", "General", "MaxEnt", 
+    "MaxEnt", "MaxEnt", "General", "N&I", "N&I", 
+    "N&I", "LP/N&I", "NNQP", "LP", 
+    "General", "LP", "LP", "General", "LP", "General"
+  ),
+  Role = c(
+    "Artificial variable linear constraints", "Building Block set definition", "Cleavage Specificity calculator", 
+    "Sequence cleavage simulation", "Coordinate Descent for NNQP", "Derivation of property bounds", 
+    "Homogeneous Markov model", "H&C Linear Inequality Constraints", "H&C Simulated Annealing", 
+    "Homogeneity & Independence model", "Homogeneity feasibility tester", "Linear Equality constraints", 
+    "Matrix operations utility", "Main Maximum Entropy model", "MaxEnt with varying lengths", 
+    "Newton-based MaxEnt optimizer", "Mixture species representation", "Non-homogeneity & Independence model", 
+    "N&I Linear Inequality Constraints", "N&I Simulated Annealing", "Profile feasibility tester", 
+    "Polyhedral set projection", "Standard form linear constraints", "Specificity value data type", 
+    "Core Simplex algorithm", "Simplex Phase I feasibility", "Molecular species data type", 
+    "Simplex tableau representation", "General utility methods"
+  )
+)
+
+# Generate Javadoc links
+raw_data$Link <- paste0("<a href='api/heparansulfate/", 
+                        raw_data$Class, 
+                        ".html' target='_blank'>Javadoc</a>")
+
+raw_data$page_link <- paste0("<a href='sup.pdf#page=",
+                            raw_data$Page,
+                            "' target='_blank'>",
+                            raw_data$Page,
+                            "</a>")
+
+# Create the interactive table
+datatable(raw_data, 
+          escape = FALSE, 
+          rownames = FALSE,
+          colnames = c("Class Name", "Model System", "Role", "API", "Sup"),
+          options = list(
+            pageLength = 30,
+            autoWidth = TRUE,
+            order = list(list(1, 'asc')), # Sort by Model System by default
+            columnDefs = list(list(className = 'dt-center', targets = 3))
+          ))
+```
+
+[View the API Javadoc](./api/index.html) 
+
+## Integration with R (rJava)
+
+While the package is designed with Java, using it via R is possible with package `rJava`. Below is an example.
+
+```{r, eval=TRUE}
+library(rJava)
+# print(getwd())
+jar_path <- normalizePath("../target/heparan-sulfate-1.0-SNAPSHOT-jar-with-dependencies.jar", mustWork = TRUE)
+.jinit(classpath = jar_path)
+input_dir <- paste0(normalizePath("../input/", mustWork = TRUE), "/")
+summary_text <- .jcall("heparansulfate.CSpec", "Ljava/lang/String;", "getHeparanSulfateSpecSummary", input_dir)
+cat(summary_text)
+```
+
+For further examples see the following [document](figure_examples.html){target="_blank"} which shows how to derive the figures of the publication.
+
+## References
+
+- Pradines, J. R., et al. (2016). "Combining measurements to estimate properties and characterization extent of complex biochemical mixtures; applications to Heparan Sulfate." *Scientific Reports*, 6, 24829. [DOI: 10.1038/srep24829](https://doi.org/10.1038/srep24829).
+- Urbanek, S. (2021). rJava: Low-Level R to Java Interface. R package version 1.0-6.
+- Xie, Y., Cheng, J., & Tan, X. (2024). DT: An R Interface to the 'DataTables' JavaScript Library. R package version 0.33.

@@ -404,6 +404,12 @@ public class GradientWidth {
     public static void main(String[] args) {
         String inDir = "input/";
         String outDir = "output/";
+        if (args.length >= 1){
+            inDir = args[0];
+        }
+        if (args.length >= 2){
+            outDir = args[1];
+        }
         bounds(inDir, outDir);
         boundsAndN(inDir, outDir);
         defaultMixSpec(inDir, outDir);
