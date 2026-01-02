@@ -15,4 +15,5 @@ navbar:
       href: https://github.com/JoelRMath/heparan-sulfate
 output:
   html_document:
+    theme: cosmo
     css: style.css
