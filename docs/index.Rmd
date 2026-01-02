@@ -19,4 +19,3 @@ This project implements the mathematical models and optimization methods describ
 
 ---
 
-[Back to Main Portfolio](https://joelrmath.github.io/) | [GitHub Repository](https://github.com/JoelRMath/heparan-sulfate)
