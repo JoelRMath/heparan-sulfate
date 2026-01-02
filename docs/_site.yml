@@ -13,6 +13,8 @@ navbar:
   right:
     - icon: fa-github
       href: https://github.com/JoelRMath/heparan-sulfate
+    - icon: user
+      href: https://joelrmath.github.io/
 output:
   html_document:
     theme: cosmo
