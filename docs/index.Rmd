@@ -3,7 +3,6 @@ title: "Java Code for Heparan Sulfate Characterization"
 ---
 
 ```{r, echo=FALSE, results='asis'}
-# This pulls in the content of your README.md automatically
 res <- knitr::knit_child('../README.md', quiet = TRUE)
 cat(res, sep = '\n')
 ```
