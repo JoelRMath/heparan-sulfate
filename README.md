@@ -1,14 +1,45 @@
+
 # Java Package for Heparan Sulfate Characterization
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-live-brightgreen)](https://joelrmath.github.io/heparan-sulfate/)
 
-## Overview
+## 📖 High-Level Overview
 
-This repository contains the Java implementation and R-integration workflow for the characterization of complex biochemical mixtures consisting of linear chains, e.g. Heparan Sulfate (HS). 
+**This repository contains a mathematical inference engine built to solve a classic "Inverse Problem": How do you reconstruct a complex population when you only have aggregate data?**
 
-This work reproduces the mathematical modeling described in:
+While the application is biochemical (Heparan Sulfate), the underlying mathematics—**Constrained Optimization** and **Linear Programming**—are universally applicable to problems in Supply Chain, Inventory Management, and Population Statistics.
+
+### The General Problem
+Imagine a "Black Box" population containing millions of distinct items (species, customer types, or inventory SKUs). 
+* You cannot count every single item individually.
+* You **can** take aggregate measurements (weighted sums, totals, averages).
+
+**The Challenge:** How do you determine the composition of the population using *only* those aggregates?
+
+### The Solution
+This package implements a rigorous statistical framework to solve this by:
+1.  **Setting Bounds (Linear Programming):** Even if you can't pinpoint the exact count of an item, the constraints allow you to mathematically prove the *minimum* and *maximum* possible values.
+2.  **Most Likely Estimate (Maximum Entropy):** It calculates the "least biased" composition of the mixture that satisfies all observed constraints.
+
+---
+
+## 🔬 Scientific Context
+This work reproduces the mathematical modeling described in the peer-reviewed publication:
 > **"Combining measurements to estimate properties and characterization extent of complex biochemical mixtures; applications to Heparan Sulfate."** > *Scientific Reports* 6, 24829 (2016). [DOI: 10.1038/srep24829](https://doi.org/10.1038/srep24829)
+
+### The Specific Application
+The "Mixture" in this case is **Heparan Sulfate (HS)**—a complex chain of sugars with over **2 million possible variations** (molecular species). 
+* By applying **23 experimental constraints** (measurements), this package demonstrates that we can mathematically "characterize" the mixture, identifying non-random patterns (sulfation blocks) without needing to sequence every single molecule.
+* It proves that a small set of well-chosen aggregate metrics can significantly reduce uncertainty about a massive population.
+
+---
+
+## 🛠 Tech Stack & Features
+* **Core Logic:** Java (JDK 11+) for high-performance optimization.
+* **Integration:** R Interface via `rJava` for visualization and statistical analysis.
+* **Key Algorithms:** * Simplex Algorithm for Linear Programming constraints.
+    * Convex Optimization for Maximum Entropy estimation.
 
 ## Quick Links
 
@@ -29,6 +60,5 @@ git clone [https://github.com/JoelRMath/heparan-sulfate.git](https://github.com/
 cd heparan-sulfate
 mvn clean package
 The resulting JAR will be located in the target/ directory and can be called directly from R as demonstrated in the Figure Examples.
-```
 
 Maintained by Joel R. Pradines
